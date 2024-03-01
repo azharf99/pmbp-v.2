@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div class="container-fluid mt-5 p-5">
+        <div class="w-100 h-100 d-flex justify-content-center">
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <div class="card" style="min-width: 18rem;">
+                        <div class="card-header bg-dark text-light">
+                            Edit Data Ekskul {{ object.nama_ekskul }}
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            {{ form.as_p }}
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="{% url 'ekskul:data-index' %}" class="card-link btn btn-danger">Kembali</a>
+                            <input type="submit" class="card-link btn btn-success" value="Save Data">
+                        </div>
+                    </div>
+            </form>
+        </div>
+
+    </div>
+
+{% endblock %}

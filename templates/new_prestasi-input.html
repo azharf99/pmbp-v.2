@@ -1,0 +1,104 @@
+{% extends 'new_base.html' %}
+{% block content %}
+{% load static %}
+{% include 'new_navbar.html'%}
+{% include 'new_sidebar.html'%}
+
+<main id="main" class="main">
+    <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}"><i class="bi bi-house"></i> Home</a></li>
+          <li class="breadcrumb-item">Prestasi</li>
+          {% if prestasi %}
+          <li class="breadcrumb-item active">Input-Edit Data Prestasi</li>
+          {% else %}
+          <li class="breadcrumb-item active">Input-Edit Program Prestasi</li>
+          {% endif %}
+        </ol>
+    </nav>
+    <div class="container">
+      <section class="section register">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-xl-6 col-lg-6 col-md-8 d-flex flex-column align-items-center justify-content-center">
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                            <a href="{% url 'ekskul:data-detail' ekskul.slug %}" class="btn btn-sm btn-primary">Lihat Hasil</a>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+              <div class="card mb-3">
+                <div class="pt-3 pb-2">
+                  {% if prestasi %}
+                  <h1 class="card-title text-center p-4 fs-4">Input/Edit Data Prestasi</h1>
+                  {% else %}
+                  <h1 class="card-title text-center p-4 fs-4">Input/Edit Program Prestasi</h1>
+                  {% endif %}
+                </div>
+
+                <div class="card-body">
+                    <form action="" method="post" enctype="multipart/form-data" id="form">
+                        {% csrf_token %}
+                        {% if prestasi %}
+                        {{ forms.as_p }}
+                        {% else %}
+                        {{ form.as_p }}
+                        {% endif %}
+                        <div class="text-center">
+                            {% if prestasi %}
+                            <a id="back" href="{% url 'prestasi:prestasi-index' %}" class="card-link btn btn-danger m-1">Kembali</a>
+                            {% else %}
+                            <a id="back" href="{% url 'prestasi:program-prestasi' %}" class="card-link btn btn-danger m-1">Kembali</a>
+                            {% endif %}
+                            <input id="save" type="submit" class="card-link btn btn-success m-1" value="Save Data">
+                            <button id="loading" class="btn btn-success" type="button" style="display: none" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+    </section>
+  </main>
+  <!-- End #main -->
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+    <script>
+        $(document).ready(function () {
+            $('#id_prestasi').selectize({
+                sortField: 'text'
+            });
+        });
+
+        $(document).ready(function () {
+            $('#id_nama_peserta').selectize({
+                sortField: 'text',
+                maxItems: null,
+            });
+        });
+    </script>
+
+{% include 'script.html' %}
+{% endblock %}

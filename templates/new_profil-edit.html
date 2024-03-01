@@ -1,0 +1,71 @@
+{% extends 'new_base.html' %} 
+{% block content %} {% load static %} 
+{% include 'new_navbar.html'%} 
+{% include 'new_sidebar.html'%}
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Profile</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Users</li>
+          <li class="breadcrumb-item active">{{name}}</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section profile">
+      <div class="row">
+        <div class="col-xl-4">
+
+          <div class="card">
+            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+
+              <img src="{{ teacher.foto.url }}" alt="Profile" class="rounded-circle">
+              <h2 class="text-center">{{ teacher.nama_pembina }}</h2>
+              <h3>{{ teacher.jabatan }}</h3>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-xl-8">
+
+          <div class="card">
+            <div class="card-header text-center">
+              Edit Profil
+          </div>
+            <div class="card-body">
+              <div class="container-fluid">
+                <div class="d-flex justify-content-center">
+                    <form enctype="multipart/form-data" method="post" action="">
+                        {% csrf_token %}
+                        {% if messages %}
+                            <ul class="messages text-danger fw-bold">
+                                {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {{ form }}
+                        </div>
+                      </div>
+                      
+                      
+                    </div>
+                    <div class="card-footer text-center">
+                        {% if request.user.teacher.nama_lengkap %}
+                            <a href="{% url 'profil' %}" class="btn btn-danger">Back to Profil</a>
+                        {% endif %}
+                        <input class="btn btn-success" type="submit" value="Simpan Perubahan">
+                    </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main><!-- End #main -->
+
+  {% endblock %}

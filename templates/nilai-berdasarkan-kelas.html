@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="my-5 pt-5 text-center">
+        <h1>Data Nilai Ekstrakurikuler Per Kelas</h1>
+        <a href="{% url 'nilai:nilai-index' %}" class="btn btn-warning">Lihat Nilai Berdasarkan Ekskul?</a>
+        <a href="{% url 'nilai:print-to-excel' %}" class="btn btn-success">Download Excel</a>
+        <a class="m-3 btn btn-danger" href="{% url 'menu' %}">Kembali</a>
+    </div>
+
+    <div class="container">
+        <table class="table table-hover w-100">
+            <thead>
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">Ekskul</th>
+                <th scope="col">Nama Santri</th>
+                <th scope="col">Kelas</th>
+                <th scope="col">Nilai</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if nilai %}
+                {% for data in nilai %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ data.siswa.ekskul_siswa.nama }}</td>
+                        <td>{{ data.siswa.nama_siswa.nama }}</td>
+                        <td>{{ data.siswa.nama_siswa.get_kelas_display }}</td>
+                        <td>{{ data.nilai }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center fw-bold text-danger">Maaf, belum ada data nilai :(</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

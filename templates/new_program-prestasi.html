@@ -1,0 +1,65 @@
+{% extends 'new_base.html' %}
+{% block content %} {% load static %}
+{% include 'new_navbar.html'%}
+{% include 'new_sidebar.html'%}
+<main id="main" class="main">
+  <section class="section dashboard">
+    <div class="pagetitle">
+        <h1>Program Prestasi SMA IT Al Binaa</h1>
+        <h2>Tahun Ajaran 2023-2024</h2>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}"><i class="bi bi-house"></i> Home</a></li>
+          <li class="breadcrumb-item">Prestasi</li>
+          <li class="breadcrumb-item active">Program Prestasi</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="text-center">
+        <h3>Program Prestasi SMA IT Al Binaa Tahun Ajaran 2023-2024</h3>
+        <a href="{% url 'prestasi:program-prestasi-input' %}" class="btn btn-sm btn-warning">Input Program</a>
+        <a href="{% url 'prestasi:program-print-to-excel' %}" class="btn btn-sm btn-success">Download Excel</a>
+        <a class="m-3 btn btn-sm btn-danger" href="{% url 'dashboard' %}">Kembali</a>
+    </div>
+
+    <div class="container">
+        <table class="table table-hover w-100">
+            <thead>
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">Program Prestasi</th>
+                <th scope="col">Tanggal</th>
+                <th scope="col">Nama Peserta</th>
+                <th scope="col">Pencapaian</th>
+                <th scope="col">Catatan</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if object_list %}
+                {% for data in object_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ data.program_prestasi }}</td>
+                        <td>{{ data.tanggal }}</td>
+                        <td>
+                            {% for peserta in data.nama_peserta.all %}
+                            <p class="p-0 m-0">{{ peserta.nama_siswa }}</p>
+                            {% endfor %}
+                        </td>
+                        <td>{{ data.pencapaian }}</td>
+                        <td>{{ data.catatan }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center fw-bold text-danger">Maaf, belum ada data</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+  </section>
+</main>
+
+{% endblock %}
