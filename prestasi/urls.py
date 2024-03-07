@@ -17,5 +17,6 @@ urlpatterns = [
     path('program', views.ProgramPrestasiView.as_view(), name='program-prestasi'),
     path('program/input', views.ProgramPrestasiInputView.as_view(), name='program-prestasi-input'),
     path('program/edit/<int:pk>', views.ProgramPrestasiUpdateView.as_view(), name='program-prestasi-edit'),
+    path('program/delete/<int:pk>', views.program_prestasi_delete, name='program-prestasi-delete'),
     path('program/download', views.program_print_to_excel, name='program-print-to-excel'),
 ]

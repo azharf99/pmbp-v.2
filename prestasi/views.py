@@ -297,6 +297,27 @@ class ProgramPrestasiUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
+@login_required(login_url="/login/")
+def program_prestasi_delete(request, pk):
+    if not request.user.is_superuser:
+        return HttpResponseRedirect(reverse('restricted'))
+    data = get_object_or_404(ProgramPrestasi, id=pk)
+    if request.method == 'POST':
+        UserLog.objects.create(
+            user=request.user.teacher,
+            action_flag="DELETE",
+            app="PRESTASI_DOKUMENTASI",
+            message="Berhasil menghapus program prestasi {}".format(data)
+        )
+        send_whatsapp_input_anggota(request.user.teacher.no_hp, data, 'foto/dokumentasi untuk Prestasi', 'prestasi', 'menghapus')
+        data.delete()
+        return redirect('prestasi:program-prestasi')
+
+    context = {
+        'data': data,
+    }
+    return render(request, 'new_program-prestasi-delete.html', context)
+
 def program_print_to_excel(request):
     nilai = ProgramPrestasi.objects.all().order_by('-created_at')
     buffer = BytesIO()

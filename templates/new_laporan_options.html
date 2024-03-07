@@ -1,0 +1,51 @@
+{% extends 'new_base.html' %} 
+{% block content %} {% load static %} 
+{% include 'new_navbar.html'%} 
+{% include 'new_sidebar.html'%}
+<main id="main" class="main">
+  <section class="section dashboard">
+    <div class="pagetitle">
+      <h1>Print Laporan Ekstrakurikuler dan <em>Study Club</em> SMA IT Al Binaa</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}"><i class="bi bi-house"></i> Home</a>
+          </li>
+          <li class="breadcrumb-item">Ekstrakurikuler</li>
+          <li class="breadcrumb-item active">Laporan Ekskul/SC</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="container text-center">
+      <div class="d-flex flex-wrap justify-content-center">
+        <div class="row">
+          <!-- Sales Card -->
+          {% if object_list %} 
+          <form method="get" action="{% url 'laporan:laporan-print' slug %}">
+            {% for data in object_list %}
+              <fieldset>
+                <legend>Pilih Bulan</legend>
+                {% for month in data.month %}
+                <label><input type="radio" name="bulan" value="{{month.value}}" /> {{month.nama}}</label>
+                {% endfor %} 
+              </fieldset>
+              <fieldset>
+                <legend>Pilih Tahun</legend>
+                {% for year in data.year %}
+                <label><input type="radio" name="year" value="{{year}}" /> {{year}}</label>
+                {% endfor %} 
+              </fieldset>
+              <button type="submit" class="btn btn-primary mb-3">Print Laporan</button>
+              {% endfor %} 
+            </form>
+          {% else %}
+            <p class="text-danger">Tidak ada data pertemuan!</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% endblock %}

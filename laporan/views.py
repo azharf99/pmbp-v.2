@@ -17,13 +17,17 @@ from userlog.models import UserLog
 from dashboard.whatsapp import send_whatsapp_laporan, send_whatsapp_print
 
 class LaporanIndexView(ListView):
-    model = Extracurricular
+    model = Report
     template_name = 'new_laporan.html'
 
     def get_queryset(self):
+        ekskulList = list()
+        for ekskul in Report.objects.filter(tanggal_pembinaan__month=datetime.date.today().month-1).order_by('nama_ekskul__tipe','nama_ekskul__nama_ekskul'):
+            if not ekskulList.__contains__(ekskul.nama_ekskul):
+                ekskulList.append(ekskul.nama_ekskul)
         if self.request.user.is_authenticated:
             if self.request.user.is_superuser:
-                return Extracurricular.objects.all().order_by('tipe', 'nama_ekskul')
+                return ekskulList
             else:
                 return Extracurricular.objects.filter(pembina=self.request.user.teacher).order_by('tipe', 'nama_ekskul')
         else:
@@ -59,7 +63,13 @@ class PrintToPrintView(LoginRequiredMixin, ListView):
     login_url = '/login/'
 
     def get_queryset(self):
-        return Report.objects.filter(nama_ekskul__slug=self.kwargs.get('slug'), tanggal_pembinaan__month=datetime.date.today().month-1).order_by('tanggal_pembinaan')
+        if self.request.GET.get('bulan'):
+            if self.request.GET.get('tahun'):
+                return Report.objects.filter(nama_ekskul__slug=self.kwargs.get('slug'), tanggal_pembinaan__month=self.request.GET.get('bulan'), tanggal_pembinaan__year=self.request.GET.get('tahun')).order_by('tanggal_pembinaan')
+            else:
+                return Report.objects.filter(nama_ekskul__slug=self.kwargs.get('slug'), tanggal_pembinaan__month=self.request.GET.get('bulan'), tanggal_pembinaan__year=datetime.date.today().year).order_by('tanggal_pembinaan')
+        else:
+            return Report.objects.filter(nama_ekskul__slug=self.kwargs.get('slug'), tanggal_pembinaan__month=datetime.date.today().month-1).order_by('tanggal_pembinaan')
 
     def get_context_data(self, **kwargs):
         context = super(PrintToPrintView, self).get_context_data(**kwargs)
@@ -76,6 +86,48 @@ class PrintToPrintView(LoginRequiredMixin, ListView):
         )
         send_whatsapp_print(self.request.user.teacher.no_hp, 'mencetak', "ekskul/SC", ekskul.nama_ekskul)
         return context
+
+
+class LaporanOptions(ListView):
+    model = Report
+    template_name = 'new_laporan_options.html'
+    def get_queryset(self):
+        monthName = {0: "bulan", 1:"Januari", 2:"Februari", 3:"Maret", 4:"April", 5:"Mei", 6:"Juni", 7:"Juli", 8:"Agustus", 9:"September", 10:"Oktober", 11:"November", 12:"Desember"}
+        monthList = list()
+        monthSet = set()
+        yearSet = set()
+        allDict = dict()
+        data = Report.objects.filter(nama_ekskul__slug=self.kwargs.get('slug')).order_by('tanggal_pembinaan').values_list('tanggal_pembinaan', flat=True)
+        for i in data:
+            monthSet.add(i.month)
+            yearSet.add(i.year)
+        for i in monthSet:
+            monthList.append({"nama": monthName.get(i), "value": i})
+        allDict["month"] = monthList
+        allDict["year"] = list(yearSet)
+        return [allDict]
+    
+    def get_context_data(self, **kwargs):
+        context = super(LaporanOptions, self).get_context_data(**kwargs)
+        context['slug'] = self.kwargs.get('slug')
+        return context
+
+def LaporanOptionsFunc(request, slug):
+    data = Report.objects.filter(nama_ekskul__slug=slug).order_by('-tanggal_pembinaan').values_list('tanggal_pembinaan', flat=True)
+    monthName = {0: "bulan", 1:"Januari", 2:"Februari", 3:"Maret", 4:"April", 5:"Mei", 6:"Juni", 7:"Juli", 8:"Agustus", 9:"September", 10:"Oktober", 11:"November", 12:"Desember"}
+    monthList = list()
+    monthSet = set()
+    yearSet = set()
+    allDict = dict()
+    for i in data:
+            monthSet.add(i.month)
+            yearSet.add(i.year)
+    for i in monthSet:
+        monthList.append({"nama": monthName.get(i), "value": i})
+    allDict["month"] = monthList
+    allDict["year"] = list(yearSet)
+    context = {"object_list" : [allDict], "slug": slug} if len(monthList) > 0 else {"object_list" : None, "slug": slug}
+    return render(request, 'new_laporan_options.html', context)
 
 @login_required(login_url='/login/')
 def laporan_ekskul_print_versi2(request, slug):

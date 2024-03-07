@@ -7,6 +7,7 @@ from nilai.models import Penilaian
 from userlog.models import UserLog
 from osn.models import LaporanOSN, BidangOSN
 from prestasi.models import Prestasi
+import datetime
 
 # Create your views here.
 
@@ -19,7 +20,7 @@ def dashboard(request):
     ekskul_aktif = Report.objects.values('nama_ekskul__nama_ekskul').annotate(dcount=Count('nama_ekskul'))
     nama_ekskul = [x['nama_ekskul__nama_ekskul'] for x in ekskul_aktif]
     pertemuan_ekskul = [x['dcount'] for x in ekskul_aktif]
-    laporan_ekskul = Report.objects.values('tanggal_pembinaan').annotate(dcount=Count('tanggal_pembinaan')).order_by('tanggal_pembinaan')
+    laporan_ekskul = Report.objects.filter(tanggal_pembinaan__month=datetime.datetime.now().month-1).values('tanggal_pembinaan').annotate(dcount=Count('tanggal_pembinaan')).order_by('tanggal_pembinaan')
     laporan = Report.objects.all().order_by('-tanggal_pembinaan')[:5]
     data_pertemuan = [x['dcount'] for x in laporan_ekskul]
     data_tanggal = list(str(x['tanggal_pembinaan'].isoformat()) for x in laporan_ekskul)

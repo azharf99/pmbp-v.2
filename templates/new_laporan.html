@@ -30,6 +30,7 @@
                   src="{{data.logo.url}}"
                   class="card-img-top"
                   alt="Logo Ekskul"
+                  height="150px"
                 />
                 <p class="text-center m-0">{{ data.get_tipe_display }}</p>
               </div>
@@ -71,7 +72,7 @@
                       >
                       <a id="saveAsPdfBtn" href="https://www.sejda.com/html-to-pdf?save-link=https://pmbp.smasitalbinaa.com{% url 'laporan:laporan-pdf' data.slug %}&pageSize=A4&delay=5$pageOrientation=portrait&pageMargin=50px" class="btn btn-sm btn-success">Save as PDF</a>
                       <a
-                        href="{% url 'laporan:laporan-print' data.slug %}"
+                        href="{% url 'laporan:laporan-options' data.slug %}"
                         class="btn btn-sm btn-success m-1"
                         >Print Laporan</a
                       >
