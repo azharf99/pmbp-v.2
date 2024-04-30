@@ -192,12 +192,12 @@
 
 
         <div class="row portfolio-container">
-            {% for data in prestasi %}
+            {% for data in object_list %}
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-            <div class="portfolio-img"><img src="{{data.dokumentasiprestasi_set.last.foto.url}}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="{{data.foto.url}}" class="img-fluid" alt=""></div>
             <div class="text-center">
-              <p class="p-0 m-0">{{data.nama_lomba|title}}</p>
-              <p>{{data.peraih_prestasi|title}}</p>
+              <p class="p-0 m-0">{{data.prestasi.nama_lomba|title}}</p>
+              <p>{{data.prestasi.peraih_prestasi|title}}</p>
             </div>
           </div>
             {% endfor %}

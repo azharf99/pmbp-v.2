@@ -1,13 +1,23 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.db.models import Q
+from django.views.generic import ListView
 from deskripsi.models import DeskripsiEkskul, DeskripsiHome
 # from userlog.models import UserLog
-from prestasi.models import Prestasi
+from prestasi.models import Prestasi, DokumentasiPrestasi
 # from django.contrib.auth import authenticate, login
 # from django.contrib import messages
 
 # Create your views here.
+
+class HomeView(ListView):
+    model = DokumentasiPrestasi
+    template_name = 'new_home.html'
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return DokumentasiPrestasi.objects.select_related('prestasi').order_by('-prestasi__created_at', '-prestasi__tahun_lomba', 'prestasi__peraih_prestasi')[:6]
 
 def home_view(request):
     # if request.user.is_authenticated:

@@ -13,30 +13,31 @@ import datetime
 
 
 def dashboard(request):
-    data_ekskul = Extracurricular.objects.filter(tipe="Ekskul")
-    data_sc = Extracurricular.objects.filter(tipe="SC")
-    jumlah_siswa = Student.objects.all().count()
-    siswa_ekskul = StudentOrganization.objects.values('siswa').annotate(dcount=Count('siswa')).count()
-    ekskul_aktif = Report.objects.values('nama_ekskul__nama_ekskul').annotate(dcount=Count('nama_ekskul'))
+    ekskul = Extracurricular.objects.all()
+    data_ekskul = ekskul.filter(tipe="Ekskul")
+    data_sc = ekskul.filter(tipe="SC")
+    jumlah_siswa = Student.objects.count()
+    siswa_ekskul = StudentOrganization.objects.select_related('ekskul', 'siswa').values('siswa').annotate(dcount=Count('siswa')).count()
+    ekskul_aktif = Report.objects.select_related('nama_ekskul', 'pembina_ekskul').values('nama_ekskul__nama_ekskul').annotate(dcount=Count('nama_ekskul'))
     nama_ekskul = [x['nama_ekskul__nama_ekskul'] for x in ekskul_aktif]
     pertemuan_ekskul = [x['dcount'] for x in ekskul_aktif]
-    laporan_ekskul = Report.objects.filter(tanggal_pembinaan__month=datetime.datetime.now().month-1).values('tanggal_pembinaan').annotate(dcount=Count('tanggal_pembinaan')).order_by('tanggal_pembinaan')
-    laporan = Report.objects.all().order_by('-tanggal_pembinaan')[:5]
+    laporan_ekskul = Report.objects.select_related('nama_ekskul', 'pembina_ekskul').filter(tanggal_pembinaan__month=datetime.datetime.now().month-1).values('tanggal_pembinaan').annotate(dcount=Count('tanggal_pembinaan')).order_by('tanggal_pembinaan')
+    laporan = Report.objects.select_related('nama_ekskul', 'pembina_ekskul').order_by('-tanggal_pembinaan')[:20]
     data_pertemuan = [x['dcount'] for x in laporan_ekskul]
     data_tanggal = list(str(x['tanggal_pembinaan'].isoformat()) for x in laporan_ekskul)
-    proposal = Proposal.objects.all()
-    nilai = Penilaian.objects.all()
+    proposal = Proposal.objects.all().select_related('ekskul')
+    nilai = Penilaian.objects.all().select_related('siswa')
     logs = UserLog.objects.all().order_by('-created_at')[:5]
-    osn = LaporanOSN.objects.values('bidang_osn__nama_bidang').annotate(dcount=Count('bidang_osn')).order_by()
+    osn = LaporanOSN.objects.select_related('pembimbing_osn', 'bidang_osn').values('bidang_osn__nama_bidang').annotate(dcount=Count('bidang_osn')).order_by()
     bidang_osn = list(x['bidang_osn__nama_bidang'] for x in osn)
     pertemuan_osn = list(x['dcount'] for x in osn)
     prestasi = Prestasi.objects.all().order_by('-created_at', '-tahun_lomba', 'peraih_prestasi')[:5]
-    bidang_osn_qs = BidangOSN.objects.all().order_by('nama_bidang')
+    bidang_osn_qs = BidangOSN.objects.select_related('pembimbing').order_by('nama_bidang')
 
     context = {
         'data_ekskul': data_ekskul,
         'data_sc': data_sc,
-        'data_ekskul_sc': data_ekskul.count() + data_sc.count(),
+        'data_ekskul_sc': ekskul.count(),
         'jumlah_siswa': jumlah_siswa,
         'siswa_ekskul': siswa_ekskul,
         'ekskul_aktif': ekskul_aktif.count(),

@@ -40,7 +40,7 @@ def restricted(request):
 
 
 urlpatterns = [
-    path('', deskripsi.views.home_view, name='app-index'),
+    path('', deskripsi.views.HomeView.as_view(), name='app-index'),
     path("robots.txt",TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path('menu', deskripsi.views.menu_view, name='menu'),
     path('log/', userlog.views.index, name='log-index'),
@@ -67,6 +67,7 @@ urlpatterns = [
     path('notavailable/', not_available, name='not-available'),
     path('restricted/', restricted, name='restricted'),
     path('webhook/', ekskul.views.webhook_view, name='webhook'),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
