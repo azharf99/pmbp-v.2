@@ -43,6 +43,8 @@
                     <div class="card-body">
                         {% if siswa_osn and name == "Input Laporan OSN" %}
                             {{ forms.as_p }}
+                        {% elif name == "KSM" %}
+                            {{ form.as_p }}
                         {% elif not name == "Input Laporan OSN" %}
                             {{ forms.as_p }}
                         {% else %}

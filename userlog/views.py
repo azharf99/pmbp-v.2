@@ -6,7 +6,7 @@ from userlog.models import UserLog
 # Create your views here.
 
 @login_required(login_url='/login/')
-def index(request):
+def UserLogindex(request):
     logs = UserLog.objects.all().order_by('-created_at')[:50]
     context = {
         'logs': logs,

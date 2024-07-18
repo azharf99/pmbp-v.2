@@ -9,8 +9,11 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-import os.path
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,15 +26,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-qc-ewe(l__6md70^d8f02(8q@u^srl^hee26y3&cols6u*)(z#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['smaitalbinaa.pythonanywhere.com','ekskul.smasitalbinaa.com', 'webapp-1517507.pythonanywhere.com', 'pmbp.smasitalbinaa.com', '127.0.0.1']
 
 AUTH_USER_MODEL = 'ekskul.User'
 
-ID_DEVICE = '4361'
-API_KEY = '2af54c86b60b5027ac1e13945705ece7c1f78893'
-TOKEN = 'IeFSDe7RzYEDn4QJxKLX9Wc3luhUnMgvdQPB5Gr8tshU97RywNjkgpdG5XRZr8BT'
+ID_DEVICE = os.getenv('ID_DEVICE')
+API_KEY = os.getenv('API_KEY')
+TOKEN = os.getenv('TOKEN')
 
 # Application definition
 
@@ -52,9 +55,10 @@ INSTALLED_APPS = [
     'prestasi.apps.PrestasiConfig',
     'userlog.apps.UserlogConfig',
     'osn.apps.OsnConfig',
+    'ksm.apps.KsmConfig',
     'dashboard.apps.DashboardConfig',
     'debug_toolbar',
-
+    'rest_framework',
 ]
 
 
@@ -101,27 +105,25 @@ WSGI_APPLICATION = 'Platform.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         'NAME' : os.getenv('DB_NAME'),
+#         'USER' : os.getenv('DB_USER'),
+#         'PASSWORD' : os.getenv('DB_PASSWORD'),
+#         'HOST' : os.getenv('DB_HOST'),
+#         'PORT' : os.getenv('DB_PORT'),
+#     }
+# }
+
 DATABASES = {
-    # "default": {
-    #     "ENGINE": "django.db.backends.mysql",
-    #     'NAME' : 'smaitalbinaa$platform',
-    #     'USER' : 'smaitalbinaa',
-    #     'PASSWORD' : 'Azhar1995',
-    #     'HOST' : 'smaitalbinaa.mysql.pythonanywhere-services.com',
-    #     'PORT' : '3306',
-    #     "OPTIONS": {
-    #         'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
-    #         'charset': 'utf8mb4',
-    #         "autocommit": True,
-    #     }
-    # }
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        'NAME' : 'platform_backup',
-        'USER' : 'root',
-        'PASSWORD' : 'root',
-        'HOST' : '127.0.0.1',
-        'PORT' : '3306',
+    'default':{
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'platform',
+        'USER': 'postgres',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
@@ -177,9 +179,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
+# DJANGO DEBUG TOOLBAR
 INTERNAL_IPS = [
     # ...
     "127.0.0.1",
     # ...
 ]
+
+
+# DRF SETTINGS
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}

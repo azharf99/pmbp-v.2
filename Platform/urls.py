@@ -19,11 +19,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
+from rest_framework import routers
 
-import deskripsi.views
-import ekskul.views
-import userlog.views
+from deskripsi.views import HomeView, menu_view
+from ekskul.views import login_view, logout_view, register, edit_password, edit_profil_view, profil_view, edit_username, webhook_view, UserViewSet, ExtracurricularViewSet
+from userlog.views import UserLogindex
 
+router = routers.DefaultRouter()
+router.register(r'users', UserViewSet)
+router.register(r'ekskul', ExtracurricularViewSet)
 
 def struktur(request):
     return render(request, 'struktur.html')
@@ -37,21 +41,26 @@ def not_available(request):
 def restricted(request):
     return render(request, 'restricted.html')
 
+def proker(request):
+    return render(request, 'proker.html')
+
+def lpj(request):
+    return render(request, 'lpj.html')
 
 
 urlpatterns = [
-    path('', deskripsi.views.HomeView.as_view(), name='app-index'),
+    path('', HomeView.as_view(), name='app-index'),
     path("robots.txt",TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
-    path('menu', deskripsi.views.menu_view, name='menu'),
-    path('log/', userlog.views.index, name='log-index'),
+    path('menu', menu_view, name='menu'),
+    path('log/', UserLogindex, name='log-index'),
     path('admin/', admin.site.urls),
-    path('login/', ekskul.views.login_view, name='login'),
-    path('register/', ekskul.views.register, name='register'),
-    path('password/', ekskul.views.edit_password, name='password'),
-    path('username-change/', ekskul.views.edit_username, name='username-change'),
-    path('profil/', ekskul.views.profil_view, name='profil'),
-    path('profil/edit', ekskul.views.edit_profil_view, name='edit-profil'),
-    path('logout/', ekskul.views.logout_view, name='logout'),
+    path('login/', login_view, name='login'),
+    path('register/', register, name='register'),
+    path('password/', edit_password, name='password'),
+    path('username-change/', edit_username, name='username-change'),
+    path('accounts/profile/', profil_view, name='profil'),
+    path('profil/edit', edit_profil_view, name='edit-profil'),
+    path('logout/', logout_view, name='logout'),
     # path('ekskul/', deskripsi.views.ekskul_view, name='ekskul-page'),
     path('laporan/', include('laporan.urls')),
     path('dashboard/', include('dashboard.urls')),
@@ -62,12 +71,17 @@ urlpatterns = [
     # path('timeline/', include('timeline.urls')),
     path('prestasi/', include('prestasi.urls')),
     path('osn/', include('osn.urls')),
+    path('ksm/', include('ksm.urls')),
     path('struktur/', struktur, name='struktur-page'),
     path('unduh/', unduh, name='unduh-page'),
     path('notavailable/', not_available, name='not-available'),
     path('restricted/', restricted, name='restricted'),
-    path('webhook/', ekskul.views.webhook_view, name='webhook'),
+    path('webhook/', webhook_view, name='webhook'),
+    path('proker/', proker, name='proker'),
+    path('lpj/', lpj, name='lpj'),
     path("__debug__/", include("debug_toolbar.urls")),
+    path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
 
 urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

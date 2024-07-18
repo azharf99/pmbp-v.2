@@ -120,42 +120,6 @@
       </li><!-- End Tables Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-file-earmark-text"></i><span>Proposal</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          {% if request.user.is_authenticated %}
-          <li>
-            <a href="{% url 'proposal:proposal-input' %}">
-              <i class="bi bi-circle"></i><span>Buat Proposal Lomba</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'proposal:proposal-inventaris-input' %}">
-              <i class="bi bi-circle"></i><span>Buat Proposal Inventaris</span>
-            </a>
-          </li>
-          <hr class="m-0 p-0">
-          {% endif %}
-          <li>
-            <a href="{% url 'proposal:proposal-index' %}">
-              <i class="bi bi-circle"></i><span>Daftar Proposal</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% static 'template-proposal.docx' %}l">
-              <i class="bi bi-circle"></i><span>Template Proposal Lomba</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% static 'template-proposal-pengadaan.docx' %}">
-              <i class="bi bi-circle"></i><span>Template Proposal Inventaris</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Charts Nav -->
-
-      <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#osn-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-award"></i><span>OSN 2024</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -200,7 +164,52 @@
             </li>
         </ul>
       </li><!-- End Charts Nav -->
-
+      
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#ksm-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-award"></i><span>KSM 2024</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="ksm-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          {% if request.user.is_authenticated %}
+          {% for data in request.user.teacher.bidangksm_set.all %}
+          <small class="fw-bold text-primary">{{data.nama_bidang}}</small class="fw-bold">
+            <li>
+              <a href="{% url 'ksm:siswa-ksm-input' data.slug %}">
+                <i class="bi bi-circle"></i><span>Input Siswa</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'ksm:laporan-ksm-input' data.slug %}">
+                <i class="bi bi-circle"></i><span>Input Bimbingan ksm</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'ksm:detail-bidang-ksm' data.slug %}">
+                <i class="bi bi-circle"></i><span>Rekapan Bimbingan</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'ksm:laporan-ksm-print' data.slug %}">
+                <i class="bi bi-circle"></i><span>Cetak Hasil Bimbingan</span>
+              </a>
+            </li>
+            <hr class="m-0 p-0">
+            {% endfor%}
+            {% endif %}
+            {% if request.user.is_superuser %}
+            <li>
+              <a href="{% url 'ksm:bidang-ksm-input' %}">
+                <i class="bi bi-circle"></i><span>Input Bidang ksm</span>
+              </a>
+            </li>
+            {% endif %}
+            <li>
+              <a href="{% url 'ksm:ksm-index' %}">
+                <i class="bi bi-circle"></i><span>Daftar Bidang OSN</span>
+              </a>
+            </li>
+        </ul>
+      </li><!-- End Charts Nav -->
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-gem"></i><span>Prestasi</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -236,8 +245,28 @@
           </li>
         </ul>
       </li><!-- End Icons Nav -->
+      
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#raker" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-gem"></i><span>Raker 2024/2025</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="raker" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'proker' %}">
+              <i class="bi bi-circle"></i><span>Program Kerja PMBP 2024/2025</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'lpj' %}">
+              <i class="bi bi-circle"></i><span>LPJ PMBP 2023/2024</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Icons Nav -->
 
       <li class="nav-heading">Pages</li>
+
+      {% if request.user.is_authenticated %}
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'profil' %}">
@@ -246,28 +275,7 @@
         </a>
       </li><!-- End Profile Page Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{% url 'app-index' %}#faq">
-          <i class="bi bi-question-circle"></i>
-          <span>F.A.Q</span>
-        </a>
-      </li><!-- End F.A.Q Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{% url 'app-index' %}#contact">
-          <i class="bi bi-envelope"></i>
-          <span>Contact</span>
-        </a>
-      </li><!-- End Contact Page Nav -->
-
-      {% if not request.user.is_authenticated %}
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{% url 'register' %}">
-          <i class="bi bi-card-list"></i>
-          <span>Register</span>
-        </a>
-      </li><!-- End Register Page Nav -->
+      {% else %}
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'login' %}">
