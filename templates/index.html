@@ -1,1048 +1,369 @@
 {% load static %}
-{% load humanize %}
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PMBP - SMAS IT AL BINAA</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
-
-  <!-- Favicons -->
-  <link href="{% static 'img/favicon.png' %}" rel="icon">
-  <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
-  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/quill/quill.snow.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/quill/quill.bubble.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/remixicon/remixicon.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/simple-datatables/style.css' %}" rel="stylesheet">
-
-  <!-- Template Main CSS File -->
-  <link href="{% static 'css/style2.css' %}" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: NiceAdmin
-  * Updated: Nov 17 2023 with Bootstrap v5.3.2
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+  <meta content="Pengembangan Minat, Bakat dan Pembinaan Prestasi SMAS IT Al Binaa" name="description" />
+  <meta
+    content="SMA IT AL Binaa, SMAS IT AL Binaa, PMBP SMA IT AL Binaa, PMBP SMAS IT AL Binaa, Ekskul SMA IT AL Binaa, Ekskul"
+    name="keywords" />
+  <link rel="canonical" href="https://pmbp.smasitalbinaa.com/dashboard/" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="DASHBOARD SMAS IT AL BINAA" />
+  <meta property="og:url" content="https://pmbp.smasitalbinaa.com/dashboard/" />
+  <meta property="og:site_name" content="SMAS IT AL BINAA IBS" />
+  <meta property="article:modified_time" content="2023-12-05T01:53:58+00:00" />
+  <meta property="og:image" content="{{object_list.first.foto.url}}" />
+  <link href="{% static 'img/favicon.png' %}" rel="icon" />
+  <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon" />
+  <link rel="stylesheet" href="{% static 'css/build.css' %}">
 </head>
 
-<body>
+<body class="bg-gray-100 dark:bg-black dark:text-gray-200">
+  <header class="bg-indigo-500 dark:bg-gradient-to-r dark:from-slate-900 dark:via-purple-800 dark:to-black w-full sticky top-0">
+    <nav class="backdrop-blur-sm mx-auto flex w-full items-center justify-between p-6 lg:px-8" aria-label="Global">
+      <div class="flex lg:flex-1">
+        <a href="{% url 'app-index' %}" class="-m-1.5 p-1.5">
+          <span class="sr-only">PMBP - SMAS IT AL BINAA</span>
+          <img class="h-8 w-auto" src="{% static 'images/Binaaul-Mustaqbal.png' %}" alt="Logo" />
+        </a>
+      </div>
+      <div class="flex lg:hidden items-center">
+        <label for="AcceptConditions2"
+              class="relative inline-block h-6 w-12 mx-4 cursor-pointer rounded-full bg-gray-300 transition [-webkit-tap-highlight-color:_transparent] has-[:checked]:bg-green-500">
+              <input type="checkbox" id="AcceptConditions2"
+                class="peer sr-only [&:checked_+_span_svg[data-checked-icon]]:block [&:checked_+_span_svg[data-unchecked-icon]]:hidden" />
+    
+              <span
+                class="absolute inset-y-0 start-0 z-10 m-1 inline-flex size-4 items-center justify-center rounded-full bg-white dark:bg-green-300 p-0.5 text-black transition-all peer-checked:start-6 peer-checked:text-black">
+                
+                <svg data-unchecked-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" fill-rule="evenodd" clip-rule="evenodd" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg data-checked-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hidden">
+                  <path stroke-linecap="round" stroke-linejoin="round" fill-rule="evenodd" clip-rule="evenodd" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+    
+              </span>
+        </label>
+        <div class="rounded-full p-1 border-2 border-gray-300 mr-4 dark:border-fuchsia-400 bg-white">
+          <img src="{% static 'images/Binaaul-Mustaqbal.png' %}" alt="Profile" height="25px" width="25px">
+        </div>
+        <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+          id="openMobileNav">
+          <span class="sr-only">Open main menu</span>
+          <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+      </div>
+      <div class="hidden lg:flex lg:gap-x-12">
+        <a href="{% url 'app-index' %}" class="text-sm font-semibold leading-6 text-gray-100">Beranda</a>
+        <a href="#ekskul" class="text-sm font-semibold leading-6 text-gray-100">Ekstrakurikuler</a>
+        <a href="#prestasi" class="text-sm font-semibold leading-6 text-gray-100">Prestasi</a>
+        <a href="#galeri" class="text-sm font-semibold leading-6 text-gray-100">Galeri Kegiatan</a>
+        <a href="#profil" class="text-sm font-semibold leading-6 text-gray-100">Profil PMBP</a>
+      </div>
+      
+      <div class="hidden lg:flex lg:flex-1 lg:justify-end items-center">
+        <label for="AcceptConditions"
+          class="relative inline-block h-6 w-12 mx-4 cursor-pointer rounded-full bg-gray-300 transition [-webkit-tap-highlight-color:_transparent] has-[:checked]:bg-green-500">
+          <input type="checkbox" id="AcceptConditions"
+            class="peer sr-only [&:checked_+_span_svg[data-checked-icon]]:block [&:checked_+_span_svg[data-unchecked-icon]]:hidden" />
+  
+          <span
+            class="absolute inset-y-0 start-0 z-10 m-1 inline-flex size-4 items-center justify-center rounded-full bg-white dark:bg-green-300 p-0.5 text-black transition-all peer-checked:start-6 peer-checked:text-black">
+            
+            <svg data-unchecked-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" fill-rule="evenodd" clip-rule="evenodd" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+            </svg>
+            <svg data-checked-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hidden">
+              <path stroke-linecap="round" stroke-linejoin="round" fill-rule="evenodd" clip-rule="evenodd" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+            </svg>
 
-  <!-- ======= Header ======= -->
-  <header id="header" class="header fixed-top d-flex align-items-center">
-
-    <div class="d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
-        <img src="{% static 'img/logo.png' %}" alt="">
-        <img src="{% static 'images/Binaaul-Mustaqbal.png' %}" alt="">
-        <img src="{% static 'images/albinaa-vision.png' %}" alt="">
-        <span class="d-none d-lg-block">PMBP</span>
-      </a>
-      <i class="bi bi-list toggle-sidebar-btn"></i>
-    </div><!-- End Logo -->
-
-    <div class="search-bar">
-      <form class="search-form d-flex align-items-center" method="POST" action="#">
-        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
-        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-      </form>
-    </div><!-- End Search Bar -->
-
-    <nav class="header-nav ms-auto">
-      <ul class="d-flex align-items-center">
-
-        <li class="nav-item d-block d-lg-none">
-          <a class="nav-link nav-icon search-bar-toggle " href="#">
-            <i class="bi bi-search"></i>
-          </a>
-        </li><!-- End Search Icon-->
-
+          </span>
+        </label>
         {% if request.user.is_authenticated %}
-        <li class="nav-item dropdown">
-
-          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-            <i class="bi bi-bell"></i>
-            <span class="badge bg-primary badge-number">4</span>
-          </a><!-- End Notification Icon -->
-
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-            <li class="dropdown-header">
-              You have 4 new notifications
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-exclamation-circle text-warning"></i>
-              <div>
-                <h4>Lorem Ipsum</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>30 min. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-x-circle text-danger"></i>
-              <div>
-                <h4>Atque rerum nesciunt</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>1 hr. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-check-circle text-success"></i>
-              <div>
-                <h4>Sit rerum fuga</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>2 hrs. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-info-circle text-primary"></i>
-              <div>
-                <h4>Dicta reprehenderit</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>4 hrs. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li class="dropdown-footer">
-              <a href="#">Show all notifications</a>
-            </li>
-
-          </ul><!-- End Notification Dropdown Items -->
-
-        </li><!-- End Notification Nav -->
-
-        <li class="nav-item dropdown">
-
-          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-            <i class="bi bi-chat-left-text"></i>
-            <span class="badge bg-success badge-number">3</span>
-          </a><!-- End Messages Icon -->
-
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-            <li class="dropdown-header">
-              You have 3 new messages
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="{% static 'img/messages-1.jpg' %}" alt="" class="rounded-circle">
-                <div>
-                  <h4>Maria Hudson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>4 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="{% static 'img/messages-2.jpg' %}" alt="" class="rounded-circle">
-                <div>
-                  <h4>Anna Nelson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>6 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="{% static 'img/messages-3.jpg' %}" alt="" class="rounded-circle">
-                <div>
-                  <h4>David Muldon</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>8 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="dropdown-footer">
-              <a href="#">Show all messages</a>
-            </li>
-
-          </ul><!-- End Messages Dropdown Items -->
-
-        </li><!-- End Messages Nav -->
+        <div class="rounded-full p-1 border-2 border-white mr-4 dark:border-fuchsia-400">
+          <img src="{{request.user.teacher.foto.url}}" alt="Profile" height="25px" width="25px">
+        </div>
+        <a href="{% url 'dashboard' %}" class="text-sm font-semibold leading-6 text-gray-100">Dasbor <span
+          aria-hidden="true">&rarr;</span></a>
+        <a href="{% url 'logout' %}" class="text-sm font-semibold leading-6 text-gray-100">Keluar <span
+            aria-hidden="true">&rarr;</span></a>
+        {% else %}
+        <a href="{% url 'login' %}" class="text-sm font-semibold leading-6 text-gray-100">Masuk <span
+            aria-hidden="true">&rarr;</span></a>
         {% endif %}
-        <li class="nav-item dropdown pe-3">
+      </div>
+    </nav>
+    <!-- Mobile menu, show/hide based on menu open state. -->
+    <div class="hidden dark:bg-black" role="dialog" aria-modal="true" id="mobileNav">
+      <!-- Background backdrop, show/hide based on slide-over state. -->
+      <div class="fixed inset-0 z-10"></div>
+      <div
+        class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white dark:bg-black  px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <div class="flex items-center justify-between">
+          <a href="#" class="-m-1.5 p-1.5">
+            <span class="sr-only">PMBP - SMAS IT AL BINAA</span>
+            <img class="h-8 w-auto" src="https://pmbp.smasitalbinaa.com/static/images/Binaaul-Mustaqbal.png" alt="" />
+          </a>
+          <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-white" id="closeMobileNav">
+            <span class="sr-only">Close menu</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+              aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="mt-6 flow-root">
+          <div class="-my-6 divide-y divide-gray-500/10 dark:divide-white">
+            <div class="space-y-2 py-6">
+              <a href="{% url 'app-index' %}"
+                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Beranda</a>
+              <a href="#ekskul"
+                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Ekstrakurikuler</a>
+              <a href="#prestasi"
+                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Prestasi</a>
+              <a href="#galeri"
+                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Galeri
+                Kegiatan</a>
+              <a href="#profil"
+                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Profil
+                PMBP</a>
+            </div>
+            <div class="py-6">
+              {% if request.user.is_authenticated %}
+              <a href="{% url 'dashboard' %}"
+              class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Dasbor</a>
+              {% else %}  
+              <a href="{% url 'login' %}"
+              class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Masuk</a>
+              {% endif %}  
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
 
+  
+
+  <main>
+    <section class="bg-indigo-500 dark:bg-gradient-to-r dark:from-slate-900 dark:to-black md:flex md:items-center">
+      <div class="py-4 px-4 md:text-left text-center lg:py-16 md:w-3/4">
+        <h1
+          class="mb-4 text-4xl lg:px-10 font-extrabold tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-b from-white to-teal-200 md:text-5xl lg:text-6xl dark:via-fuchsia-400 dark:to-white">
+          Pengembangan Minat, Bakat dan Pembinaan Prestasi
+        </h1>
+        <p class="mb-4 text-lg font-semibold text-white lg:text-xl sm:px-16 lg:px-10 dark:text-gray-300">
+          SMAS IT AL BINAA ISLAMIC BOARDING SCHOOL BEKASI
+        </p>
+        <p class="mb-8 text-lg font-semibold text-white lg:text-xl sm:px-16 lg:px-10 dark:text-gray-300">
+          Kami adalah wadah dalam mengeksresikan minat, mengeksplorasi bakat
+          dan potensi serta menjadi mesin pencetak prestasi.
+        </p>
+        <div class="lg:px-10">
           {% if request.user.is_authenticated %}
-          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <img src="{{ request.user.teacher.foto.url }}" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2">{{request.user.teacher.nama_pembina}}</span>
-          </a><!-- End Profile Iamge Icon -->
-
-
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-            <li class="dropdown-header">
-              <h6>{{request.user.teacher.nama_pembina}}</h6>
-              <span>{{request.user.teacher.jabatan}}</span>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                <i class="bi bi-person"></i>
-                <span>My Profile</span>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                <i class="bi bi-gear"></i>
-                <span>Account Settings</span>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
-                <i class="bi bi-question-circle"></i>
-                <span>Need Help?</span>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="#">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Sign Out</span>
-              </a>
-            </li>
-
-          </ul><!-- End Profile Dropdown Items -->
+          <a href="{% url 'dashboard' %}"
+            class="py-3 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-black dark:hover:bg-gray-70">
+            Dasbor &rarr;
+          </a>
           {% else %}
-          <a class="nav-link collapsed" href="pages-login.html">
-            <i class="bi bi-box-arrow-in-right"></i>
-            <span>Login</span>
+          <a href="{% url 'login' %}"
+            class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+            Masuk &rarr;
           </a>
           {% endif %}
-        </li><!-- End Profile Nav -->
-
-      </ul>
-    </nav><!-- End Icons Navigation -->
-
-  </header><!-- End Header -->
-
-  <!-- ======= Sidebar ======= -->
-  <aside id="sidebar" class="sidebar">
-
-    <ul class="sidebar-nav" id="sidebar-nav">
-
-      <li class="nav-item">
-        <a class="nav-link " href="index.html">
-          <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
-        </a>
-      </li><!-- End Dashboard Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-menu-button-wide"></i><span>Ekstrakurikuler</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="components-alerts.html">
-              <i class="bi bi-circle"></i><span>Alerts</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-accordion.html">
-              <i class="bi bi-circle"></i><span>Accordion</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-badges.html">
-              <i class="bi bi-circle"></i><span>Badges</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-breadcrumbs.html">
-              <i class="bi bi-circle"></i><span>Breadcrumbs</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-buttons.html">
-              <i class="bi bi-circle"></i><span>Buttons</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-cards.html">
-              <i class="bi bi-circle"></i><span>Cards</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-carousel.html">
-              <i class="bi bi-circle"></i><span>Carousel</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-list-group.html">
-              <i class="bi bi-circle"></i><span>List group</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-modal.html">
-              <i class="bi bi-circle"></i><span>Modal</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-tabs.html">
-              <i class="bi bi-circle"></i><span>Tabs</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-pagination.html">
-              <i class="bi bi-circle"></i><span>Pagination</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-progress.html">
-              <i class="bi bi-circle"></i><span>Progress</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-spinners.html">
-              <i class="bi bi-circle"></i><span>Spinners</span>
-            </a>
-          </li>
-          <li>
-            <a href="components-tooltips.html">
-              <i class="bi bi-circle"></i><span>Tooltips</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Components Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Laporan</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="forms-elements.html">
-              <i class="bi bi-circle"></i><span>Form Elements</span>
-            </a>
-          </li>
-          <li>
-            <a href="forms-layouts.html">
-              <i class="bi bi-circle"></i><span>Form Layouts</span>
-            </a>
-          </li>
-          <li>
-            <a href="forms-editors.html">
-              <i class="bi bi-circle"></i><span>Form Editors</span>
-            </a>
-          </li>
-          <li>
-            <a href="forms-validation.html">
-              <i class="bi bi-circle"></i><span>Form Validation</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Forms Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-layout-text-window-reverse"></i><span>Nilai</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="tables-general.html">
-              <i class="bi bi-circle"></i><span>General Tables</span>
-            </a>
-          </li>
-          <li>
-            <a href="tables-data.html">
-              <i class="bi bi-circle"></i><span>Data Tables</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Tables Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-file-earmark-text"></i><span>Proposal</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="charts-chartjs.html">
-              <i class="bi bi-circle"></i><span>Chart.js</span>
-            </a>
-          </li>
-          <li>
-            <a href="charts-apexcharts.html">
-              <i class="bi bi-circle"></i><span>ApexCharts</span>
-            </a>
-          </li>
-          <li>
-            <a href="charts-echarts.html">
-              <i class="bi bi-circle"></i><span>ECharts</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Charts Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#osn-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-award"></i><span>OSN</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="osn-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="charts-chartjs.html">
-              <i class="bi bi-circle"></i><span>Chart.js</span>
-            </a>
-          </li>
-          <li>
-            <a href="charts-apexcharts.html">
-              <i class="bi bi-circle"></i><span>ApexCharts</span>
-            </a>
-          </li>
-          <li>
-            <a href="charts-echarts.html">
-              <i class="bi bi-circle"></i><span>ECharts</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Charts Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-gem"></i><span>Prestasi</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="icons-bootstrap.html">
-              <i class="bi bi-circle"></i><span>Bootstrap Icons</span>
-            </a>
-          </li>
-          <li>
-            <a href="icons-remix.html">
-              <i class="bi bi-circle"></i><span>Remix Icons</span>
-            </a>
-          </li>
-          <li>
-            <a href="icons-boxicons.html">
-              <i class="bi bi-circle"></i><span>Boxicons</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Icons Nav -->
-
-      <li class="nav-heading">Pages</li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="users-profile.html">
-          <i class="bi bi-person"></i>
-          <span>Profile</span>
-        </a>
-      </li><!-- End Profile Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-faq.html">
-          <i class="bi bi-question-circle"></i>
-          <span>F.A.Q</span>
-        </a>
-      </li><!-- End F.A.Q Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-contact.html">
-          <i class="bi bi-envelope"></i>
-          <span>Contact</span>
-        </a>
-      </li><!-- End Contact Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-register.html">
-          <i class="bi bi-card-list"></i>
-          <span>Register</span>
-        </a>
-      </li><!-- End Register Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-login.html">
-          <i class="bi bi-box-arrow-in-right"></i>
-          <span>Login</span>
-        </a>
-      </li><!-- End Login Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-error-404.html">
-          <i class="bi bi-dash-circle"></i>
-          <span>Error 404</span>
-        </a>
-      </li><!-- End Error 404 Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-blank.html">
-          <i class="bi bi-file-earmark"></i>
-          <span>Blank</span>
-        </a>
-      </li><!-- End Blank Page Nav -->
-
-    </ul>
-
-  </aside><!-- End Sidebar-->
-
-  <main id="main" class="main">
-
-    <div class="pagetitle">
-      <h1>Dashboard</h1>
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">Dashboard</li>
-        </ol>
-      </nav>
-    </div><!-- End Page Title -->
-
-    <section class="section dashboard">
-      <div class="row">
-
-        <!-- Left side columns -->
-        <div class="col-lg-8">
-          <div class="row">
-
-            <!-- Sales Card -->
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card sales-card">
-
-                <div class="card-body">
-                  <h5 class="card-title">Jumlah Ekskul & SC</h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-people"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>{{data_ekskul_sc}}</h6>
-                      <span class="text-success small pt-1 fw-bold">{{data_ekskul.count}}</span> <span class="text-muted small pt-2 ps-1">Ekskul</span>
-                      <span class="text-success small pt-1 fw-bold">{{data_sc.count}}</span> <span class="text-muted small pt-2 ps-1">Study Club</span>
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div><!-- End Sales Card -->
-
-            <!-- Revenue Card -->
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card revenue-card">
-
-                <div class="card-body">
-                  <h5 class="card-title">Jumlah siswa SMA</span></h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-people"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>{{jumlah_siswa}}</h6>
-                      <span class="text-success small pt-1 fw-bold">{{siswa_ekskul}}</span> <span class="text-muted small pt-2 ps-1">Siswa bergabung ekskul/SC</span>
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div><!-- End Revenue Card -->
-
-            <!-- Customers Card -->
-            <div class="col-xxl-4 col-xl-12">
-
-              <div class="card info-card customers-card">
-
-                <div class="card-body">
-                  <h5 class="card-title">Jumlah Ekskul Aktif</span></h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-people"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>{{ekskul_aktif}}</h6>
-                      <span class="text-danger small pt-1 fw-bold">{{ekskul_nonaktif}}</span> <span class="text-muted small pt-2 ps-1">Ekskul/SC belum melakukan pertemuan</span>
-
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-            </div><!-- End Customers Card -->
-
-            <!-- Reports -->
-            <div class="col-12">
-              <div class="card">
-
-                <!-- <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div> -->
-
-                <div class="card-body">
-                  <h5 class="card-title">Laporan Ekskul<span>/Bulan</span></h5>
-
-                  <!-- Line Chart -->
-                  <div id="reportsChart"></div>
-
-                  <script>
-                    const doc = new DOMParser().parseFromString('{{data_tanggal}}', "text/html");
-                    let arr = doc.documentElement.textContent.slice(1,-1).replaceAll("'","").trim().split(",")
-                    document.addEventListener("DOMContentLoaded", () => {
-                      new ApexCharts(document.querySelector("#reportsChart"), {
-                        series: [{
-                          name: 'Jumlah Pertemuan',
-                          // data: [1, 1, 2, 1, 1, 1, 1, 1, 1, 1],
-                          data: {{data_pertemuan}},
-                        }, ],
-
-
-                        chart: {
-                          height: 350,
-                          type: 'area',
-                          toolbar: {
-                            show: false
-                          },
-                        },
-                        markers: {
-                          size: 4
-                        },
-                        colors: ['#4154f1', '#2eca6a', '#ff771d'],
-                        fill: {
-                          type: "gradient",
-                          gradient: {
-                            shadeIntensity: 1,
-                            opacityFrom: 0.3,
-                            opacityTo: 0.4,
-                            stops: [0, 90, 100]
-                          }
-                        },
-                        dataLabels: {
-                          enabled: true
-                        },
-                        stroke: {
-                          curve: 'smooth',
-                          width: 2
-                        },
-                        xaxis: {
-                          type: 'datetime',
-                          categories: arr
-                          // categories: ["2018-09-19T00:00:00.000Z", "2018-09-18T01:30:00.000Z", "2018-09-17T02:30:00.000Z", "2018-09-16T03:30:00.000Z", "2018-09-15T04:30:00.000Z", "2018-09-14T05:30:00.000Z", "2018-09-13T06:30:00.000Z"]
-                        },
-                        tooltip: {
-                          x: {
-                            format: 'dd/MM/yy'
-                            // format: 'dd/MM/yy HH:mm'
-                          },
-                        }
-                      }).render();
-                    });
-
-                  </script>
-                  <!-- End Line Chart -->
-
-                </div>
-
-              </div>
-            </div><!-- End Reports -->
-
-            <div class="col-12">
-              <div class="card recent-sales overflow-auto">
-
-                <div class="card-body">
-                  <h5 class="card-title">Pembina Ekstrakurikuler & Study Club</span></h5>
-
-                  <table class="table table-borderless datatable">
-                    <thead>
-                      <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Nama Pembina</th>
-                        <th scope="col">Ekskul/SC</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for data in data_ekskul %}
-                      {% for pembina in data.pembina.all %}
-                      <tr>
-                        <th scope="row"><a href="#">{{forloop.parentloop.counter}}</a></th>
-                        <td>{{pembina}}</td>
-                        <td>{{data.nama_ekskul}}</td>
-                      </tr>
-                      {% endfor %}
-                      {% endfor %}
-                      {% for data in data_sc %}
-                      {% for pembina in data.pembina.all %}
-                      <tr>
-                        <th scope="row"><a href="#">{{forloop.parentloop.counter}}</a></th>
-                        <td>{{pembina}}</td>
-                        <td>{{data.nama_ekskul}}</td>
-                      </tr>
-                      {% endfor %}
-                      {% endfor %}
-
-                    </tbody>
-                  </table>
-                </div>
-
-              </div>
-            </div><!-- End Recent Sales -->
-
-            <!-- Recent Sales -->
-            <div class="col-12">
-              <div class="card recent-sales overflow-auto">
-
-                <div class="card-body">
-                  <h5 class="card-title">Pengajuan Proposal</span></h5>
-
-                  <table class="table table-borderless datatable">
-                    <thead>
-                      <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Judul Proposal</th>
-                        <th scope="col">Anggaran</th>
-                        <th scope="col">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for data in proposal %}
-                      <tr>
-                        <th scope="row"><a href="#">{{forloop.counter}}</a></th>
-                        <td>{{data.nama_event}}</td>
-                        <td>{{data.anggaran_biaya|intword}}</td>
-                        <td><span class="badge bg-success">Approved</span></td>
-                      </tr>
-                      {% endfor %}
-
-                    </tbody>
-                  </table>
-                </div>
-
-              </div>
-            </div><!-- End Recent Sales -->
-
-
-            <div class="col-12">
-              <div class="card recent-sales overflow-auto">
-
-                <div class="card-body">
-                  <h5 class="card-title">Nilai Ekstrakurikuler</span></h5>
-
-                  <table class="table table-borderless datatable">
-                    <thead>
-                      <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Nama Siswa</th>
-                        <th scope="col">Kelas</th>
-                        <th scope="col">Nilai</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for data in nilai %}
-                      <tr>
-                        <th scope="row"><a href="#">{{forloop.counter}}</a></th>
-                        <td>{{data.siswa.siswa.nama_siswa}}</td>
-                        <td>{{data.siswa.siswa.get_kelas_display}}</td>
-                        <td>{{data.nilai}}</td>
-                      </tr>
-                      {% endfor %}
-
-                    </tbody>
-                  </table>
-                </div>
-
-              </div>
-            </div><!-- End Recent Sales -->
-
-            <!-- Top Selling -->
-            <div class="col-12">
-              <div class="card top-selling overflow-auto">
-
-                <div class="card-body pb-0">
-                  <h5 class="card-title"><em>Update</em> Pembinaan Ekskul/SC</h5>
-
-                  <table class="table table-borderless">
-                    <thead>
-                      <tr>
-                        <th scope="col">Foto</th>
-                        <th scope="col">Ekskul</th>
-                        <th scope="col">Jumlah Siswa</th>
-                        <th scope="col">Tanggal</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for data in laporan %}
-                      <tr>
-                        <th scope="row"><a href="#"><img src="{{data.foto.url}}" alt=""></a></th>
-                        <td><a href="#" class="text-primary fw-bold">{{data.nama_ekskul}}</a></td>
-                        <td>{{data.kehadiran_santri.count}}</td>
-                        <td>{{data.tanggal_pembinaan}}</td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-
-                </div>
-
-              </div>
-            </div><!-- End Top Selling -->
-
-          </div>
-        </div><!-- End Left side columns -->
-
-        <!-- Right side columns -->
-        <div class="col-lg-4">
-
-          <!-- Recent Activity -->
-          <div class="card">
-
-            <div class="card-body">
-              <h5 class="card-title">Aktivitas Terbaru</h5>
-
-              <div class="activity">
-                {% for data in logs %}
-                <div class="activity-item d-flex">
-                  <div class="activite-label">{{ data.created_at|timesince|truncatewords:2 }}</div>
-                  <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                  <div class="activity-content">
-                    {{data.user}} <a href="#" class="fw-bold text-dark">{{ data.message|lower }}</a>
-                  </div>
-                </div><!-- End activity item-->
-                {% endfor %}
-
-              </div>
-
-            </div>
-          </div><!-- End Recent Activity -->
-
-
-          <!-- Grafik Laporan Pembinaan -->
-          <div class="card">
-
-            <div class="card-body pb-0">
-              <h5 class="card-title">Grafik Pembinaan Ekskul</span></h5>
-
-              <div id="reportChart" style="min-height: 400px;" class="echart"></div>
-
-              <script>
-                const doc3 = new DOMParser().parseFromString('{{nama_ekskul}}', "text/html");
-                let arr4 = doc3.documentElement.textContent.slice(1,-1).replaceAll("'","").trim().split(",")
-                let arr5 = {{pertemuan_ekskul}}
-                let mergedArray2 = arr4.map((name, index) => ({ name: name.trim(), value: arr5[index] }));
-
-                document.addEventListener("DOMContentLoaded", () => {
-                  echarts.init(document.querySelector("#reportChart")).setOption({
-                    tooltip: {
-                      trigger: 'item'
-                    },
-                    legend: {
-                      top: '5%',
-                      left: 'center'
-                    },
-                    series: [{
-                      name: 'Jumlah Pertemuan',
-                      type: 'pie',
-                      radius: ['40%', '70%'],
-                      avoidLabelOverlap: false,
-                      label: {
-                        show: false,
-                        position: 'center'
-                      },
-                      emphasis: {
-                        label: {
-                          show: true,
-                          fontSize: '18',
-                          fontWeight: 'bold'
-                        }
-                      },
-                      labelLine: {
-                        show: false
-                      },
-                      data: mergedArray2
-                    }]
-                  });
-                });
-              </script>
-
-            </div>
-          </div><!-- End Website Traffic -->
-
-          <!-- Website Traffic -->
-          <div class="card">
-
-            <div class="card-body pb-0">
-              <h5 class="card-title">Grafik Pembinaan OSN</span></h5>
-
-              <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
-
-              <script>
-                const doc2 = new DOMParser().parseFromString('{{bidang_osn}}', "text/html");
-                let arr2 = doc2.documentElement.textContent.slice(1,-1).replaceAll("'","").trim().split(",")
-                let arr3 = {{pertemuan_osn}}
-                let mergedArray = arr2.map((name, index) => ({ name: name.trim(), value: arr3[index] }));
-
-                document.addEventListener("DOMContentLoaded", () => {
-                  echarts.init(document.querySelector("#trafficChart")).setOption({
-                    tooltip: {
-                      trigger: 'item'
-                    },
-                    legend: {
-                      top: '5%',
-                      left: 'center'
-                    },
-                    series: [{
-                      name: 'Jumlah Pertemuan',
-                      type: 'pie',
-                      radius: ['40%', '70%'],
-                      avoidLabelOverlap: false,
-                      label: {
-                        show: false,
-                        position: 'center'
-                      },
-                      emphasis: {
-                        label: {
-                          show: true,
-                          fontSize: '18',
-                          fontWeight: 'bold'
-                        }
-                      },
-                      labelLine: {
-                        show: false
-                      },
-                      data: mergedArray
-                    }]
-                  });
-                });
-              </script>
-
-            </div>
-          </div><!-- End Website Traffic -->
-
-          <!-- News & Updates Traffic -->
-          <div class="card">
-
-            <div class="card-body pb-0">
-              <h5 class="card-title">News &amp; Updates</h5>
-
-              {% for data in prestasi %}
-              <div class="news">
-                <div class="post-item clearfix">
-                  <img src="{{data.foto.url}}" alt="">
-                  <h4><a href="#">{{data.prestasi.peraih_prestasi.title}}</a></h4>
-                  <p>{{ data.prestasi.kategori_kemenangan.capitalize }} {{ data.prestasi.bidang_lomba.title }} {{ data.prestasi.nama_lomba.title }} {{ data.prestasi.tahun_lomba}}</p>
-                  <p>Level : {{ data.prestasi.tingkat_lomba.title }}</p>
-                </div>
-              {% endfor %}
-
-              </div><!-- End sidebar recent posts-->
-
-            </div>
-          </div><!-- End News & Updates -->
-
-        </div><!-- End Right side columns -->
-
+        </div>
+      </div>
+      <div class="py-4 px-4 lg:py-16">
+        <img src="https://pmbp.smasitalbinaa.com/static/img/hero.png" alt="Hero" loading="eager">
       </div>
     </section>
 
-  </main><!-- End #main -->
+    <section class="p-4 md:p-8 bg-yellow-300 dark:bg-black" id="ekskul">
+      <div class="text-center">
+        <p class="p-4 text-3xl font-bold">Ekstrakurikuler & Kelompok Belajar</p>
+        <p class="my-4">
+          Kami memiliki total {{ekskul.count}} Ekstrakurikuler dan Kelompok Belajar <em>(Studi Club)</em> yang terdiri dari:
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {% for object in ekskul %}
+        <div class="flex items-start gap-4 p-2">
+          <img
+            src="{{object.logo.url}}"
+            alt="{{object.nama_ekskul|title}} {{forloop.counter}}" class="size-20 rounded-lg object-cover" />
 
-  <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
-    <div class="copyright">
-      &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
+          <div>
+            <h3 class="text-lg/tight font-medium">
+              {{object.nama_ekskul|title}}
+            </h3>
+            {% for pembina in object.pembina.all %}
+            <p class="mt-0.5">
+              {{pembina.nama_pembina|title}}
+            </p>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="p-4 md:p-8 bg-lime-500 text-white dark:bg-black" id="prestasi">
+      <div class="text-center">
+        <p class="p-4 text-3xl font-bold">Prestasi</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {% for object in object_list %}
+        <div class="flex items-start gap-4 p-2">
+          <img
+            src="{{object.foto.url}}"
+            alt="{{object.prestasi.peraih_prestasi|title}} {{forloop.counter}}" class="size-20 rounded-lg object-cover" />
+
+          <div>
+            <h3 class="text-lg/tight font-medium">
+              {{object.prestasi.peraih_prestasi|title}}
+            </h3>
+            
+            <p class="mt-0.5">
+              {{object.prestasi.kategori_kemenangan|title}}
+            </p>
+            <p class="mt-0.5">
+              {{object.prestasi.nama_lomba|title}}
+            </p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="p-4 md:p-8 bg-rose-500 dark:bg-black" id="galeri">
+      <div class="p-4 text-center">
+        <p class="text-3xl font-bold">Galeri Kegiatan</p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for object in kegiatan %}
+        <div>
+          <img class="h-auto max-w-full rounded-lg"
+            src="{{object.foto.url}}" alt="{{object.nama_ekskul}} {{forloop.counter}}" />
+          <p>{{object.nama_ekskul}}</p>
+        </div>
+        {% endfor %}
+        
+      </div>
+    </section>
+
+    <section class="bg-purple-300 dark:bg-black" id="profil">
+      <div class="text-center py-4">
+        <p class="text-3xl font-bold">Profil PMBP</p>
+      </div>
+      <div class="space-y-4 py-5 px-4">
+        <details class="group [&_summary::-webkit-details-marker]:hidden" open>
+          <summary
+            class="flex cursor-pointer items-center justify-between gap-1.5 rounded-lg bg-gray-50 dark:bg-gray-900 dark:text-gray-50 p-4 text-gray-900">
+            <h2 class="font-medium">Apa itu PMBP?</h2>
+
+            <svg class="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+
+          <p class="mt-4 px-4 leading-relaxed ">
+            PMBP singkatan dari Pengembangan Minat, Bakat dan Pembinaan Prestasi. Hal ini merupakan salah satu bidang wakil kepala sekolah di SMAS IT Al Binaa.
+          </p>
+        </details>
+
+        <details class="group [&_summary::-webkit-details-marker]:hidden">
+          <summary
+            class="flex cursor-pointer items-center justify-between gap-1.5 rounded-lg bg-gray-50 dark:bg-gray-900 dark:text-gray-50 p-4 text-gray-900">
+            <h2 class="font-medium">Apa saja tugas dan tanggung jawab bidang PMBP?</h2>
+
+            <svg class="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+
+          <ol class="mt-4 px-4 list-outside mx-4 list-decimal">
+            <li>Menyaring dan menggembangkan minat dan bakat peserta didik</li>
+            <li>Berpartisipasi aktif dalam program pendidikan nasional dalam pengembangan diri peserta didik</li>
+            <li>Mempersiapkan peserta didik siap bersaing dalam ajang perlombaan non akademik</li>
+          </ol>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-indigo-500 text-white dark:bg-black">
+    <div class="px-4 py-8 sm:px-6 lg:px-8">
+      <div class="flex justify-center">
+        <img src="https://pmbp.smasitalbinaa.com/static/images/Binaaul-Mustaqbal.png" alt="Logo">
+      </div>
+
+      <p class="mx-auto mt-6 max-w-md text-center leading-relaxed">
+        Pengembangan Minat, Bakat dan Pembinaan Prestasi (PMBP) SMAS IT Al BINAA <br>
+        Jl. Raya Pebayuran, Desa Kertasari, Kec. Pebayuran Kab. Bekasi, Jawa Barat, Indonesia <br>
+        <a href="mailto:smaitalbinaa.ekskul@outlook.com">smaitalbinaa.ekskul@outlook.com</a> | +6285701570100
+      </p>
+
+      <ul class="my-4 flex flex-wrap justify-center gap-2 md:gap-6">
+        <li>
+          <a class="transition hover:text-gray-700/75" href="#"> Beranda </a>
+        </li>
+
+        <li>
+          <a class="transition hover:text-gray-700/75" href="#"> Profil PMBP </a>
+        </li>
+
+        <li>
+          <a class="transition hover:text-gray-700/75" href="#"> Ekstrakurikuler </a>
+        </li>
+
+        <li>
+          <a class="transition hover:text-gray-700/75" href="#"> Prestasi </a>
+        </li>
+
+        <li>
+          <a class="transition hover:text-gray-700/75" href="#"> Galeri </a>
+        </li>
+      </ul>
+
+      <ul class="my-4 flex justify-center gap-2 md:gap-6">
+        <li>
+          <a href="https://www.facebook.com/albinaa.ibs" rel="noreferrer" target="_blank" class="text-gray-700 transition hover:text-gray-700/75">
+            <span class="sr-only">Facebook</span>
+            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd"
+                d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                clip-rule="evenodd" />
+            </svg>
+          </a>
+        </li>
+
+        <li>
+          <a href="https://www.instagram.com/smaitalbinaa" rel="noreferrer" target="_blank" class="text-gray-700 transition hover:text-gray-700/75">
+            <span class="sr-only">Instagram</span>
+            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd"
+                d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
+                clip-rule="evenodd" />
+            </svg>
+          </a>
+        </li>
+      </ul>
     </div>
-    <div class="credits">
-      <!-- All the links in the footer should remain intact. -->
-      <!-- You can delete the links only if you purchased the pro version. -->
-      <!-- Licensing information: https://bootstrapmade.com/license/ -->
-      <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-      Design <a href="https://bootstrapmade.com/">BootstrapMade</a>
-    </div>
-  </footer><!-- End Footer -->
+  </footer>
 
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <!-- Vendor JS Files -->
-  <script src="{% static 'vendor/apexcharts/apexcharts.min.js' %}"></script>
-  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static 'vendor/chart.js/chart.umd.js' %}"></script>
-  <script src="{% static 'vendor/echarts/echarts.min.js' %}"></script>
-  <script src="{% static 'vendor/quill/quill.min.js' %}"></script>
-  <script src="{% static 'vendor/simple-datatables/simple-datatables.js' %}"></script>
-  <script src="{% static 'vendor/tinymce/tinymce.min.js' %}"></script>
-  <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
-
-  <!-- Template Main JS File -->
-  <script src="{% static 'js/main.js' %}"></script>
-
+  <script src="{% static 'js/dashboard.js' %}"></script>
 </body>
 
 </html>

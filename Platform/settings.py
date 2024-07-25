@@ -46,8 +46,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
+    'django.contrib.flatpages',
+    'alumni',
     'ekskul.apps.EkskulConfig',
-    'inventaris.apps.InventarisConfig',
     'laporan.apps.LaporanConfig',
     'nilai.apps.NilaiConfig',
     'proposal.apps.ProposalConfig',
@@ -70,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
@@ -119,11 +123,11 @@ WSGI_APPLICATION = 'Platform.wsgi.application'
 DATABASES = {
     'default':{
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'platform',
-        'USER': 'postgres',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'NAME' : os.getenv('POSTGRES_DB_NAME'),
+        'USER' : os.getenv('POSTGRES_DB_USER'),
+        'PASSWORD' : os.getenv('POSTGRES_DB_PASSWORD'),
+        'HOST' : os.getenv('POSTGRES_DB_HOST'),
+        'PORT' : os.getenv('POSTGRES_DB_PORT'),
     }
 }
 
@@ -197,3 +201,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
+
+SITE_ID = 1

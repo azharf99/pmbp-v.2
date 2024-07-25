@@ -7,6 +7,8 @@ from django.views.generic import ListView
 from deskripsi.models import DeskripsiEkskul, DeskripsiHome
 # from userlog.models import UserLog
 from prestasi.models import Prestasi, DokumentasiPrestasi
+from ekskul.models import Extracurricular
+from laporan.models import Report
 # from django.contrib.auth import authenticate, login
 # from django.contrib import messages
 
@@ -14,10 +16,16 @@ from prestasi.models import Prestasi, DokumentasiPrestasi
 
 class HomeView(ListView):
     model = DokumentasiPrestasi
-    template_name = 'new_home.html'
+    template_name = 'index.html'
 
     def get_queryset(self) -> QuerySet[Any]:
-        return DokumentasiPrestasi.objects.select_related('prestasi').order_by('-prestasi__created_at', '-prestasi__tahun_lomba', 'prestasi__peraih_prestasi')[:6]
+        return DokumentasiPrestasi.objects.exclude(foto='no-image.png').select_related('prestasi').order_by('-prestasi__created_at', '-prestasi__tahun_lomba', 'prestasi__peraih_prestasi')[:12]
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['ekskul'] = Extracurricular.objects.prefetch_related('pembina').order_by('tipe', 'nama_ekskul')
+        context['kegiatan'] = Report.objects.exclude(foto='no-image.png').select_related('pembina_ekskul', 'nama_ekskul').order_by('-tanggal_pembinaan')[:12]
+        return context
 
 def home_view(request):
     # if request.user.is_authenticated:

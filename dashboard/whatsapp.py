@@ -171,3 +171,12 @@ Syukron.
 _Ini adalah pesan otomatis, jangan dibalas._'''
     url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
     return requests.get(url)
+
+
+def send_whatsapp_humas(phone, *args):
+    message = f'''*[NOTIFIKASI LAPORAN EKSKUL]*
+Anda berhasil {args[0]} data alumni {args[1]} {args[2]}.
+
+_Ini adalah pesan otomatis, jangan dibalas._'''
+    url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    return requests.get(url)

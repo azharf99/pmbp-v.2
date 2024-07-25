@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class TimelineConfig(AppConfig):
+class AlumniConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'timeline'
+    name = 'alumni'
