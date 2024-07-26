@@ -1,12 +1,14 @@
 import json
 
+from django.contrib.auth.forms import AuthenticationForm
 import requests
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect, reverse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.urls import reverse_lazy
@@ -158,6 +160,26 @@ class UpdateEskkulView(LoginRequiredMixin, UpdateView):
 def input_pembina(request):
     form = PembinaEkskulForm().as_p()
     return render(request, 'input-anggota-ekskul.html', {'form': form})
+
+class MyLoginView(LoginView):
+    redirect_authenticated_user = True
+    template_name = 'new_login.html'
+    
+    def form_invalid(self, form):
+        messages.error(self.request,'Invalid username or password')
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def form_valid(self, form: AuthenticationForm) -> HttpResponse:
+
+        UserLog.objects.create(
+                user=form.get_user().teacher,
+                action_flag="LOGIN",
+                app="EKSKUL",
+                message="Berhasil melakukan login ke aplikasi"
+            )
+        send_whatsapp_login(form.get_user().teacher.no_hp, 'login', 'Selamat datang di Aplikasi PMBP')
+        return super().form_valid(form)
+
 
 @csrf_protect
 def login_view(request):
