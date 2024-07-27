@@ -8,7 +8,6 @@ from django.utils import timezone
 from dashboard.whatsapp import send_whatsapp_input_anggota
 from ekskul.models import Extracurricular, Student, StudentOrganization
 from laporan.models import Report
-from proposal.models import Proposal
 from nilai.models import Penilaian
 from userlog.models import UserLog
 from osn.models import LaporanOSN, BidangOSN
@@ -87,7 +86,6 @@ def dashboard(request):
     laporan = Report.objects.select_related('nama_ekskul', 'pembina_ekskul').order_by('-tanggal_pembinaan')[:20]
     data_pertemuan = [x['dcount'] for x in laporan_ekskul]
     data_tanggal = list(str(x['tanggal_pembinaan'].isoformat()) for x in laporan_ekskul)
-    proposal = Proposal.objects.all().select_related('ekskul')
     nilai = Penilaian.objects.all().select_related('siswa')
     logs = UserLog.objects.all().order_by('-created_at')[:5]
     osn = LaporanOSN.objects.select_related('pembimbing_osn', 'bidang_osn').values('bidang_osn__nama_bidang').annotate(dcount=Count('bidang_osn')).order_by()
@@ -106,7 +104,6 @@ def dashboard(request):
         'ekskul_nonaktif': (data_ekskul.count() + data_sc.count()) - ekskul_aktif.count(),
         'data_pertemuan': data_pertemuan,
         'data_tanggal': data_tanggal,
-        'proposal': proposal,
         'nilai': nilai,
         'laporan': laporan,
         'logs': logs,

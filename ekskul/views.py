@@ -21,7 +21,6 @@ from nilai.models import Penilaian
 from dashboard.whatsapp import send_whatsapp_input_anggota, send_whatsapp_login
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
-from rest_framework import serializers, viewsets, permissions
 
 
 # Create your views here.
@@ -356,31 +355,3 @@ def webhook_view(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
-
-# Serializers define the API representation.
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ['url', 'id', 'username', 'email', 'is_staff', 'groups', 'first_name', 'last_name']
-
-# ViewSets define the view behavior.
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Group
-        fields = ['url', 'name']
-
-class ExtracurricularSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Extracurricular
-        fields = ['url', 'id', 'nama_ekskul', 'pembina', 'jadwal']
-
-# ViewSets define the view behavior.
-class ExtracurricularViewSet(viewsets.ModelViewSet):
-    queryset = Extracurricular.objects.all()
-    serializer_class = ExtracurricularSerializer

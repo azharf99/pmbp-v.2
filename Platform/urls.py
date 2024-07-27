@@ -65,7 +65,6 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('laporan/', include('laporan.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('proposal/', include('proposal.urls')),
     path('nilai/', include('nilai.urls')),
     path('data/', include('ekskul.urls')),
     path('prestasi/', include('prestasi.urls')),

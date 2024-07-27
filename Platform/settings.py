@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-qc-ewe(l__6md70^d8f02(8q@u^srl^hee26y3&cols6u*)(z#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
+DEBUG = True
 
 ALLOWED_HOSTS = ['smaitalbinaa.pythonanywhere.com','ekskul.smasitalbinaa.com', 'webapp-1517507.pythonanywhere.com', 'pmbp.smasitalbinaa.com', '127.0.0.1']
 
@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'ekskul.apps.EkskulConfig',
     'laporan.apps.LaporanConfig',
     'nilai.apps.NilaiConfig',
-    'proposal.apps.ProposalConfig',
     'deskripsi.apps.DeskripsiConfig',
     'prestasi.apps.PrestasiConfig',
     'userlog.apps.UserlogConfig',
@@ -61,7 +60,6 @@ INSTALLED_APPS = [
     'ksm.apps.KsmConfig',
     'dashboard.apps.DashboardConfig',
     'debug_toolbar',
-    'rest_framework',
 ]
 
 
@@ -103,33 +101,23 @@ WSGI_APPLICATION = 'Platform.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'db.sqlite3',
+#         }
 #     }
-# }
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         'NAME' : os.getenv('DB_NAME'),
-#         'USER' : os.getenv('DB_USER'),
-#         'PASSWORD' : os.getenv('DB_PASSWORD'),
-#         'HOST' : os.getenv('DB_HOST'),
-#         'PORT' : os.getenv('DB_PORT'),
-#     }
-# }
 
 DATABASES = {
-    'default':{
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME' : os.getenv('POSTGRES_DB_NAME'),
-        'USER' : os.getenv('POSTGRES_DB_USER'),
-        'PASSWORD' : os.getenv('POSTGRES_DB_PASSWORD'),
-        'HOST' : os.getenv('POSTGRES_DB_HOST'),
-        'PORT' : os.getenv('POSTGRES_DB_PORT'),
+        'default':{
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME' : os.getenv('POSTGRES_DB_NAME'),
+            'USER' : os.getenv('POSTGRES_DB_USER'),
+            'PASSWORD' : os.getenv('POSTGRES_DB_PASSWORD'),
+            'HOST' : os.getenv('POSTGRES_DB_HOST'),
+            'PORT' : os.getenv('POSTGRES_DB_PORT'),
+        }
     }
-}
 
 
 # Password validation
@@ -189,17 +177,5 @@ INTERNAL_IPS = [
     "127.0.0.1",
     # ...
 ]
-
-
-# DRF SETTINGS
-REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
-}
 
 SITE_ID = 1
