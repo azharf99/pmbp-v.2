@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import imp
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -28,9 +29,8 @@ SECRET_KEY = 'django-insecure-qc-ewe(l__6md70^d8f02(8q@u^srl^hee26y3&cols6u*)(z#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['smaitalbinaa.pythonanywhere.com','ekskul.smasitalbinaa.com', 'webapp-1517507.pythonanywhere.com', 'pmbp.smasitalbinaa.com', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
-AUTH_USER_MODEL = 'ekskul.User'
 
 ID_DEVICE = os.getenv('ID_DEVICE')
 API_KEY = os.getenv('API_KEY')
@@ -49,16 +49,17 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
-    'alumni',
-    'ekskul.apps.EkskulConfig',
-    'laporan.apps.LaporanConfig',
-    'nilai.apps.NilaiConfig',
-    'deskripsi.apps.DeskripsiConfig',
-    'prestasi.apps.PrestasiConfig',
-    'userlog.apps.UserlogConfig',
-    'osn.apps.OsnConfig',
-    'ksm.apps.KsmConfig',
-    'dashboard.apps.DashboardConfig',
+    'dashboard',
+    'extracurriculars',
+    'files',
+    'laporan',
+    'nilai',
+    'olympiads',
+    'prestasi',
+    'userlog',
+    'users',
+    'students',
+    'easy_thumbnails',
     'debug_toolbar',
 ]
 
@@ -100,24 +101,24 @@ WSGI_APPLICATION = 'Platform.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': BASE_DIR / 'db.sqlite3',
-#         }
-#     }
-
-
 DATABASES = {
-        'default':{
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME' : os.getenv('POSTGRES_DB_NAME'),
-            'USER' : os.getenv('POSTGRES_DB_USER'),
-            'PASSWORD' : os.getenv('POSTGRES_DB_PASSWORD'),
-            'HOST' : os.getenv('POSTGRES_DB_HOST'),
-            'PORT' : os.getenv('POSTGRES_DB_PORT'),
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+
+# DATABASES = {
+#         'default':{
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME' : os.getenv('POSTGRES_DB_NAME'),
+#             'USER' : os.getenv('POSTGRES_DB_USER'),
+#             'PASSWORD' : os.getenv('POSTGRES_DB_PASSWORD'),
+#             'HOST' : os.getenv('POSTGRES_DB_HOST'),
+#             'PORT' : os.getenv('POSTGRES_DB_PORT'),
+#         }
+#     }
 
 
 # Password validation
@@ -179,3 +180,20 @@ INTERNAL_IPS = [
 ]
 
 SITE_ID = 1
+
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'avatar': {'size': (40, 40), 'crop': True},
+        'small': {'size': (150, 150), 'crop': True},
+        'medium': {'size': (350, 350), 'crop': True},
+        'large': {'size': (750, 750), 'crop': True},
+        'landscape': {'size': (800, 450), 'crop': True},
+    },
+}
+
+
+TAHUN_AJARAN = "2024/2025"
+TAHUN_AJARAN_STRIPPED = "2024-2025"
+from django.utils import timezone
+TANGGAL_TAHUN_AJARAN = timezone.make_aware(timezone.datetime(2024, 6, 1, 1, 1, 1))

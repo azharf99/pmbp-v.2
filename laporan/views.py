@@ -1,335 +1,222 @@
-import datetime
 import locale
-import requests
-from django.conf import settings
-from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect, reverse
+from typing import Any
+from urllib import request
+from django.core.exceptions import PermissionDenied
+from django.db.models.query import QuerySet
+from django.forms import BaseModelForm
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from django.views.generic import ListView, DetailView
-from django.utils import timezone
-
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse, reverse_lazy
 from laporan.models import Report
-from laporan.forms import FormLaporanKehadiran
-from ekskul.models import Extracurricular, StudentOrganization, Teacher
+from laporan.forms import ReportForm
+from extracurriculars.models import Extracurricular
 from userlog.models import UserLog
-from dashboard.whatsapp import send_whatsapp_laporan, send_whatsapp_print
+from utils.whatsapp import send_WA_create_update_delete, send_WA_print
+from django.conf import settings
 
-class LaporanIndexView(ListView):
+class ReportIndexView(ListView):
     model = Report
-    template_name = 'new_laporan.html'
+    paginate_by = 10
 
-    def get_queryset(self):
-        ekskulList = list()
-        for ekskul in Report.objects.filter(tanggal_pembinaan__month=datetime.date.today().month-1).order_by('nama_ekskul__tipe','nama_ekskul__nama_ekskul'):
-            if not ekskulList.__contains__(ekskul.nama_ekskul):
-                ekskulList.append(ekskul.nama_ekskul)
-        if self.request.user.is_authenticated:
-            if self.request.user.is_superuser:
-                return ekskulList
-            else:
-                return Extracurricular.objects.filter(pembina=self.request.user.teacher).order_by('tipe', 'nama_ekskul')
-        else:
-            return Extracurricular.objects.all().order_by('tipe', 'nama_ekskul')
+    def get_queryset(self) -> QuerySet[Any]:
+        if not self.request.user.is_superuser:
+            return Report.objects.filter(teacher=self.request.user.teacher)
+        return Report.objects.all()
 
-class PrintToPDFView(ListView):
+
+class ReportDetailView(DetailView):
     model = Report
-    template_name = 'laporan-pdf.html'
 
-    def get_queryset(self):
-        return Report.objects.filter(nama_ekskul__slug=self.kwargs.get('slug'), tanggal_pembinaan__month=datetime.date.today().month-1).order_by('tanggal_pembinaan')
 
-    def get_context_data(self, **kwargs):
-        context = super(PrintToPDFView, self).get_context_data(**kwargs)
-        locale.setlocale(locale.LC_ALL, 'id_ID')
-        context['tanggal'] = datetime.datetime.now(timezone.get_default_timezone())
-        context['students'] = StudentOrganization.objects.filter(ekskul__slug=self.kwargs.get('slug')).order_by('siswa__kelas', 'siswa__nama_siswa').values_list('siswa__nama_siswa', 'siswa__kelas')
-        context['angka'] = [x for x in range(15)]
-        ekskul = get_object_or_404(Extracurricular, slug=self.kwargs.get('slug'))
-        if self.request.user.is_authenticated:
-            UserLog.objects.create(
-                        user=(self.request.user.teacher or "Anonymous"),
-                        action_flag="ADD",
-                        app="LAPORAN",
-                        message="Berhasil mencetak laporan pertemuan ekskul {}".format(ekskul.nama_ekskul)
-                    )
-            send_whatsapp_print(self.request.user.teacher.no_hp, 'mencetak', "ekskul/SC", ekskul.nama_ekskul)
+class ReportCreateView(LoginRequiredMixin, CreateView):
+    model = Report
+    form_class = ReportForm
+    success_url = reverse_lazy("report-create")
+
+    
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if request.user.teacher.id in Extracurricular.objects.values_list('teacher', flat=True).distinct() or self.request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        raise PermissionDenied
+    
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if Report.objects.select_related("extracurricular", "teacher")\
+            .filter(report_date=request.POST.get("report_date"), extracurricular=request.POST.get("extracurricular"))\
+            .exists():
+            messages.error(self.request, "Laporan untuk tanggal ini sudah ada. Silahkan pilih tanggal lain")
+            return redirect(reverse("report-create"))
+        return super().post(request, *args, **kwargs)
+    
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        messages.error(self.request, "Error! Input data ada yang salah.")
+        return super().form_invalid(form)
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        self.object = form.save()
+        
+        UserLog.objects.create(
+            user=self.request.user.teacher,
+            action_flag="CREATE",
+            app="LAPORAN",
+            message=f"berhasil menambahkan data laporan ekskul/sc {self.object}"
+        )
+        
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'laporan pertemuan Ekskul/SC {self.object}', 'laporan/', f'{self.object.id}/')
+        messages.success(self.request, "Input Laporan berhasil!")
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["filtered_student"] = Extracurricular.objects.prefetch_related("teacher", "members").filter(teacher=self.request.user.teacher).values("members").order_by("members")
+        context["form_name"] = "Create"
         return context
+
+
+class ReportUpdateView(LoginRequiredMixin, UpdateView):
+    model = Report
+    form_class = ReportForm
+    success_url = reverse_lazy("report-list")
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if request.user.teacher in self.get_object().teacher.all() or self.request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        raise PermissionDenied
+    
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        messages.error(self.request, "Error! Input data ada yang salah.")
+        return super().form_invalid(form)
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        self.object = form.save()
+        
+        UserLog.objects.create(
+            user=self.request.user.teacher,
+            action_flag="UPDATE",
+            app="LAPORAN",
+            message=f"berhasil mengubah data laporan pertemuan ekskul {self.object}"
+        )
+
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'laporan pertemuan Ekskul/SC {self.object}', 'laporan/', f'{self.object.id}/')
+        messages.success(self.request, "Input Laporan berhasil!")
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["filtered_student"] = Extracurricular.objects.prefetch_related("teacher", "members").filter(teacher=self.request.user.teacher).values("members").order_by("members")
+        context["form_name"] = "Update"
+        return context
+
+
+class ReportDeleteView(LoginRequiredMixin, DeleteView):
+    model = Report
+    success_url = reverse_lazy("report-list")
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if request.user.teacher in self.get_object().teacher.all() or self.request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        raise PermissionDenied
+    
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        obj = self.get_object()
+        
+        UserLog.objects.create(
+            user=self.request.user.teacher,
+            action_flag="DELETE",
+            app="LAPORAN",
+            message=f"berhasil menghapus data laporan pertemuan ekskul {obj}"
+        )
+
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f'laporan pertemuan Ekskul/SC {obj}', 'laporan/', f'{obj.id}/')
+        messages.success(self.request, "Input Laporan berhasil!")
+        return super().post(request, *args, **kwargs)
+    
+
 
 class PrintToPrintView(LoginRequiredMixin, ListView):
     model = Report
-    template_name = 'laporan-print.html'
-    login_url = '/login/'
+    template_name = "laporan/report_print.html"
 
     def get_queryset(self):
-        if self.request.GET.get('bulan'):
-            if self.request.GET.get('tahun'):
-                return Report.objects.filter(nama_ekskul__slug=self.kwargs.get('slug'), tanggal_pembinaan__month=self.request.GET.get('bulan'), tanggal_pembinaan__year=self.request.GET.get('tahun')).order_by('tanggal_pembinaan')
-            else:
-                return Report.objects.filter(nama_ekskul__slug=self.kwargs.get('slug'), tanggal_pembinaan__month=self.request.GET.get('bulan'), tanggal_pembinaan__year=datetime.date.today().year).order_by('tanggal_pembinaan')
-        else:
-            return Report.objects.filter(nama_ekskul__slug=self.kwargs.get('slug'), tanggal_pembinaan__month=datetime.date.today().month-1).order_by('tanggal_pembinaan')
+        if self.request.GET.get('month'):
+            if self.request.GET.get('year'):
+                return Report.objects.filter(extracurricular__slug=self.kwargs.get('slug'), report_date__month=self.request.GET.get('month'), report_date__year=self.request.GET.get('year')).order_by('report_date')
+            
+            return Report.objects.filter(extracurricular__slug=self.kwargs.get('slug'), report_date__month=self.request.GET.get('month'), report_date__year=timezone.now().year).order_by('report_date')
+        
+        return Report.objects.filter(extracurricular__slug=self.kwargs.get('slug'), report_date__month=timezone.now().month-1).order_by('report_date')
 
     def get_context_data(self, **kwargs):
-        context = super(PrintToPrintView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         locale.setlocale(locale.LC_ALL, 'id_ID')
-        context['tanggal'] = datetime.datetime.now(timezone.get_default_timezone())
-        context['students'] = StudentOrganization.objects.filter(ekskul__slug=self.kwargs.get('slug')).order_by('siswa__kelas', 'siswa__nama_siswa').values_list('siswa__nama_siswa', 'siswa__kelas')
+        context['tahun_ajaran'] = settings.TAHUN_AJARAN
+        context['extracurricular'] = get_object_or_404(Extracurricular, slug=self.kwargs.get("slug"))
+        context['students'] = Extracurricular.objects.filter(slug=self.kwargs.get('slug')).order_by('members').values_list('members__student_name', 'members__student_class')
         context['angka'] = [x for x in range(15)]
         ekskul = get_object_or_404(Extracurricular, slug=self.kwargs.get('slug'))
         UserLog.objects.create(
-                        user=(self.request.user.teacher),
-                        action_flag="ADD",
-                        app="LAPORAN",
-                        message="Berhasil mencetak laporan pertemuan ekskul {}".format(ekskul.nama_ekskul)
+            user=self.request.user.teacher,
+            action_flag="PRINT",
+            app="LAPORAN",
+            message=f"berhasil mencetak laporan pertemuan ekskul {ekskul}"
         )
-        send_whatsapp_print(self.request.user.teacher.no_hp, 'mencetak', "ekskul/SC", ekskul.nama_ekskul)
+        send_WA_print(self.request.user.teacher.phone, 'laporan pertemuan Ekskul/SC', f"{ekskul}")
         return context
 
 
-class LaporanOptions(ListView):
+class ReportOptionsView(LoginRequiredMixin, ListView):
     model = Report
-    template_name = 'new_laporan_options.html'
-    def get_queryset(self):
-        monthName = {0: "bulan", 1:"Januari", 2:"Februari", 3:"Maret", 4:"April", 5:"Mei", 6:"Juni", 7:"Juli", 8:"Agustus", 9:"September", 10:"Oktober", 11:"November", 12:"Desember"}
+    template_name = 'laporan/report_options.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = Report.objects.filter(extracurricular__slug=self.kwargs.get("slug")).values('report_date__month', 'report_date__year').order_by().distinct()
+        monthName = {0: "Bulan", 1:"Januari", 2:"Februari", 3:"Maret", 4:"April", 5:"Mei", 6:"Juni", 7:"Juli", 8:"Agustus", 9:"September", 10:"Oktober", 11:"November", 12:"Desember"}
+
         monthList = list()
         monthSet = set()
         yearSet = set()
         allDict = dict()
-        data = Report.objects.filter(nama_ekskul__slug=self.kwargs.get('slug')).order_by('tanggal_pembinaan').values_list('tanggal_pembinaan', flat=True)
         for i in data:
-            monthSet.add(i.month)
-            yearSet.add(i.year)
+                monthSet.add(i['report_date__month'])
+                yearSet.add(i['report_date__year'])
         for i in monthSet:
             monthList.append({"nama": monthName.get(i), "value": i})
         allDict["month"] = monthList
         allDict["year"] = list(yearSet)
-        return [allDict]
+        if len(data) > 0 :
+            context["object_list"] = [allDict]
+        else:
+            context["object_list"] = None
+        context["slug"] = self.kwargs.get("slug")
+        context["show_type"] = "options"
+        return context
     
-    def get_context_data(self, **kwargs):
-        context = super(LaporanOptions, self).get_context_data(**kwargs)
-        context['slug'] = self.kwargs.get('slug')
-        return context
+# class ReportEkskulPrintView(LoginRequiredMixin, ListView):
+#     model = Report
+#     template_name = "laporan-print2.html"
 
-def LaporanOptionsFunc(request, slug):
-    data = Report.objects.filter(nama_ekskul__slug=slug).order_by('-tanggal_pembinaan').values_list('tanggal_pembinaan', flat=True)
-    monthName = {0: "bulan", 1:"Januari", 2:"Februari", 3:"Maret", 4:"April", 5:"Mei", 6:"Juni", 7:"Juli", 8:"Agustus", 9:"September", 10:"Oktober", 11:"November", 12:"Desember"}
-    monthList = list()
-    monthSet = set()
-    yearSet = set()
-    allDict = dict()
-    for i in data:
-            monthSet.add(i.month)
-            yearSet.add(i.year)
-    for i in monthSet:
-        monthList.append({"nama": monthName.get(i), "value": i})
-    allDict["month"] = monthList
-    allDict["year"] = list(yearSet)
-    context = {"object_list" : [allDict], "slug": slug} if len(monthList) > 0 else {"object_list" : None, "slug": slug}
-    return render(request, 'new_laporan_options.html', context)
+#     def get_queryset(self) -> QuerySet[Any]:
+#         return Report.objects.select_related("extracurricular", "teacher")\
+#             .filter(extracurricular__slug=self.kwargs.get("slug")).order_by('report_date')
 
-@login_required(login_url='/login/')
-def laporan_ekskul_print_versi2(request, slug):
-    ekskul = get_object_or_404(Extracurricular, slug=slug)
-    filtered_report = Report.objects.filter(nama_ekskul__slug=slug).order_by('tanggal_pembinaan')
-    UserLog.objects.create(
-                    user=(request.user.teacher or "Anonymous"),
-                    action_flag="ADD",
-                    app="LAPORAN",
-                    message="Berhasil mencetak laporan pertemuan ekskul {}".format(ekskul.nama_ekskul)
-                )
-    send_whatsapp_print(request.user.teacher.no_hp, 'mencetak', "ekskul/SC", ekskul.nama_ekskul)
-    context = {
-        'ekskul': ekskul,
-        'filtered_report': filtered_report,
-    }
-    return render(request, 'laporan-print2.html', context)
+#     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+#         obj = get_object_or_404(Extracurricular, slug=self.kwargs.get("slug"))
+#         UserLog.objects.create(
+#             user=request.user.teacher,
+#             action_flag="PRINT",
+#             app="LAPORAN",
+#             message=f"berhasil mencetak laporan pertemuan ekskul {obj}"
+#         )
+#         send_WA_print(self.request.user.teacher.phone, 'laporan pertemuan Ekskul/SC', f"{obj}")
+#         return super().get(request, *args, **kwargs)
 
-class LaporanEkskulView(ListView):
-    model = Report
-    template_name = 'new_laporan-ekskul.html'
-    queryset = Report.objects.all()
-    paginate_by = 10
-
-    def get_queryset(self):
-        return self.queryset.filter(nama_ekskul__slug=self.kwargs.get('slug')).order_by('-tanggal_pembinaan')
-
-    def get_context_data(self, **kwargs):
-        context = super(LaporanEkskulView, self).get_context_data(**kwargs)
-        context['ekskul'] = Extracurricular.objects.filter(slug=self.kwargs.get('slug'))
-        context['bulan_ini'] = timezone.now().__format__("%B %Y")
-        return context
+#     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+#         context = super().get_context_data(**kwargs)
+#         context["ekskul"] = get_object_or_404(Extracurricular, slug=self.kwargs.get("slug"))
+#         return context
 
 
-def laporan_ekskul(request, slug):
-    ekskul = get_object_or_404(Extracurricular, slug=slug)
-    bulan_ini = datetime.date.today().__format__("%B %Y")
-    teachers = Teacher.objects.filter(extracurricular=ekskul)
-    all = teachers.values_list('user_id', flat=True)
-    filtered_report = Report.objects.filter(nama_ekskul__slug=slug).filter(
-        tanggal_pembinaan__month=datetime.date.today().month).order_by('tanggal_pembinaan')
-    if request.method == "POST":
-        bulan = request.POST.get("bulan")
-        if bulan != 0:
-            filtered_report = Report.objects.filter(nama_ekskul__slug=slug).filter(
-                tanggal_pembinaan__month=bulan).order_by('tanggal_pembinaan')
-            bulan_ini = None
-        else:
-            filtered_report = Report.objects.filter(nama_ekskul__slug=slug).filter(
-                tanggal_pembinaan__month=datetime.date.today().month).order_by('tanggal_pembinaan')
-
-    # else:
-    #     filtered_report = Report.objects.filter(nama_ekskul__slug=slug).order_by('tanggal_pembinaan')
-
-    if request.user.is_authenticated:
-        if not request.user.id in all and not request.user.is_superuser:
-            # if not request.user.teacher == ekskul.pembina and not request.user.is_superuser:
-            context = {
-                'ekskul': ekskul,
-                'filtered_report': filtered_report,
-                'bulan_ini': bulan_ini,
-                'display': None,
-            }
-        else:
-            context = {
-                'ekskul': ekskul,
-                'filtered_report': filtered_report,
-                'bulan_ini': bulan_ini,
-                'display': True,
-            }
-    else:
-        context = {
-            'ekskul': ekskul,
-            'filtered_report': filtered_report,
-            'bulan_ini': bulan_ini,
-            'display': None
-        }
-    return render(request, 'laporan-ekskul.html', context)
-
-
-class LaporanDetailView(DetailView):
-    model = Report
-    template_name = 'new_laporan-detail.html'
-
-
-@login_required(login_url='/login/')
-def laporan_input(request, slug):
-    ekskul = get_object_or_404(Extracurricular, slug=slug)
-    filtered_student = StudentOrganization.objects.filter(ekskul=ekskul).order_by('siswa__kelas', 'siswa__nama_siswa')
-    all = ekskul.pembina.all().values_list('user_id', flat=True)
-    if request.user.id not in all and not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-
-    nama_ekskul = request.POST.get('nama_ekskul')
-    tanggal_pembinaan = request.POST.get('tanggal_pembinaan')
-    kehadiran_santri = request.POST.get('kehadiran_santri')
-    pembina = request.POST.get('pembina_ekskul')
-    image = request.FILES.get('foto')
-
-    if request.method == 'POST':
-        try:
-            Report.objects.get(tanggal_pembinaan=tanggal_pembinaan, nama_ekskul__slug=slug)
-            form = FormLaporanKehadiran(request.POST, request.FILES)
-            messages.error(request, "Laporan untuk tanggal ini sudah ada. Silahkan pilih tanggal lain")
-        except:
-            form = FormLaporanKehadiran(request.POST, request.FILES)
-            FormLaporanKehadiran.nama_ekskul = nama_ekskul
-            FormLaporanKehadiran.tanggal_pembinaan = tanggal_pembinaan
-            FormLaporanKehadiran.kehadiran_santri = kehadiran_santri
-            FormLaporanKehadiran.pembina_ekskul = pembina
-            FormLaporanKehadiran.foto = image
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Input Laporan berhasil!")
-                locale.setlocale(locale.LC_ALL, 'id_ID')
-                tanggal = datetime.date.fromisoformat(tanggal_pembinaan).strftime('%d %B %Y')
-                UserLog.objects.create(
-                    user=request.user.teacher,
-                    action_flag="ADD",
-                    app="LAPORAN",
-                    message="Berhasil menambahkan data laporan pertemuan ekskul {} untuk tanggal {}".format(ekskul,
-                                                                                                            tanggal)
-                )
-
-                send_whatsapp_laporan(request.user.teacher.no_hp, ekskul, 'menambahkan', tanggal)
-                return redirect('laporan:laporan-input', ekskul.slug)
-
-    else:
-        form = FormLaporanKehadiran()
-
-    context = {
-        'ekskul': ekskul,
-        'filtered_student': filtered_student,
-        'form': form,
-    }
-    return render(request, 'new_laporan-input.html', context)
-
-
-@login_required(login_url='/login/')
-def laporan_edit(request, slug, pk):
-    ekskul = get_object_or_404(Extracurricular, slug=slug)
-    laporan = get_object_or_404(Report, nama_ekskul__slug=slug, id=pk)
-    all = ekskul.pembina.all().values_list('user_id', flat=True)
-    if request.user.id not in all and not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-
-    if request.method == 'POST':
-        form = FormLaporanKehadiran(request.POST, request.FILES, instance=laporan)
-        if form.is_valid():
-            form.save()
-            locale.setlocale(locale.LC_ALL, 'id_ID')
-            tanggal = datetime.date.fromisoformat(str(laporan.tanggal_pembinaan)).strftime('%d %B %Y')
-            UserLog.objects.create(
-                user=request.user.teacher,
-                action_flag="CHANGE",
-                app="LAPORAN",
-                message="Berhasil mengubah data laporan pertemuan ekskul {} untuk tanggal {}".format(ekskul,
-                                                                                                     tanggal)
-            )
-
-            send_whatsapp_laporan(request.user.teacher.no_hp, ekskul, 'edit', tanggal)
-            return redirect('laporan:laporan-ekskul', ekskul.slug)
-        else:
-            messages.error(request, "Mohon input data dengan benar!")
-            form = FormLaporanKehadiran(request.POST, instance=laporan)
-    else:
-        form = FormLaporanKehadiran(instance=laporan)
-    context = {
-        'ekskul': ekskul,
-        'edit': True,
-        'form': form,
-    }
-    return render(request, 'new_laporan-input.html', context)
-
-
-@login_required(login_url='/login/')
-def laporan_delete(request, slug, pk):
-    ekskul = get_object_or_404(Extracurricular, slug=slug)
-    laporan = get_object_or_404(Report, nama_ekskul__slug=slug, id=pk)
-    all = ekskul.pembina.all().values_list('user_id', flat=True)
-    if request.user.id not in all and not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-
-    if request.method == 'POST':
-        locale.setlocale(locale.LC_ALL, 'id_ID')
-        tanggal = datetime.date.fromisoformat(str(laporan.tanggal_pembinaan)).strftime('%d %B %Y')
-
-        UserLog.objects.create(
-            user=request.user.teacher,
-            action_flag="DELETE",
-            app="LAPORAN",
-            message="Berhasil menghapus data laporan pertemuan ekskul {} untuk tanggal {}".format(ekskul,
-                                                                                                  tanggal)
-        )
-
-        send_whatsapp_laporan(request.user.teacher.no_hp, ekskul, 'menghapus', tanggal)
-
-        laporan.delete()
-        return redirect('laporan:laporan-ekskul', ekskul.slug)
-    context = {
-        'ekskul': ekskul,
-        'laporan': laporan,
-    }
-
-    return render(request, 'new_laporan-delete.html', context)

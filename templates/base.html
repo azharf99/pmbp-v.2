@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{site_title|default:"PMBP SMAS IT AL BINAA"}}</title>
+  <meta content="Data Alumni SMAS IT Al Binaa" name="description" />
+  <meta
+    content="PMBP SMA IT AL Binaa, SMAS IT AL Binaa, PMBP SMA IT AL Binaa, Ekskul, Ekstrakurikuler"
+    name="keywords" />
+  <link rel="canonical" href="https://pmbp.smasitalbinaa.com/" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="PMBP SMAS IT AL BINAA" />
+  <meta property="og:url" content="https://pmbp.smasitalbinaa.com/" />
+  <meta property="og:site_name" content="PMBP SMAS IT AL BINAA IBS" />
+  <meta property="og:image" content="https://pmbp.smasitalbinaa.com/media/prestasi/IMG-20231225-WA0036_K4uvPoa.jpg" />
+  <link rel="icon" href="{% static 'icon/favicon.ico' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'icon/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'icon/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'icon/favicon-16x16.png' %}">
+  <link rel="manifest" href="{% static 'icon/site.webmanifest' %}">
+  <link rel="stylesheet" href="{% static 'css/build.css' %}">
+</head>
+
+<body class="bg-gray-100 dark:bg-black dark:text-gray-200">
+    {% include 'header.html' %}
+    {% include 'sidebar.html' %}
+
+    {% block content %}
+    {% endblock content %}
+
+  <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+
+</html>

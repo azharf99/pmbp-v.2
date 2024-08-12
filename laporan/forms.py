@@ -1,30 +1,14 @@
 from django import forms
 from laporan.models import Report
 
-class FormLaporanKehadiran(forms.ModelForm):
+class ReportForm(forms.ModelForm):
     class Meta:
         model = Report
         fields = '__all__'
         widgets = {
-            'nama_ekskul': forms.Select(attrs={'class': 'form-select'}),
-            'pembina_ekskul': forms.Select(attrs={'class': 'form-select'}),
-            'tanggal_pembinaan': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'catatan_pembinaan': forms.Textarea(attrs={'class': 'form-control'}),
-            'kehadiran_santri': forms.SelectMultiple(attrs={'class': 'form-select'}),
+            'extracurricular': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'teacher': forms.SelectMultiple(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'report_date': forms.DateInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg", 'type': 'date'}),
+            'report_notes': forms.Textarea(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'students': forms.SelectMultiple(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
         }
-
-# class FormUploadLaporanKehadiran(forms.ModelForm):
-#     class Meta:
-#         model = UploadImage
-#         fields = ['foto_absensi']
-#         widgets = {
-#             'foto_absensi': forms.FileInput(attrs={'class': 'form-control', 'required': True}),
-#         }
-#
-# class FormEditUploadLaporanKehadiran(forms.ModelForm):
-#     class Meta:
-#         model = UploadImage
-#         fields = ['foto_absensi']
-#         widgets = {
-#             'laporan': forms.Select(attrs={'class': 'form-select', 'disabled': True}),
-#         }

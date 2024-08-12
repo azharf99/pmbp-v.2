@@ -1,19 +1,13 @@
 from django import forms
-from nilai.models import Penilaian
+from nilai.models import Score
 
-class NilaiForm(forms.ModelForm):
+class ScoreForm(forms.ModelForm):
     class Meta:
-        model = Penilaian
+        model = Score
         fields = '__all__'
         widgets = {
-            'nilai': forms.Select(attrs={'class':'form-select'})
+            'extracurricular': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'student': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'score': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
         }
 
-
-class NilaiEditForm(forms.ModelForm):
-    class Meta:
-        model = Penilaian
-        fields = ['nilai']
-        widgets = {
-            'nilai': forms.Select(attrs={'class':'form-select'})
-        }

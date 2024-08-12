@@ -1,22 +1,23 @@
 from django.urls import path
-from prestasi import views
+from prestasi.views import PrestasiIndexView, PrestasiCreateView, PrestasiDetailView, PrestasiUpdateView, PrestasiDeleteView, \
+                            ProgramPrestasiIndexView, ProgramPrestasiCreateView, ProgramPrestasiUpdateView, ProgramPrestasiDeleteView,\
+                            PretasiPrintExcelView, PrestasiPrintExcelThisYearView, ProgramPrestasiPrintExcelThisYearView
 
-app_name = 'prestasi'
+
 urlpatterns = [
-    path('', views.PrestasiIndexView.as_view(), name='prestasi-index'),
-    path('input', views.prestasi_input, name='prestasi-input'),
-    path('downloads', views.print_to_excel, name='print-to-excel'),
-    path('download', views.print_to_excel_tahun_ini, name='print-to-excel-tahun-ini'),
-    path('detail/<int:pk>', views.prestasi_detail, name='prestasi-detail'),
-    path('edit/<int:pk>', views.prestasi_edit, name='prestasi-edit'),
-    path('delete/<int:pk>', views.prestasi_delete, name='prestasi-delete'),
-    path('foto/input', views.dokumentasi_prestasi_input, name='prestasi-foto-input'),
-    path('foto/detail/<int:pk>', views.dokumentasi_prestasi_detail, name='prestasi-foto-detail'),
-    path('foto/edit/<int:pk>', views.dokumentasi_prestasi_edit, name='prestasi-foto-edit'),
-    path('foto/delete/<int:pk>', views.dokumentasi_prestasi_delete, name='prestasi-foto-delete'),
-    path('program', views.ProgramPrestasiView.as_view(), name='program-prestasi'),
-    path('program/input', views.ProgramPrestasiInputView.as_view(), name='program-prestasi-input'),
-    path('program/edit/<int:pk>', views.ProgramPrestasiUpdateView.as_view(), name='program-prestasi-edit'),
-    path('program/delete/<int:pk>', views.program_prestasi_delete, name='program-prestasi-delete'),
-    path('program/download', views.program_print_to_excel, name='program-print-to-excel'),
+    path('', PrestasiIndexView.as_view(), name='prestasi-list'),
+    path('create/', PrestasiCreateView.as_view(), name='prestasi-create'),
+    path('detail/<int:pk>/', PrestasiDetailView.as_view(), name='prestasi-detail'),
+    path('update/<int:pk>/', PrestasiUpdateView.as_view(), name='prestasi-update'),
+    path('delete/<int:pk>/', PrestasiDeleteView.as_view(), name='prestasi-delete'),
+
+    path('program/', ProgramPrestasiIndexView.as_view(), name='program-prestasi-list'),
+    path('program/create/', ProgramPrestasiCreateView.as_view(), name='program-prestasi-create'),
+    path('program/detail/<int:pk>/', ProgramPrestasiUpdateView.as_view(), name='program-prestasi-detail'),
+    path('program/update/<int:pk>/', ProgramPrestasiUpdateView.as_view(), name='program-prestasi-update'),
+    path('program/delete/<int:pk>/', ProgramPrestasiDeleteView.as_view(), name='program-prestasi-delete'),
+
+    path('downloads/', PretasiPrintExcelView.as_view(), name='prestasi-download'),
+    path('download/', PrestasiPrintExcelThisYearView.as_view(), name='prestasi-download-tahun-ini'),
+    path('program/download/', ProgramPrestasiPrintExcelThisYearView.as_view(), name='program-prestasi-download'),
 ]

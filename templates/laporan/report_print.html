@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{extracurricular.name|upper}} {{object_list.first.report_date|date:"F Y"}}</title>
+  <meta content="Data Alumni SMAS IT Al Binaa" name="description" />
+  <meta content="PMBP SMA IT AL Binaa, SMAS IT AL Binaa, PMBP SMA IT AL Binaa, Ekskul, Ekstrakurikuler"
+    name="keywords" />
+  <link rel="canonical" href="https://pmbp.smasitalbinaa.com/" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="PMBP SMAS IT AL BINAA" />
+  <meta property="og:url" content="https://pmbp.smasitalbinaa.com/" />
+  <meta property="og:site_name" content="PMBP SMAS IT AL BINAA IBS" />
+  <meta property="og:image" content="https://pmbp.smasitalbinaa.com/media/prestasi/IMG-20231225-WA0036_K4uvPoa.jpg" />
+  <link rel="icon" href="{% static 'icon/favicon.ico' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'icon/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'icon/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'icon/favicon-16x16.png' %}">
+  <link rel="manifest" href="{% static 'icon/site.webmanifest' %}">
+  <link rel="stylesheet" href="{% static 'css/build.css' %}">
+</head>
+
+<body>
+  <main class="p-2">
+    <div class="flex justify-center items-center gap-4 border-b mb-4">
+      <div>
+        <a href="{% url 'report-list' %}">
+          <img class="m-2" src="{% static 'images/Binaaul-Mustaqbal.png' %}" alt="logo-sma">
+        </a>
+      </div>
+      <div>
+        <h1 class="text-center font-semibold text-xl">DAFTAR HADIR {{extracurricular.get_type_display|upper}}</h1>
+        <h2 class="text-center font-semibold">SMAS IT AL BINAA ISLAMIC BOARDING SCHOOL</h2>
+        <h3 class="text-center font-semibold">TAHUN AJARAN {{tahun_ajaran}}</h3>
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <p>{{extracurricular.get_type_display}}</p>
+      <p>: {{extracurricular.name}}</p>
+    </div>
+    <div class="flex gap-2">
+      <p>Pembina :</p>
+      <p>{{extracurricular.teacher.all|join:"<br>"}}</p>
+    </div>
+    <div class="flex gap-2">
+      <p>Jadwal :</p>
+      <p>{{extracurricular.schedule}} {{extracurricular.time}}</p>
+    </div>
+
+
+    <table class="my-2 table-auto w-full">
+      <thead>
+        <tr>
+          <th class="py-1 px-2 border border-gray-400 bg-blue-100" scope="col" rowspan="2">No.</th>
+          <th class="py-1 px-2 border border-gray-400 bg-blue-100" scope="col" rowspan="2">Nama Anggota</th>
+          <th class="py-1 px-2 border border-gray-400 bg-blue-100" scope="col" rowspan="2">Kelas</th>
+          {% if object_list %}
+          <th class="py-1 px-2 border border-gray-400 bg-blue-100" scope="col" colspan="{{ object_list.count }}">
+            Tanggal Pertemuan
+          </th>
+          {% else %}
+          <th class="py-1 px-2 border border-gray-400 bg-blue-100" scope="col" colspan="4">
+            Tanggal Pertemuan
+          </th>
+          {% endif %}
+        </tr>
+        <tr>
+          {% for object in object_list %}
+          <th class="border border-gray-400 bg-blue-100" scope="col">{{ object.report_date|date:"d/m" }}</th>
+          {% empty %}
+          <th class="border border-gray-400 bg-blue-100" scope="col">Tgl.</th>
+          <th class="border border-gray-400 bg-blue-100" scope="col">Tgl.</th>
+          <th class="border border-gray-400 bg-blue-100" scope="col">Tgl.</th>
+          <th class="border border-gray-400 bg-blue-100" scope="col">Tgl.</th>
+          {% endfor %}
+        </tr>
+      </thead>
+
+      <tbody>
+        {% if object_list %}
+        {% for object in extracurricular.members.all %}
+        <tr>
+          <td class="py-1 px-2 border border-gray-400 text-center">{{ forloop.counter }}</td>
+          <td class="py-1 px-2 border border-gray-400">{{ object.student_name }}</td>
+          <td class="py-1 px-2 border border-gray-400 text-center">{{ object.get_student_class_display }}</td>
+
+          {% for report in object_list %}
+            <td class="py-1 px-2 border border-gray-400 text-center">
+              {% for x in report.students.all %}
+                {% if x.student_name == object.student_name %}
+                  <p>&#x2705;</p>
+                {% endif %}
+              {% endfor %}
+            </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+
+        <tr>
+          <td class="py-1 px-2 border border-gray-400 text-center" colspan="3">Pembina yang Hadir</td>
+          {% for obj in object_list %}
+          <td class="py-1 px-2 border border-gray-400 text-center" >
+            <p>{{obj.teacher.all|join:"<br>"}} </p>
+          </td>
+          {% endfor %}
+        </tr>
+
+        <tr>
+          <td class="py-1 px-2 border border-gray-400 text-center" colspan="3">Materi / Catatan Pembinaan</td>
+          {% for report in object_list %}
+          <td class="py-1 px-2 border border-gray-400 text-center">
+            {{ report.report_notes|truncatechars:15 }}
+          </td>
+          {% endfor %}
+        </tr>
+
+        {% else %}
+        {% for _ in angka %}
+        <tr>
+          <td class="border border-gray-400 text-center">{{ forloop.counter }}</td>
+          <td class="border border-gray-400 text-center"></td>
+          <td class="border border-gray-400 text-center"></td>
+          <td class="border border-gray-400 text-center"></td>
+          <td class="border border-gray-400 text-center"></td>
+          <td class="border border-gray-400 text-center"></td>
+          <td class="border border-gray-400"></td>
+        </tr>
+        {% endfor %}
+
+        <tr>
+          <td class="border border-gray-400 text-center" colspan="3">Pembina yang Hadir: </td>
+          <td class="border border-gray-400 text-center"></td>
+          <td class="border border-gray-400 text-center"></td>
+          <td class="border border-gray-400 text-center"></td>
+          <td class="border border-gray-400 text-center"></td>
+        </tr>
+        <tr>
+          <td class="border border-gray-400 text-center" colspan="3">Materi / Catatan Pembinaan</td>
+          <td class="border border-gray-400 text-center"></td>
+          <td class="border border-gray-400 text-center"></td>
+          <td class="border border-gray-400 text-center"></td>
+          <td class="border border-gray-400 text-center"></td>
+        </tr>
+
+        {% endif %}
+      </tbody>
+    </table>
+
+
+    <p class="text-end m-0">Bekasi, {%  now "j F Y" %}</p>
+
+    <div class="grid grid-cols-2">
+      {% for teacher in extracurricular.teacher.all %}
+      <div class="text-center">
+        <p class="mb-4 p-2">Pembina {{forloop.counter}}</p>
+        <p class="my-4 p-2">{{teacher}}</p>
+      </div>
+      {% endfor %}
+      <div class="text-center">
+        <p class="mb-4 p-2">Wakasek Ekstrakurikuler</p>
+        <p class="my-4 p-2">Panji Asmara, S.Pd</p>
+      </div>
+    </div>
+
+  </main>
+
+
+</body>
+
+<script>
+  document.addEventListener("DOMContentLoaded", ()=>{
+    window.print()
+  })
+</script>
+
+</html>

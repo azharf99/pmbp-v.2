@@ -1,358 +1,288 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect, FileResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView
-
-from prestasi.forms import PrestasiInputForm, PrestasiEditForm, DokumentasiPrestasiEditForm, DokumentasiPrestasiInputForm, ProgramPrestasiForm
-from prestasi.models import Prestasi, DokumentasiPrestasi, ProgramPrestasi
-from dashboard.whatsapp import send_whatsapp_input_anggota
 from django.contrib import messages
-
-from userlog.models import UserLog
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.forms.models import BaseModelForm
+from django.http import HttpRequest, HttpResponse, FileResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
+from utils.whatsapp import send_WA_create_update_delete
 from io import BytesIO
-
-import xlsxwriter
+from prestasi.forms import PrestasiForm, ProgramPrestasiForm
+from prestasi.models import Prestasi, ProgramPrestasi
+from userlog.models import UserLog
+from typing import Any
+from xlsxwriter import Workbook
+from django.conf import settings
 
 
 # Create your views here.
 class PrestasiIndexView(ListView):
     model = Prestasi
-    queryset = Prestasi.objects.all().order_by('-created_at', '-tahun_lomba', 'peraih_prestasi')
-    paginate_by = 8
-    template_name = 'new_prestasi.html'
+    queryset = Prestasi.objects.filter(created_at__gt=settings.TANGGAL_TAHUN_AJARAN)
+    paginate_by = 9
 
 
-def prestasi_detail(request, pk):
-    data = get_object_or_404(Prestasi, id=pk)
-    context = {
-        'data': data,
-    }
-    return render(request, 'new_prestasi-detail.html', context)
+class PrestasiDetailView(DetailView):
+    model = Prestasi
 
 
-def print_to_excel(request):
-    nilai = Prestasi.objects.all().order_by('-created_at',
-                                             'peraih_prestasi')
-    buffer = BytesIO()
-    workbook = xlsxwriter.Workbook(buffer)
-    worksheet = workbook.add_worksheet()
-    worksheet.write_row(0, 0, ['No', 'Peraih Prestasi', 'Kelas', 'Kategori Lomba', 'Jenis Lomba', 'Tingkat Lomba', 'Tahun Lomba', 'Nama Lomba', 'Bidang Lomba', 'Predikat', 'Penyelengggara', 'Sekolah'])
-    row = 1
-    col = 0
-    for data in nilai:
-        worksheet.write_row(row, col, [row, data.peraih_prestasi, data.kelas_peraih_prestasi, data.kategori, data.jenis_lomba, data.tingkat_lomba, data.tahun_lomba, data.nama_lomba, data.bidang_lomba, data.kategori_kemenangan, data.Penyelenggara_lomba, data.sekolah])
-        row += 1
+class PrestasiCreateView(LoginRequiredMixin, CreateView):
+    model = Prestasi
+    form_class = PrestasiForm
 
-    worksheet.autofit()
-    workbook.close()
-    buffer.seek(0)
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        raise PermissionDenied
 
-    return FileResponse(buffer, as_attachment=True, filename='Prestasi SMA IT Al Binaa.xlsx')
-
-
-def print_to_excel_tahun_ini(request):
-    nilai = Prestasi.objects.filter(created_at__gt="2023-07-16").order_by('-created_at',
-                                             'peraih_prestasi')
-    buffer = BytesIO()
-    workbook = xlsxwriter.Workbook(buffer)
-    worksheet = workbook.add_worksheet()
-    worksheet.write_row(0, 0, ['No', 'Peraih Prestasi', 'Kelas', 'Kategori Lomba', 'Jenis Lomba', 'Tingkat Lomba', 'Tahun Lomba', 'Nama Lomba', 'Bidang Lomba', 'Predikat', 'Penyelengggara', 'dibuat'])
-    row = 1
-    col = 0
-    for data in nilai:
-        worksheet.write_row(row, col, [row, data.peraih_prestasi, data.kelas_peraih_prestasi, data.kategori, data.jenis_lomba, data.tingkat_lomba, data.tahun_lomba, data.nama_lomba, data.bidang_lomba, data.kategori_kemenangan, data.Penyelenggara_lomba, str(data.created_at)])
-        row += 1
-
-    worksheet.autofit()
-    workbook.close()
-    buffer.seek(0)
-
-    return FileResponse(buffer, as_attachment=True, filename='Prestasi T.A. 23-24 SMA IT Al Binaa.xlsx')
-
-
-@login_required(login_url="/login/")
-def prestasi_input(request):
-    if not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-    if request.method == 'POST':
-        data = request.POST.get('nama_lomba')
-        forms = PrestasiInputForm(request.POST, request.FILES)
-        if forms.is_valid():
-            f = forms.save()
-            DokumentasiPrestasi.objects.create(
-                prestasi=f,
-            )
-            UserLog.objects.create(
-                user=request.user.teacher,
-                action_flag="ADD",
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        messages.error(self.request, "Error, Ada kesalahan pada input data anda!")
+        return super().form_invalid(form)
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        self.object = form.save()
+        UserLog.objects.create(
+                user=self.request.user.teacher,
+                action_flag="CREATE",
                 app="PRESTASI",
-                message="Berhasil menambahkan data prestasi {}".format(data)
+                message=f"berhasil menambahkan data prestasi {self.object}"
             )
-            send_whatsapp_input_anggota(request.user.teacher.no_hp, data, 'data Prestasi', 'prestasi', 'menambahkan')
-            return redirect('prestasi:prestasi-index')
-        else:
-            forms = PrestasiInputForm(request.POST, request.FILES)
-            messages.error(request, "Yang kamu isi ada yang salah dalam isiannya. Tolong diperiksa lagi.")
-    else:
-        forms = PrestasiInputForm()
-
-    context = {
-        'forms': forms,
-        'prestasi': True,
-    }
-    return render(request, 'new_prestasi-input.html', context)
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f' Prestasi {self.object}', 'prestasi/', f'detail/{self.object.id}/')
+        messages.success(self.request, "Data berhasil ditambahkan!")
+        return HttpResponseRedirect(self.get_success_url())
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        c["form_view"] = "Create"
+        return c
 
 
-@login_required(login_url="/login/")
-def prestasi_edit(request, pk):
-    if not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-    data = get_object_or_404(Prestasi, id=pk)
-    if request.method == 'POST':
-        forms = PrestasiEditForm(request.POST, request.FILES, instance=data)
-        if forms.is_valid():
-            forms.save()
-            UserLog.objects.create(
-                user=request.user.teacher,
-                action_flag="CHANGE",
+class PrestasiUpdateView(LoginRequiredMixin, UpdateView):
+    model = Prestasi
+    form_class = PrestasiForm
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        raise PermissionDenied
+
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        messages.error(self.request, "Error, Ada kesalahan pada input data anda!")
+        return super().form_invalid(form)
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        self.object = self.get_object()
+        UserLog.objects.create(
+                user=self.request.user.teacher,
+                action_flag="UPDATE",
                 app="PRESTASI",
-                message="Berhasil mengubah data prestasi {}".format(data)
+                message=f"berhasil mengubah data prestasi {self.object}"
             )
-            send_whatsapp_input_anggota(request.user.teacher.no_hp, data, 'data Prestasi', 'prestasi', 'mengubah')
-            return redirect('prestasi:prestasi-index')
-        else:
-            forms = PrestasiEditForm(request.POST)
-            messages.error(request, "Yang kamu isi ada yang salah dalam isiannya. Tolong diperiksa lagi.")
-    else:
-        forms = PrestasiEditForm(instance=data)
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f' Prestasi {self.object}', 'prestasi/', f'detail/{self.object.id}/')
+        messages.success(self.request, "Data berhasil diupdate!")
+        return HttpResponseRedirect(self.get_success_url())
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        c["form_view"] = "Update"
+        return c
+    
+class PrestasiDeleteView(LoginRequiredMixin, DeleteView):
+    model = Prestasi
+    success_url = reverse_lazy("prestasi-list")
 
-    context = {
-        'forms': forms,
-        'prestasi': True,
-    }
-    return render(request, 'new_prestasi-input.html', context)
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        raise PermissionDenied
 
-
-@login_required(login_url="/login/")
-def prestasi_delete(request, pk):
-    if not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-    data = get_object_or_404(Prestasi, id=pk)
-    if request.method == 'POST':
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        data = self.get_object()
         UserLog.objects.create(
             user=request.user.teacher,
             action_flag="DELETE",
             app="PRESTASI",
-            message="Berhasil menghapus data prestasi {}".format(data)
+            message=f"berhasil menghapus data prestasi {data}"
         )
-        send_whatsapp_input_anggota(request.user.teacher.no_hp, data, 'data Prestasi', 'prestasi', 'menghapus')
-        data.delete()
-        return redirect('prestasi:prestasi-index')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f' Prestasi {data}', 'prestasi/')
+        messages.success(self.request, "Data berhasil dihapus!")
+        return super().post(request, *args, **kwargs)
+    
 
-    context = {
-        'data': data,
-    }
-    return render(request, 'prestasi-delete.html', context)
+class PretasiPrintExcelView(ListView):
+    model = Prestasi
+    queryset = Prestasi.objects.all()
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        buffer = BytesIO()
+        workbook = Workbook(buffer)
+        worksheet = workbook.add_worksheet()
+        worksheet.write_row(0, 0, ["Data Prestasi SMA IT AL BINAA"])
+        worksheet.write_row(1, 0, ['No', 'Peraih Prestasi', 'Kelas', 'Kategori Lomba', 'Jenis Lomba', 'Tingkat Lomba', 'Tahun Lomba', 'Nama Lomba', 'Bidang Lomba', 'Predikat', 'Penyelengggara', 'Sekolah'])
+        row = 2
+        col = 0
+        for data in self.queryset:
+            worksheet.write_row(row, col, [row, data.awardee, data.kelas_awardee, data.category, data.type, data.level, data.year, data.name, data.field, data.predicate, data.organizer, data.school])
+            row += 1
 
+        worksheet.autofit()
+        workbook.close()
+        buffer.seek(0)
 
-def dokumentasi_prestasi_detail(request, pk):
-    data = get_object_or_404(DokumentasiPrestasi, prestasi_id=pk)
-    context = {
-        'data': data,
-    }
-    return render(request, 'prestasi-foto-detail.html', context)
-
-@login_required(login_url="/login/")
-def dokumentasi_prestasi_input(request):
-    if not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-    if request.method == 'POST':
-        data = request.POST.get('prestasi')
-        forms = DokumentasiPrestasiInputForm(request.POST, request.FILES)
-        if forms.is_valid():
-            forms.save()
-            UserLog.objects.create(
-                user=request.user.teacher,
-                action_flag="ADD",
-                app="PRESTASI_DOKUMENTASI",
-                message="Berhasil menambahkan foto/dokumentasi prestasi dengan id {}".format(data)
-            )
-            send_whatsapp_input_anggota(request.user.teacher.no_hp, data, 'foto/dokumentasi untuk Prestasi', 'prestasi', 'menambahkan')
-            return redirect('prestasi:prestasi-index')
-        else:
-            forms = DokumentasiPrestasiInputForm(request.POST, request.FILES)
-            messages.error(request, "Yang kamu isi ada yang salah dalam isiannya. Tolong diperiksa lagi.")
-    else:
-        forms = DokumentasiPrestasiInputForm()
-
-    context = {
-        'forms': forms,
-        'prestasi': True,
-    }
-    return render(request, 'new_prestasi-input.html', context)
+        return FileResponse(buffer, as_attachment=True, filename='Prestasi SMA IT Al Binaa.xlsx')
 
 
-@login_required(login_url="/login/")
-def dokumentasi_prestasi_edit(request, pk):
-    if not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-    data = get_object_or_404(DokumentasiPrestasi, id=pk)
-    if request.method == 'POST':
-        forms = DokumentasiPrestasiEditForm(request.POST, request.FILES, instance=data)
-        if forms.is_valid():
-            forms.save()
-            UserLog.objects.create(
-                user=request.user.teacher,
-                action_flag="CHANGE",
-                app="PRESTASI_DOKUMENTASI",
-                message="Berhasil mengubah foto/dokumentasi prestasi {}".format(data)
-            )
-            send_whatsapp_input_anggota(request.user.teacher.no_hp, data, 'foto/dokumentasi untuk Prestasi', 'prestasi', 'mengubah')
-            return redirect('prestasi:prestasi-index')
-        else:
-            forms = DokumentasiPrestasiEditForm(request.POST, request.FILES)
-            messages.error(request, "Yang kamu isi ada yang salah dalam isiannya. Tolong diperiksa lagi.")
-    else:
-        forms = DokumentasiPrestasiEditForm(instance=data)
+class PrestasiPrintExcelThisYearView(ListView):
+    model = Prestasi
+    queryset = Prestasi.objects.filter(created_at__gt=settings.TANGGAL_TAHUN_AJARAN)
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        buffer = BytesIO()
+        workbook = Workbook(buffer)
+        worksheet = workbook.add_worksheet()
+        worksheet.write_row(0, 0, [f"Data Prestasi SMA IT AL BINAA T.A. {settings.TAHUN_AJARAN}"])
+        worksheet.write_row(1, 0, ['No', 'Peraih Prestasi', 'Kelas', 'Kategori Lomba', 'Jenis Lomba', 'Tingkat Lomba', 'Tahun Lomba', 'Nama Lomba', 'Bidang Lomba', 'Predikat', 'Penyelengggara', 'Sekolah'])
+        row = 2
+        col = 0
+        for data in self.queryset:
+            worksheet.write_row(row, col, [row, data.awardee, data.kelas_awardee, data.category, data.type, data.level, data.year, data.name, data.field, data.predicate, data.organizer, data.school])
+            row += 1
 
-    context = {
-        'forms': forms,
-        'prestasi': True,
-    }
-    return render(request, 'prestasi-foto-input.html', context)
+        worksheet.autofit()
+        workbook.close()
+        buffer.seek(0)
+
+        return FileResponse(buffer, as_attachment=True, filename='Prestasi TA. 2024-2025 SMA IT Al Binaa.xlsx')
+    
 
 
-@login_required(login_url="/login/")
-def dokumentasi_prestasi_delete(request, pk):
-    if not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-    data = get_object_or_404(DokumentasiPrestasi, id=pk)
-    if request.method == 'POST':
-        UserLog.objects.create(
-            user=request.user.teacher,
-            action_flag="DELETE",
-            app="PRESTASI_DOKUMENTASI",
-            message="Berhasil menghapus foto/dokumentasi prestasi {}".format(data)
-        )
-        send_whatsapp_input_anggota(request.user.teacher.no_hp, data, 'foto/dokumentasi untuk Prestasi', 'prestasi', 'menghapus')
-        data.delete()
-        return redirect('prestasi:prestasi-index')
-
-    context = {
-        'data': data,
-    }
-    return render(request, 'prestasi-foto-delete.html', context)
-
-
-class ProgramPrestasiView(ListView):
+class ProgramPrestasiIndexView(ListView):
     model = ProgramPrestasi
-    queryset = ProgramPrestasi.objects.all().order_by('-created_at', '-tanggal',)
+    queryset = ProgramPrestasi.objects.filter(tanggal__gt=settings.TANGGAL_TAHUN_AJARAN).order_by('-created_at', '-tanggal',)
     paginate_by = 10
-    template_name = 'new_program-prestasi.html'
 
 
-# class ProgramPrestasiInputView(CreateView):
-#     model = ProgramPrestasi
-#     queryset = ProgramPrestasi.objects.all().order_by('-created_at', '-tanggal',)
-#     paginate_by = 10
-#     template_name = 'new_program-prestasi.html'
 
-class ProgramPrestasiInputView(LoginRequiredMixin, CreateView):
+class ProgramPrestasiCreateView(LoginRequiredMixin, CreateView):
     model = ProgramPrestasi
     form_class = ProgramPrestasiForm
-    login_url = '/login/'
-    success_url = reverse_lazy('prestasi:program-prestasi')
-    template_name = 'new_prestasi-input.html'
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        raise PermissionDenied
+
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        messages.error(self.request, "Error, Ada kesalahan pada input data anda!")
+        return super().form_invalid(form)
 
     def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
+        self.object = form.save()
         UserLog.objects.create(
                 user=self.request.user.teacher,
-                action_flag="ADD",
-                app="PRESTASI",
-                message="Berhasil menambahkan data program prestasi {}".format(form.instance.program_prestasi)
+                action_flag="CREATE",
+                app="PROGRAM PRESTASI",
+                message=f"berhasil menambahkan data program prestasi {self.object}"
             )
-        send_whatsapp_input_anggota(self.request.user.teacher.no_hp, form.instance.program_prestasi, 'data Program Prestasi', 'prestasi', 'menambahkan')
-        return super().form_valid(form)
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'Program Prestasi {self.object}', 'prestasi/program/')
+        messages.success(self.request, "Data berhasil ditambahkan!")
+        return HttpResponseRedirect(self.get_success_url())
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        c["form_view"] = "Create"
+        return c
 
 
 class ProgramPrestasiUpdateView(LoginRequiredMixin, UpdateView):
     model = ProgramPrestasi
     form_class = ProgramPrestasiForm
-    login_url = '/login/'
-    success_url = reverse_lazy('prestasi:program-prestasi')
-    template_name = 'new_prestasi-input.html'
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        raise PermissionDenied
+
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        messages.error(self.request, "Error, Ada kesalahan pada input data anda!")
+        return super().form_invalid(form)
 
     def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
+        self.object = form.save()
         UserLog.objects.create(
                 user=self.request.user.teacher,
-                action_flag="ADD",
-                app="PRESTASI",
-                message="Berhasil menambahkan data program prestasi {}".format(form.instance.program_prestasi)
+                action_flag="UPDATE",
+                app="PROGRAM PRESTASI",
+                message=f"berhasil mengubah data program prestasi {self.object}"
             )
-        send_whatsapp_input_anggota(self.request.user.teacher.no_hp, form.instance.program_prestasi, 'data Program Prestasi', 'prestasi', 'mengedit')
-        return super().form_valid(form)
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'Program Prestasi {self.object}', 'prestasi/program/')
+        messages.success(self.request, "Data berhasil diupdate!")
+        return HttpResponseRedirect(self.get_success_url())
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        c["form_view"] = "Update"
+        return c
 
+class ProgramPrestasiDeleteView(LoginRequiredMixin, DeleteView):
+    model = ProgramPrestasi
+    success_url = reverse_lazy("program-prestasi-list")
 
-@login_required(login_url="/login/")
-def program_prestasi_delete(request, pk):
-    if not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-    data = get_object_or_404(ProgramPrestasi, id=pk)
-    if request.method == 'POST':
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        raise PermissionDenied
+
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        data = self.get_object()
         UserLog.objects.create(
             user=request.user.teacher,
             action_flag="DELETE",
             app="PRESTASI_DOKUMENTASI",
-            message="Berhasil menghapus program prestasi {}".format(data)
+            message=f"berhasil menghapus program prestasi {data}"
         )
-        send_whatsapp_input_anggota(request.user.teacher.no_hp, data, 'foto/dokumentasi untuk Prestasi', 'prestasi', 'menghapus')
-        data.delete()
-        return redirect('prestasi:program-prestasi')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f'Program Prestasi {data}', 'prestasi/program/')
+        return super().post(request, *args, **kwargs)
+    
 
-    context = {
-        'data': data,
-    }
-    return render(request, 'new_program-prestasi-delete.html', context)
+class ProgramPrestasiPrintExcelThisYearView(ListView):
+    model = ProgramPrestasi
+    queryset = ProgramPrestasi.objects.filter(tanggal__gt=settings.TANGGAL_TAHUN_AJARAN).order_by('-tanggal', 'program_prestasi')
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        buffer = BytesIO()
+        workbook = Workbook(buffer)
+        worksheet = workbook.add_worksheet()
+        merge_format = workbook.add_format({
+            "bold": 1,
+            "border": 1,
+            "align": "center",
+            "valign": "vcenter",
+        })
+        title_format = workbook.add_format({
+            "bold": 1,
+            "border": 1,
+            "align": "center",
+            "valign": "vcenter",
+            "fg_color": "yellow",
+        })
+        worksheet.merge_range("A1:F1", "Program Prestasi SMA IT Al Binaa Tahun Ajaran 2024-2025", merge_format)
+        worksheet.merge_range("A2:F2", f"Tahun Ajaran {settings.TAHUN_AJARAN}", merge_format)
 
-def program_print_to_excel(request):
-    nilai = ProgramPrestasi.objects.all().order_by('-created_at')
-    buffer = BytesIO()
-    workbook = xlsxwriter.Workbook(buffer)
-    worksheet = workbook.add_worksheet()
-    merge_format = workbook.add_format({
-        "bold": 1,
-        "border": 1,
-        "align": "center",
-        "valign": "vcenter",
-    })
-    title_format = workbook.add_format({
-        "bold": 1,
-        "border": 1,
-        "align": "center",
-        "valign": "vcenter",
-        "fg_color": "yellow",
-    })
-    worksheet.merge_range("A1:F1", "Program Prestasi SMA IT Al Binaa Tahun Ajaran 2023-2024", merge_format)
-    worksheet.merge_range("A2:F2", "Tahun Ajaran 2023-2024", merge_format)
+        worksheet.write_row(3, 0, ['No', 'Program Prestasi', 'Tanggal', 'Nama Peserta', 'Pencapaian', 'Catatan'], title_format)
+        row = 4
+        num = 1
+        col = 0
+        for data in self.queryset:
+            for peserta in data.nama_peserta.all():
+                worksheet.write_row(row, col, [num, data.program_prestasi, data.tanggal, peserta.nama_siswa, data.pencapaian, data.catatan])
+                num += 1
+                row += 1
 
-    worksheet.write_row(3, 0, ['No', 'Program Prestasi', 'Tanggal', 'Nama Peserta', 'Pencapaian', 'Catatan'], title_format)
-    row = 4
-    num = 1
-    col = 0
-    for data in nilai:
-        for peserta in data.nama_peserta.all():
-            worksheet.write_row(row, col, [num, data.program_prestasi, data.tanggal, peserta.nama_siswa, data.pencapaian, data.catatan])
-            num += 1
-            row += 1
+        # Autofit the worksheet.
+        worksheet.autofit()
+        worksheet.set_column("A:A", 5)
+        workbook.close()
+        buffer.seek(0)
 
-    # Autofit the worksheet.
-    worksheet.autofit()
-    worksheet.set_column("A:A", 5)
-    workbook.close()
-    buffer.seek(0)
-
-    return FileResponse(buffer, as_attachment=True, filename='Program Prestasi SMA IT Al Binaa.xlsx')
+        return FileResponse(buffer, as_attachment=True, filename=f'Program Prestasi SMA IT Al Binaa T.A. {settings.TAHUN_AJARAN_STRIPPED}.xlsx')

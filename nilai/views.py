@@ -1,181 +1,158 @@
 from io import BytesIO
-
-import xlsxwriter
+from typing import Any
+from django.db.models.query import QuerySet
+from django.core.exceptions import PermissionDenied
+from django.forms import BaseModelForm
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.http import FileResponse
-from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect, reverse
-from django.views.generic import ListView
-
-from ekskul.models import Extracurricular, StudentOrganization
-from nilai.forms import NilaiForm, NilaiEditForm
-from nilai.models import Penilaian
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import FileResponse, HttpRequest, HttpResponse, HttpResponseForbidden
+from django.shortcuts import redirect, HttpResponseRedirect
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.urls import reverse, reverse_lazy
+from nilai.models import Score
+from nilai.forms import ScoreForm
 from userlog.models import UserLog
-from dashboard.whatsapp import send_whatsapp_input_anggota
+from utils.whatsapp import send_WA_create_update_delete, send_WA_print
+import xlsxwriter
 
 
 # Create your views here.
 
 class NilaiIndexView(ListView):
-    model = Extracurricular
-    template_name = 'new_nilai.html'
+    model = Score
+    paginate_by = 50
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            if self.request.user.is_superuser:
-                return Extracurricular.objects.all().order_by('tipe', 'nama_ekskul')
-            else:
-                return Extracurricular.objects.filter(pembina=self.request.user.teacher).order_by('tipe', 'nama_ekskul')
-        else:
-            return Extracurricular.objects.all().order_by('tipe', 'nama_ekskul')
+            if not self.request.user.is_superuser:
+                return Score.objects.filter(extracurricular__teacher=self.request.user.teacher)
+        return Score.objects.all()
 
 
-def nilai_detail(request, slug):
-    ekskul = get_object_or_404(Extracurricular, slug=slug)
-    nilai = Penilaian.objects.filter(siswa__ekskul__slug=slug)
-    forms = NilaiForm()
-    context = {
-        'ekskul': ekskul,
-        'nilai': nilai,
-        'forms': forms,
-    }
-    return render(request, 'new_nilai-detail.html', context)
+class NilaiDetailView(DetailView):
+    model = Score
 
+    
 
-def nilai_kelas_view(request):
-    nilai = Penilaian.objects.all().order_by('siswa__siswa__kelas', 'siswa__siswa__nama_siswa',
-                                             'siswa__ekskul__nama_ekskul')
-    context = {
-        'nilai': nilai,
-    }
-    return render(request, 'new_nilai-list.html', context)
+class NilaiCreateView(LoginRequiredMixin, CreateView):
+    model = Score
+    form_class = ScoreForm
+    success_url = reverse_lazy("nilai-create")
 
-@login_required(login_url='/login/')
-def print_to_excel(request):
-    nilai = Penilaian.objects.all().order_by('siswa__siswa__kelas', 'siswa__siswa__nama_siswa',
-                                             'siswa__ekskul__nama_ekskul')
-    buffer = BytesIO()
-    workbook = xlsxwriter.Workbook(buffer)
-    worksheet = workbook.add_worksheet()
-    worksheet.write_row(0, 0, ['No', 'Ekskul', 'Nama Santri', 'Kelas', 'Nilai'])
-    row = 1
-    col = 0
-    for data in nilai:
-        worksheet.write_row(row, col, [row, data.siswa.ekskul.nama_ekskul, data.siswa.siswa.nama_siswa, data.siswa.siswa.kelas, data.nilai])
-        row += 1
-    workbook.close()
-    buffer.seek(0)
-
-    UserLog.objects.create(
-        user=request.user.teacher,
-        action_flag="PRINT",
-        app="NILAI",
-        message="Berhasil download data nilai semua ekskul/sc dalam format Excel"
-    )
-    send_whatsapp_input_anggota(request.user.teacher.no_hp, 'ekskul/SC', 'Nilai', 'nilai', 'download')
-
-    return FileResponse(buffer, as_attachment=True, filename='Nilai Ekskul SMA IT Al Binaa.xlsx')
-
-@login_required(login_url='/login/')
-def nilai_input(request, slug):
-    ekskul = get_object_or_404(Extracurricular, slug=slug)
-    siswa = StudentOrganization.objects.filter(ekskul__slug=slug)
-    all = ekskul.pembina.all().values_list('user_id', flat=True)
-    if request.user.id not in all and not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-
-    if request.method == "POST":
-        id_siswa = request.POST.get('siswa')
-        try:
-            Penilaian.objects.get(siswa_id=id_siswa)
-            forms = NilaiForm(request.POST)
-            messages.error(request,
-                           "Maaf, nilai siswa tersebut sudah ada. Jika ingin mengubahnya, silahkan gunakan fitur edit nilai")
-        except:
-            forms = NilaiForm(request.POST)
-            forms.siswa = id_siswa
-            if forms.is_valid():
-                forms.save()
-                messages.success(request, "Input nilai berhasil!")
-                data = Penilaian.objects.get(siswa_id=id_siswa)
-                UserLog.objects.create(
-                    user=request.user.teacher,
-                    action_flag="ADD",
-                    app="NILAI",
-                    message="Berhasil menambahkan data nilai ekskul {} atas nama {}".format(ekskul, data.siswa.siswa.nama_siswa)
-                )
-                send_whatsapp_input_anggota(request.user.teacher.no_hp, data.siswa.siswa.nama_siswa, f'Nilai {ekskul}', f'nilai/{ekskul.slug}', 'input')
-                return redirect('nilai:nilai-input', ekskul.slug)
-            else:
-                messages.error(request, "Isi data dengan benar!")
-
-    else:
-        forms = NilaiForm()
-    context = {
-        'ekskul': ekskul,
-        'siswa': siswa,
-        'forms': forms,
-        'edit' : False,
-    }
-    return render(request, 'new_nilai-input.html', context)
-
-
-@login_required(login_url='/login/')
-def nilai_edit(request, slug, pk):
-    ekskul = get_object_or_404(Extracurricular, slug=slug)
-    siswa = Penilaian.objects.get(id=pk)
-    all = ekskul.pembina.all().values_list('user_id', flat=True)
-    if request.user.id not in all and not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-
-    if request.method == "POST":
-        forms = NilaiEditForm(request.POST, instance=siswa)
-        if forms.is_valid():
-            forms.save()
-            UserLog.objects.create(
-                user=request.user.teacher,
-                action_flag="CHANGE",
-                app="NILAI",
-                message="Berhasil mengubah data nilai ekskul {} atas nama {}".format(ekskul, siswa.siswa.siswa.nama_siswa)
-            )
-            send_whatsapp_input_anggota(request.user.teacher.no_hp, siswa.siswa.siswa.nama_siswa, f'Nilai {ekskul}', f'nilai/{ekskul.slug}', 'mengubah')
-            return redirect('nilai:nilai-detail', ekskul.slug)
-        else:
-            forms = NilaiEditForm(instance=siswa)
-            messages.error(request, "Isi data dengan benar!")
-    else:
-        forms = NilaiEditForm(instance=siswa)
-
-    context = {
-        'ekskul': ekskul,
-        'forms': forms,
-        'siswa': siswa,
-        'edit' : True,
-
-    }
-    return render(request, 'new_nilai-input.html', context)
-
-
-@login_required(login_url='/login/')
-def nilai_delete(request, slug, pk):
-    ekskul = get_object_or_404(Extracurricular, slug=slug)
-    all = ekskul.pembina.all().values_list('user_id', flat=True)
-    if request.user.id not in all and not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('restricted'))
-    data = Penilaian.objects.get(id=pk)
-    if request.method == "POST":
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if request.user.teacher in Score.objects.select_related("extracurricular").values_list("extracurricular__teacher", flat=True) or self.request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        raise PermissionDenied
+    
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if Score.objects.filter(student_id = request.POST.get('siswa')).exists():
+            messages.error(request, "Maaf, nilai siswa tersebut sudah ada!")
+            return redirect(reverse("nilai-create"))
+        
+        return super().post(request, *args, **kwargs)
+    
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        messages.success(self.request, "Error! Input data ada yang salah!")
+        return super().form_invalid(form)
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        self.object = form.save()
         UserLog.objects.create(
-            user=request.user.teacher,
+            user=self.request.user.teacher,
+            action_flag="ADD",
+            app="NILAI",
+            message=f"Berhasil menambahkan data nilai ekskul {self.object}"
+        )
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'data nilai Ekskul/SC {self.object}', 'nilai/', f'detail/{self.object.id}/')
+        messages.success(self.request, "Input nilai berhasil!")
+        return HttpResponseRedirect(self.get_success_url())
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["form_name"] = "Create"
+        return context
+
+
+class NilaiUpdateView(LoginRequiredMixin, UpdateView):
+    model = Score
+    form_class = ScoreForm
+    success_url = reverse_lazy("nilai-list")
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if request.user.teacher in Score.objects.select_related("extracurricular").values_list("extracurricular__teacher", flat=True) or self.request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        raise PermissionDenied
+    
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        messages.success(self.request, "Error! Input data ada yang salah!")
+        return super().form_invalid(form)
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        self.object = form.save()
+        UserLog.objects.create(
+            user=self.request.user.teacher,
+            action_flag="ADD",
+            app="NILAI",
+            message=f"Berhasil mengubah data nilai ekskul {self.object}"
+        )
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'merubah', f'data nilai Ekskul/SC {self.object}', 'nilai/', f'detail/{self.object.id}/')
+        messages.success(self.request, "Input nilai berhasil!")
+        return HttpResponseRedirect(self.get_success_url())
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["form_name"] = "Update"
+        return context
+
+
+class NilaiDeleteView(LoginRequiredMixin, DeleteView):
+    model = Score
+    success_url = reverse_lazy("nilai-list")
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if request.user.teacher in Score.objects.select_related("extracurricular").values_list("extracurricular__teacher", flat=True) or self.request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        raise PermissionDenied
+    
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        self.object = self.get_object()
+        UserLog.objects.create(
+            user=self.request.user.teacher,
             action_flag="DELETE",
             app="NILAI",
-            message="Berhasil menghapus data nilai ekskul {} atas nama {}".format(ekskul, data.siswa.siswa.nama_siswa)
+            message=f"Berhasil menghapus data nilai ekskul {self.object}"
         )
-        send_whatsapp_input_anggota(request.user.teacher.no_hp, data.siswa.siswa.nama_siswa, f'Nilai {ekskul}', f'nilai/{ekskul.slug}', 'menghapus')
-        data.delete()
-        return redirect('nilai:nilai-detail', ekskul.slug)
-    context = {
-        'ekskul': ekskul,
-        'data': data,
-    }
-    return render(request, 'new_nilai-delete.html', context)
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f'data nilai Ekskul/SC {self.object}', 'nilai/')
+        messages.success(self.request, "Input nilai berhasil!")
+        return super().post(request, *args, **kwargs)
+    
 
+class PrintExcelView(LoginRequiredMixin, ListView):
+    model = Score
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return Score.objects.select_related("student", "extracurricular").order_by('student__student_class', 'student__student_name')
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        buffer = BytesIO()
+        workbook = xlsxwriter.Workbook(buffer)
+        worksheet = workbook.add_worksheet()
+        worksheet.write_row(0, 0, ['No', 'Nama Santri', 'Kelas', 'Ekskul', 'Nilai'])
+        row = 1
+        col = 0
+        for data in self.get_queryset():
+            worksheet.write_row(row, col, [row, data.student.student_name, data.student.student_class, data.extracurricular.name, data.score])
+            row += 1
+        worksheet.autofit()
+        workbook.close()
+        buffer.seek(0)
+
+        UserLog.objects.create(
+            user=request.user.teacher,
+            action_flag="PRINT",
+            app="NILAI",
+            message="Berhasil download nilai semua ekskul/sc dalam format Excel"
+        )
+        send_WA_print(self.request.user.teacher.phone, 'data nilai', f'Ekskul/SC santri')
+        
+        return FileResponse(buffer, as_attachment=True, filename='Nilai Ekskul-SC SMA IT Al Binaa.xlsx')

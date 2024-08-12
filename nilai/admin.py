@@ -1,8 +1,5 @@
 from django.contrib import admin
-from nilai.models import Penilaian
+from nilai.models import Score
 
 # Register your models here.
-
-@admin.register(Penilaian)
-class TampilanAdmin(admin.ModelAdmin):
-    pass
+admin.site.register(Score)

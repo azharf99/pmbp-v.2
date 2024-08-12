@@ -1,23 +1,35 @@
 from django.db import models
-from ekskul.models import StudentOrganization
+from django.urls import reverse
+from django.utils.translation import gettext as _
+from students.models import Student
+from extracurriculars.models import Extracurricular
 
 # Create your models here.
 
-class Penilaian(models.Model):
+class Score(models.Model):
     pilih_nilai = (
         ("A", "A"),
         ("B", "B"),
         ("C", "C"),
     )
-    siswa = models.ForeignKey(StudentOrganization, on_delete=models.CASCADE)
-    nilai = models.CharField(max_length=3, choices=pilih_nilai)
+    extracurricular = models.ForeignKey(Extracurricular, on_delete=models.CASCADE, null=True)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    score = models.CharField(max_length=3, choices=pilih_nilai)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'%s %s' % (self.siswa, self.nilai)
+        return f"{self.student} {self.score}"
 
 
+    def get_absolute_url(self):
+        return reverse("nilai-list")
+    
     class Meta:
-        verbose_name = "Penilaian"
-        verbose_name_plural = "Penilaian"
+        ordering = ["student", "extracurricular"]
+        verbose_name = _("Score")
+        verbose_name_plural = _("Scores")
+        db_table = "scores"
+        indexes = [
+            models.Index(fields=["id",]),
+        ]

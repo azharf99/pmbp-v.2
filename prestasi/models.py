@@ -1,48 +1,64 @@
 from django.db import models
-from ekskul.models import Student
+from students.models import Student
+from django.urls import reverse
+from django.utils.translation import gettext as _
 
 # Create your models here.
 
 class Prestasi(models.Model):
-    kategori = models.CharField(max_length=100)
-    jenis_lomba = models.CharField(max_length=100)
-    tingkat_lomba = models.CharField(max_length=100)
-    tahun_lomba = models.CharField(max_length=10)
-    nama_lomba = models.CharField(max_length=100)
-    Penyelenggara_lomba = models.CharField(max_length=100)
-    peraih_prestasi = models.CharField(max_length=100)
-    kelas_peraih_prestasi = models.CharField(max_length=100, null=True, blank=True)
-    sekolah = models.CharField(max_length=100, default="SMAS IT Al Binaa")
-    bidang_lomba = models.CharField(max_length=100)
-    kategori_kemenangan = models.CharField(max_length=100)
-    sertifikat_1 = models.FileField(upload_to='prestasi/sertifikat', null=True, blank=True)
-    sertifikat_2 = models.FileField(upload_to='prestasi/sertifikat', null=True, blank=True)
+    category = models.CharField(_("Kategori"), max_length=100)
+    type = models.CharField(_("Jenis Lomba"), max_length=100)
+    level = models.CharField(_("Tingkat Lomba"), max_length=100)
+    year = models.CharField(_("Tahun Lomba"), max_length=4)
+    name = models.CharField(_("Nama Lomba"), max_length=100)
+    organizer = models.CharField(_("Penyelenggara Lomba"), max_length=100)
+    awardee = models.CharField(_("Pemenang"), max_length=100)
+    awardee_class = models.CharField(_("Kelas Pemenang"), max_length=100, null=True, blank=True)
+    school = models.CharField(_("Sekolah"), max_length=100, default="SMAS IT Al Binaa")
+    field = models.CharField(_("Bidang Lomba"), max_length=100)
+    predicate = models.CharField(_("Predikat"), max_length=100)
+    certificate = models.FileField(_("Serfifikat"), upload_to='prestasi/sertifikat', null=True, blank=True)
+    photo = models.FileField(_("Foto"), upload_to='prestasi', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "%s %s %s %s" % (self.kategori_kemenangan, self.nama_lomba, self.tahun_lomba, self.peraih_prestasi)
+        return f"{self.awardee} {self.predicate} {self.name} {self.year}"
+    
+    def get_absolute_url(self):
+        return reverse("prestasi-list")
 
-class DokumentasiPrestasi(models.Model):
-    prestasi = models.ForeignKey('Prestasi', on_delete=models.CASCADE)
-    foto = models.FileField(upload_to='prestasi', blank=True, null=True, default='no-image.png')
-    keterangan = models.TextField(max_length=300, blank=True, null=True, default="")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return "%s %s" % (self.prestasi.nama_lomba, self.prestasi.peraih_prestasi)
+    class Meta:
+        ordering = ["-created_at", "-year", "name", "awardee"]
+        verbose_name = _("Prestasi")
+        verbose_name_plural = _("Prestasi")
+        db_table = "prestasi"
+        indexes = [
+            models.Index(fields=["id",]),
+        ]
 
 
 class ProgramPrestasi(models.Model):
-    program_prestasi = models.CharField(max_length=200)
-    tanggal = models.DateField()
-    nama_peserta = models.ManyToManyField(Student)
-    pencapaian = models.CharField(max_length=200)
-    catatan = models.CharField(max_length=200, blank=True, null=True)
+    program_prestasi = models.CharField(_("Program Prestasi"), max_length=200)
+    tanggal = models.DateField(_("Tanggal"), )
+    nama_peserta = models.ManyToManyField(Student, verbose_name=_("Santri"), )
+    pencapaian = models.CharField(_("Pencapaian"), max_length=200)
+    catatan = models.CharField(_("Catatan"), max_length=200, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
     def __str__(self):
         return self.program_prestasi
+    
+
+    def get_absolute_url(self):
+        return reverse("program-prestasi-list")
+
+    class Meta:
+        ordering = ["-tanggal", "program_prestasi"]
+        verbose_name = _("Program Prestasi")
+        verbose_name_plural = _("Program Prestasi")
+        db_table = "program_prestasi"
+        indexes = [
+            models.Index(fields=["id",]),
+        ]

@@ -1,0 +1,52 @@
+{% include 'base.html' %}
+
+{% block content %}
+  <main class="p-4 sm:ml-64 overflow-auto">
+    <h1 class="px-2 text-2xl font-bold text-blue-500 dark:text-white">Teacher Detail</h1>
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2">
+      <a href="{% url 'dashboard' %}" class="pl-2">Dashboard</a>
+      <p class="text-2xl">
+        &triangleright;
+      </p>
+      <a href="{% url 'teacher-list' %}">Teacher List</a>
+      <p class="text-2xl">
+        &triangleright;
+      </p>
+      <a href="">Teacher Detail</a>
+    </div>
+
+
+    <div class="grid grid-cols-1">
+      <!-- Analytics Table -->
+      <div class="p-4 mx-2 my-4 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
+        <h2 class="my-2 text-center text-xl font-semibold">Detail Data Teacher</h2>
+        <div class="my-4 flex justify-center" style="height: 120px;">
+          {% load thumbnail %}
+          <img src="{{object.photo|thumbnail_url:'medium'}}" alt="Foto Guru">
+        </div>
+        <div class="grid grid-cols-2">
+          <p class="p-1 border-b text-green-500 font-bold">NIY</p>
+          <p class="p-1 border-b">: {{object.niy|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">NAMA</p>
+          <p class="p-1 border-b">: {{object.nama_guru|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">TEMPAT LAHIR</p>
+          <p class="p-1 border-b">: {{object.jabatan|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">EMAIL</p>
+          <p class="p-1 border-b">: {{object.email|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">JENIS KELAMIN</p>
+          <p class="p-1 border-b">: {{object.get_jenis_kelamin_display|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">ALAMAT</p>
+          <p class="p-1 border-b">: {{object.alamat|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">HANDPHONE/WA</p>
+          <p class="p-1 border-b">: {{object.phone|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">CREATED</p>
+          <p class="p-1 border-b">: {{object.created_at|date:"l j F Y H:i"|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">UPDATED</p>
+          <p class="p-1 border-b">: {{object.updated_at|date:"l j F Y H:i"|default:"-"}}</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+{% endblock content %}

@@ -1,13 +1,12 @@
 from django.urls import path
-from nilai import views
+from nilai.views import NilaiDetailView, NilaiIndexView, PrintExcelView, NilaiCreateView, NilaiUpdateView, NilaiDeleteView
 
-app_name = 'nilai'
 urlpatterns = [
-    path('', views.NilaiIndexView.as_view(), name='nilai-index'),
-    path('kelas', views.nilai_kelas_view, name='nilai-per-kelas'),
-    path('download', views.print_to_excel, name='print-to-excel'),
-    path('<slug:slug>', views.nilai_detail, name='nilai-detail'),
-    path('<slug:slug>/input', views.nilai_input, name='nilai-input'),
-    path('<slug:slug>/edit/<int:pk>', views.nilai_edit, name='nilai-edit'),
-    path('<slug:slug>/delete/<int:pk>', views.nilai_delete, name='nilai-delete'),
+    path('', NilaiIndexView.as_view(), name='nilai-list'),
+    path('create/', NilaiCreateView.as_view(), name='nilai-create'),
+    path('detail/<int:pk>/', NilaiDetailView.as_view(), name='nilai-detail'),
+    path('update/<int:pk>/', NilaiUpdateView.as_view(), name='nilai-update'),
+    path('delete/<int:pk>/', NilaiDeleteView.as_view(), name='nilai-delete'),
+
+    path('download/', PrintExcelView.as_view(), name='nilai-download'),
 ]

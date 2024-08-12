@@ -61,3 +61,5 @@ db.sqlite3
 /media/
 
 *.json
+
+/x_folder/
