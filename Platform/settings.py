@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'laporan',
     'nilai',
     'olympiads',
+    'projects',
     'prestasi',
     'userlog',
     'users',
@@ -105,20 +106,24 @@ DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
+        },
+        'dev':{
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME' : os.getenv('POSTGRES_DB_NAME'),
+            'USER' : os.getenv('POSTGRES_DB_USER'),
+            'PASSWORD' : os.getenv('POSTGRES_DB_PASSWORD'),
+            'HOST' : os.getenv('POSTGRES_DB_HOST'),
+            'PORT' : os.getenv('POSTGRES_DB_PORT'),
+        },
+        'backup':{
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME' : os.getenv('POSTGRES_DB_NAME'),
+            'USER' : os.getenv('POSTGRES_DB_USER'),
+            'PASSWORD' : os.getenv('POSTGRES_DB_PASSWORD'),
+            'HOST' : os.getenv('POSTGRES_DB_HOST'),
+            'PORT' : os.getenv('POSTGRES_DB_PORT'),
         }
     }
-
-
-# DATABASES = {
-#         'default':{
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME' : os.getenv('POSTGRES_DB_NAME'),
-#             'USER' : os.getenv('POSTGRES_DB_USER'),
-#             'PASSWORD' : os.getenv('POSTGRES_DB_PASSWORD'),
-#             'HOST' : os.getenv('POSTGRES_DB_HOST'),
-#             'PORT' : os.getenv('POSTGRES_DB_PORT'),
-#         }
-#     }
 
 
 # Password validation
@@ -188,6 +193,8 @@ THUMBNAIL_ALIASES = {
         'small': {'size': (150, 150), 'crop': True},
         'medium': {'size': (350, 350), 'crop': True},
         'large': {'size': (750, 750), 'crop': True},
+        'landscape-small': {'size': (400, 225), 'crop': True},
+        'landscape-super-small': {'size': (240, 135), 'crop': True},
         'landscape': {'size': (800, 450), 'crop': True},
     },
 }

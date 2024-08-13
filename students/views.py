@@ -35,7 +35,7 @@ class StudentCreateView(LoginRequiredMixin, CreateView):
         raise PermissionDenied
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
-        messages.success(self.request, "Input Data Gagal! :( Ada kesalahan input!")
+        messages.error(self.request, "Input Data Gagal! :( Ada kesalahan input!")
         return super().form_invalid(form)
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
@@ -174,7 +174,7 @@ class StudentUpdateView(LoginRequiredMixin, UpdateView):
         raise PermissionDenied
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
-        messages.success(self.request, "Update Data Gagal! :( Ada kesalahan input!")
+        messages.error(self.request, "Update Data Gagal! :( Ada kesalahan input!")
         return super().form_invalid(form)
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
@@ -221,7 +221,7 @@ class ActiveStudentListView(ListView):
     template_name = "students/student_active_list.html"
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Extracurricular.objects.prefetch_related("members").values("name", "members__student_name", "members__student_class")
+        return Extracurricular.objects.prefetch_related("members").values("name", "members__student_name", "members__student_class").order_by("name", "members__student_class", "members__student_name")
 
 
 class NonActiveStudentListView(ListView):

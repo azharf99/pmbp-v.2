@@ -57,7 +57,7 @@
       {% for object in object_list %}
       <div class="p-4 mx-2 my-4 bg-white dark:bg-slate-800 rounded-md shadow-lg flex flex-col justify-between">
         {% load thumbnail %}        
-        <img src="{{object.logo|thumbnail_url:'landscape'}}" alt="Logo" class="rounded-md">
+        <img src="{{object.logo|thumbnail_url:'landscape-small'}}" alt="Logo" class="rounded-md">
         <div>
             <p class="m-1 text-green-500 font-bold">Nama {{object.get_tipe_display|default:""}}:</p>
             <p class="m-1">{{object.name|default:"-"}}</p>

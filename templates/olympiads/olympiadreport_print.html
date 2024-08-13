@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laporan {{olympiad_field|default:"Olimpiade"}}</title>
+  <meta content="Data Alumni SMAS IT Al Binaa" name="description" />
+  <meta content="PMBP SMA IT AL Binaa, SMAS IT AL Binaa, PMBP SMA IT AL Binaa, Ekskul, Ekstrakurikuler"
+    name="keywords" />
+  <link rel="canonical" href="https://pmbp.smasitalbinaa.com/" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="PMBP SMAS IT AL BINAA" />
+  <meta property="og:url" content="https://pmbp.smasitalbinaa.com/" />
+  <meta property="og:site_name" content="PMBP SMAS IT AL BINAA IBS" />
+  <meta property="og:image" content="https://pmbp.smasitalbinaa.com/media/prestasi/IMG-20231225-WA0036_K4uvPoa.jpg" />
+  <link rel="icon" href="{% static 'icon/favicon.ico' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'icon/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'icon/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'icon/favicon-16x16.png' %}">
+  <link rel="manifest" href="{% static 'icon/site.webmanifest' %}">
+  <link rel="stylesheet" href="{% static 'css/build.css' %}">
+</head>
+
+<body>
+  <main class="p-4">
+    <div class="flex justify-center items-center gap-4 border-b mb-4">
+      <div class="w-40">
+        <a href="{% url 'report-list' %}">
+          <img class="m-2" src="{% static 'images/Binaaul-Mustaqbal.png' %}" alt="logo-sma">
+        </a>
+      </div>
+      <div class="w-full p-2">
+        <h1 class="text-center font-semibold text-xl">DAFTAR HADIR PEMBINAAN INTERNAL {{olympiad_field.type|default:"Olimpiade"}}</h1>
+        <h2 class="text-center font-semibold">SMAS IT AL BINAA ISLAMIC BOARDING SCHOOL</h2>
+        <h3 class="text-center font-semibold">TAHUN AJARAN {{tahun_ajaran}}</h3>
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <p>Bidang {{olympiad_field.type|default:"Olimpiade"}}</p>
+      <p>: {{olympiad_field.field_name}}</p>
+    </div>
+    <div class="flex gap-2">
+      <p>Pembimbing :</p>
+      <p>{{olympiad_field.teacher}}</p>
+    </div>
+    <div class="flex gap-2">
+      <p>Jadwal :</p>
+      <p>{{olympiad_field.schedule|truncatewords:5}}</p>
+    </div>
+
+    
+    <table class="my-4 table-auto w-full">
+      <thead>
+        <th class="py-1 px-2 border border-gray-400 bg-blue-100">No.</th>
+        <th class="py-1 px-2 border border-gray-400 bg-blue-100">Tanggal</th>
+        <th class="py-1 px-2 border border-gray-400 bg-blue-100">Kehadiran Santri</th>
+        <th class="py-1 px-2 border border-gray-400 bg-blue-100">Foto</th>
+      </thead>
+      
+      <tbody>
+        {% for object in object_list %}
+        <tr>
+          <td class="py-1 px-2 border border-gray-400 text-center text-xs">{{ forloop.counter }}</td>
+          <td class="py-1 px-2 border border-gray-400 text-center text-xs">{{ object.report_date|date:"d/m/Y" }}</td>
+          <td class="py-1 px-2 border border-gray-400 text-xs">{{ object.students.all|join:"<br>" }}</td>
+          <td class="py-1 px-2 border border-gray-400">
+            <div class="flex justify-center">
+              {% load thumbnail %}
+              <img src="{{ object.report_photo|thumbnail_url:'landscape-super-small' }}" alt="Foto{{forloop.counter}}" class="rounded-md">
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+
+    <p class="text-end my-4">Bekasi, {%  now "j F Y" %}</p>
+
+    <div class="grid grid-cols-2">
+      <div class="text-center">
+        <p class="mb-4 p-2">Pembimbing</p>
+        <p class="my-4 p-2">{{olympiad_field.teacher}}</p>
+      </div>
+      <div class="text-center">
+        <p class="mb-4 p-2">Wakasek PMBP</p>
+        <p class="my-4 p-2">Panji Asmara, S.Pd</p>
+      </div>
+    </div>
+
+  </main>
+
+
+</body>
+
+<script>
+  document.addEventListener("DOMContentLoaded", ()=>{
+    window.print()
+  })
+</script>
+
+</html>

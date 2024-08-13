@@ -7,17 +7,17 @@ class PrestasiForm(forms.ModelForm):
         model = Prestasi
         fields = '__all__'
         widgets = {
-            'category': forms.TextInput(attrs={'class': 'form-control'}),
-            'type': forms.TextInput(attrs={'class': 'form-control'}),
-            'level': forms.TextInput(attrs={'class': 'form-control'}),
-            'year': forms.TextInput(attrs={'class': 'form-control'}),
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'organizer': forms.TextInput(attrs={'class': 'form-control'}),
-            'awardee': forms.TextInput(attrs={'class': 'form-control'}),
-            'awardee_class': forms.TextInput(attrs={'class': 'form-control'}),
-            'school': forms.TextInput(attrs={'class': 'form-control'}),
-            'field': forms.TextInput(attrs={'class': 'form-control'}),
-            'predicate': forms.TextInput(attrs={'class': 'form-control'}),
+            'category': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'type': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'level': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'year': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'name': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'organizer': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'awardee': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'awardee_class': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'school': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'field': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'predicate': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
         }
 
 class ProgramPrestasiForm(forms.ModelForm):
@@ -25,9 +25,9 @@ class ProgramPrestasiForm(forms.ModelForm):
         model = ProgramPrestasi
         fields = '__all__'
         widgets = {
-            'program_prestasi' : forms.TextInput(attrs={'class': 'form-control'}),
-            'tanggal' : forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'nama_peserta' : forms.SelectMultiple(attrs={'class': 'form-select'}),
-            'pencapaian' : forms.TextInput(attrs={'class': 'form-control'}),
-            'catatan' : forms.TextInput(attrs={'class': 'form-control'}),
+            'program_prestasi' : forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'tanggal' : forms.DateInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg", 'type': 'date'}),
+            'nama_peserta' : forms.SelectMultiple(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'pencapaian' : forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'catatan' : forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
         }

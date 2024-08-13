@@ -27,16 +27,16 @@ pilihan_waktu = (
 
 jenis = (
         (None, _("Select Type")),
-        ("Ekskul", _("Extracurricular")),
+        ("Ekskul", _("Ekstrakurikuler")),
         ("SC", _("Study Club"))
     )
 
 class Extracurricular(models.Model):
     name = models.CharField(_("Extracurricular/SC Name"), max_length=50)
-    teacher = models.ManyToManyField(Teacher, verbose_name=_("Teachers"))
+    teacher = models.ManyToManyField(Teacher, verbose_name=_("Teachers"), help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
     schedule = models.CharField(_("Schedule"), max_length=15, choices=days)
     time = models.CharField(_("Time"), max_length=15, choices=pilihan_waktu)
-    members = models.ManyToManyField(Student, blank=True, verbose_name=_("Members"))
+    members = models.ManyToManyField(Student, blank=True, verbose_name=_("Members"), help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
     description = models.TextField(blank=True, null=True)
     logo = models.ImageField(upload_to='ekskul/logo', default='no-image.png', blank=True, null=True, help_text="format logo .jpg/.jpeg")
     type = models.CharField(_("Type"), max_length=20, choices=jenis, blank=True)

@@ -48,6 +48,7 @@ urlpatterns = [
     path('proker/', proker, name='proker'),
     path('olympiads/', include('olympiads.urls')),
     path("pages/", include("django.contrib.flatpages.urls")),
+    path('projects/', include('projects.urls')),
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path('students/', include('students.urls')),
     path(

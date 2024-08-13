@@ -7,7 +7,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
     changefreq = "daily"
 
     def items(self):
-        return ["ekskul:data-index", "laporan:laporan-index", "about", "license"]
+        return ["extracurricular-list", "report-list", "prestasi-list", "nilai-list", "olympiad-report-list", "program-prestasi-list", "license"]
 
     def location(self, item):
         return reverse(item)

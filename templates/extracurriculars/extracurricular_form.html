@@ -45,12 +45,17 @@
           {% endfor %}
           {% endif %}
           <h2 class="font-semibold text-xl">{{form_name}} Data Extracurricular/SC</h2>
-          <form action="" method="post" class="flex flex-col gap-2 md:w-3/4 w-full">
+          <form action="" method="post" enctype="multipart/form-data" class="flex flex-col gap-2 md:w-3/4 w-full">
               {% csrf_token %}
               {% for field in form %}
                   <div class="flex flex-col">
                       {{ field.errors }}
                       {{ field.label_tag }} {{ field }}
+                      {% if field.help_text %}
+                        <p class="italic text-xs p-2" id="{{ field.auto_id }}_helptext">
+                          {{ field.help_text|safe }}
+                        </p>
+                      {% endif %}
                   </div>
               {% endfor %}
               
@@ -60,5 +65,23 @@
     </div>
 
   </main>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+    <script>
+        $(document).ready(function () {
+            $('#id_members').selectize({
+                sortField: 'text',
+                maxItems: 100,
+            });
+        });
+        $(document).ready(function () {
+            $('#id_teacher').selectize({
+                sortField: 'text',
+                maxItems: 5,
+            });
+        });
+    </script>
   
 {% endblock content %}

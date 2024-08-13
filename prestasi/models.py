@@ -41,7 +41,7 @@ class Prestasi(models.Model):
 class ProgramPrestasi(models.Model):
     program_prestasi = models.CharField(_("Program Prestasi"), max_length=200)
     tanggal = models.DateField(_("Tanggal"), )
-    nama_peserta = models.ManyToManyField(Student, verbose_name=_("Santri"), )
+    nama_peserta = models.ManyToManyField(Student, verbose_name=_("Santri"), help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
     pencapaian = models.CharField(_("Pencapaian"), max_length=200)
     catatan = models.CharField(_("Catatan"), max_length=200, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

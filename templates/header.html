@@ -29,11 +29,17 @@
         </span>
       </label>
       {% if request.user.is_authenticated %}
-      <a href="{% url 'app-index' %}" class="mx-4 text-sm font-semibold leading-6 text-gray-100 px-2 border rounded-md">Home</a>
-      <div class="rounded-full border-2 border-white mr-4 dark:border-fuchsia-400">
-        {% load thumbnail %}
-        <img class="rounded-full" src="{{ request.user.teacher.photo|thumbnail_url:'avatar' }}" alt="Profile" height="25px"
-          width="25px" />
+      {% load thumbnail %}
+      <div class="px-4 relative">
+        <button class="mx-2 rounded-full border-2 border-white mr-4 dark:border-fuchsia-400" id="avatar">
+          <div>
+            <img class="rounded-full" src="{{ request.user.teacher.photo|thumbnail_url:'avatar' }}" alt="Profile" height="25px" width="25px" />
+          </div>
+        </button>
+        <div class="absolute grid my-2 z-10 left-0 p-2 bg-white rounded-md hidden w-full" id="user_menu">
+          <a href="{% url 'profile' %}" class="p-1 my-2 text-xs font-semibold hover:text-blue-700">Profile</a>
+          <a href="{% url 'logout' %}" class="p-1 my-2 text-red-500 text-xs font-semibold hover:text-blue-700">Log out &rarr;</a>
+        </div>
       </div>
       {% else %}
       <a href="{% url 'app-index' %}" class="mx-4 text-sm font-semibold leading-6 text-gray-100 px-2 border rounded-md">Home</a>
@@ -79,10 +85,16 @@
         </span>
       </label>
       {% if request.user.is_authenticated %}
-      <a href="{% url 'app-index' %}" class="mx-4 text-sm font-semibold leading-6 text-gray-100 px-2 border rounded-md">Home</a>
-      <div class="rounded-full border-2 border-white mr-4 dark:border-fuchsia-400">
-        <img class="rounded-full" src="{{ request.user.teacher.photo|thumbnail_url:'avatar' }}" alt="Profile" height="25px"
-          width="25px" />
+      <div class="px-4 relative">
+        <button class="mx-4 rounded-full border-2 border-white mr-4 dark:border-fuchsia-400" id="avatar2">
+          <div>
+            <img class="rounded-full" src="{{ request.user.teacher.photo|thumbnail_url:'avatar' }}" alt="Profile" height="25px" width="25px" />
+          </div>
+        </button>
+        <div class="absolute grid my-2 z-10 left-0 p-2 bg-white rounded-md hidden w-full" id="user_menu2">
+          <a href="{% url 'profile' %}" class="p-1 my-2 text-xs font-semibold hover:text-blue-700">Profile</a>
+          <a href="{% url 'logout' %}" class="p-1 my-2 text-red-500 text-xs font-semibold hover:text-blue-700">Log out &rarr;</a>
+        </div>
       </div>
       {% else %}
       <a href="{% url 'app-index' %}" class="mx-4 text-sm font-semibold leading-6 text-gray-100 px-2 border rounded-md">Home</a>
@@ -92,3 +104,19 @@
     </div>
   </nav>
 </header>
+
+
+<script>
+  const avatar = document.getElementById("avatar");
+  const user_menu = document.getElementById("user_menu");
+  avatar.addEventListener("click", ()=>{
+      user_menu.classList.toggle("hidden")
+      console.log("Haii")
+  })
+  const avatar2 = document.getElementById("avatar2");
+  const user_menu2 = document.getElementById("user_menu2");
+  avatar2.addEventListener("click", ()=>{
+      user_menu2.classList.toggle("hidden")
+      console.log("Haii")
+  })
+</script>

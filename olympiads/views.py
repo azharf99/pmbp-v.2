@@ -1,6 +1,7 @@
 import locale
 import datetime
 from typing import Any
+from django.conf import settings
 from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 import pytz
@@ -15,6 +16,7 @@ from olympiads.forms import OlympiadFieldForm, OlympiadReportForm
 from olympiads.models import OlympiadField, OlympiadReport
 from userlog.models import UserLog
 from utils.whatsapp import send_WA_create_update_delete, send_WA_print
+from django.utils import timezone
 
 # Create your views here.
 class OlympiadFieldIndexView(ListView):
@@ -24,13 +26,13 @@ class OlympiadFieldIndexView(ListView):
         if self.request.user.is_authenticated:
             if not self.request.user.is_superuser:
                 return OlympiadField.objects.select_related("teacher").prefetch_related("members").filter(teacher=self.request.user.teacher)
-        return OlympiadField.select_related("teacher").prefetch_related("members").objects.all()
+        return OlympiadField.objects.select_related("teacher").prefetch_related("members")
 
 
 class OlympiadFieldCreateView(LoginRequiredMixin, CreateView):
     model = OlympiadField
     form_class = OlympiadFieldForm
-    success_url = reverse_lazy("olympiad-report-create")
+    success_url = reverse_lazy("olympiad-field-create")
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         if request.user.is_superuser:
@@ -135,9 +137,10 @@ class OlympiadReportDetailView(DetailView):
 class OlympiadReportCreateView(LoginRequiredMixin, CreateView):
     model = OlympiadReport
     form_class = OlympiadReportForm
+    success_url = reverse_lazy("olympiad-report-create")
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        if request.user.teacher in OlympiadField.objects.values_list("teacher", flat=True).distinct() or request.user.is_superuser:
+        if request.user.teacher.id in OlympiadField.objects.values_list("teacher", flat=True).distinct() or request.user.is_superuser:
             return super().get(request, *args, **kwargs)
         raise PermissionDenied
 
@@ -168,7 +171,7 @@ class OlympiadReportUpdateView(LoginRequiredMixin, UpdateView):
     form_class = OlympiadReportForm
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        if request.user.teacher in OlympiadField.objects.values_list("teacher", flat=True).distinct() or request.user.is_superuser:
+        if request.user.teacher.id in OlympiadField.objects.values_list("teacher", flat=True).distinct() or request.user.is_superuser:
             return super().get(request, *args, **kwargs)
         raise PermissionDenied
     
@@ -199,7 +202,7 @@ class OlympiadReportDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('olympiad-report-list')
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        if request.user.teacher in OlympiadField.objects.values_list("teacher", flat=True).distinct() or request.user.is_superuser:
+        if request.user.teacher.id in OlympiadField.objects.values_list("teacher", flat=True).distinct() or request.user.is_superuser:
             return super().get(request, *args, **kwargs)
         raise PermissionDenied
     
@@ -215,3 +218,25 @@ class OlympiadReportDeleteView(LoginRequiredMixin, DeleteView):
         send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'laporan bidang bimbingan {data}', 'olympiads/report/')
         messages.success(self.request, "Data berhasil dihapus!")
         return super().form_valid(form)
+
+
+class OlympiadReportPrintView(LoginRequiredMixin, ListView):
+    model = OlympiadReport
+    template_name = "olympiads/olympiadreport_print.html"
+
+    def get_queryset(self):        
+        return OlympiadReport.objects.select_related("field_name").filter(field_name__slug=self.kwargs.get('slug')).order_by('-report_date')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        locale.setlocale(locale.LC_ALL, 'id_ID')
+        context['tahun_ajaran'] = settings.TAHUN_AJARAN
+        context['olympiad_field'] = get_object_or_404(OlympiadField, slug=self.kwargs.get("slug"))
+        UserLog.objects.create(
+            user=self.request.user.teacher,
+            action_flag="PRINT",
+            app="LAPORAN",
+            message=f"berhasil mencetak laporan olimpiade {context['olympiad_field']}"
+        )
+        send_WA_print(self.request.user.teacher.phone, 'laporan olimpiade', f"{context['olympiad_field']}")
+        return context

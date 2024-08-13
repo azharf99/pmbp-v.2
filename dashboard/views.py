@@ -1,17 +1,12 @@
 from typing import Any
-from django.http import FileResponse, HttpRequest, HttpResponse
 from django.db.models import Count, QuerySet
 from django.views.generic import ListView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
-from utils.whatsapp import send_WA_general
 from extracurriculars.models import Extracurricular
 from students.models import Student
 from laporan.models import Report
 from prestasi.models import Prestasi
 from userlog.models import UserLog
-from io import BytesIO
-import xlsxwriter
 
 # Create your views here.
 class HomeView(ListView):
@@ -19,11 +14,11 @@ class HomeView(ListView):
     template_name = 'index.html'
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Prestasi.objects.exclude(photo='no-image.png')[:12]
+        return Prestasi.objects.exclude(photo='no-image.png', photo__isnull=True)[:12]
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['ekskul'] = Extracurricular.objects.prefetch_related('teacher').order_by('type', 'name')
+        context['ekskul'] = Extracurricular.objects.prefetch_related('teacher').exclude(logo='no-image.png').order_by('type', 'name')
         context['kegiatan'] = Report.objects.exclude(photo='no-image.png').select_related('extracurricular')[:12]
         return context
     
@@ -44,7 +39,7 @@ class Dashboard(ListView):
         context["inactive_students_xii"] = Student.objects.filter(student_status="Aktif", student_class__startswith="XII-").exclude(id__in=context["active_students"]).order_by("student_class", "student_name")
         context["active_extracurricular"] = Report.objects.select_related('extracurricular', 'teacher').values_list('extracurricular', flat=True).distinct()
         context["inactive_extracurricular"] = Extracurricular.objects.exclude(id__in=context["active_extracurricular"])
-        context["report"] = Report.objects.select_related('extracurricular', 'teacher').values('report_date').annotate(dcount=Count('report_date')).distinct().order_by('-report_date')[:11]
+        context["report"] = Report.objects.filter(report_date__month=timezone.now().month).select_related('extracurricular', 'teacher').values('report_date').annotate(dcount=Count('report_date')).distinct().order_by('-report_date')[:11]
         context["report_extracurricular"] = Report.objects.select_related('extracurricular', 'teacher').filter(report_date__month=timezone.now().month, report_date__year=timezone.now().year).values('extracurricular__name').annotate(count=Count('extracurricular')).distinct()
         context["logs"] = UserLog.objects.all()[:10]
         return context
