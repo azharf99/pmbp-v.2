@@ -1,6 +1,6 @@
 from django import forms
 from users.models import Teacher
-from django.contrib.auth.forms import BaseUserCreationForm, UserChangeForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model, password_validation
 
@@ -20,7 +20,7 @@ class TeacherForm(forms.ModelForm):
             "phone" : forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
         }
 
-class UserCreateForm(BaseUserCreationForm):
+class UserCreateForm(UserCreationForm):
     password1 = forms.CharField(
         label=_("Password"),
         strip=False,
