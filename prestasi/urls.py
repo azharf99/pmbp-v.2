@@ -1,6 +1,7 @@
 from django.urls import path
 from prestasi.views import PrestasiIndexView, PrestasiCreateView, PrestasiDetailView, PrestasiUpdateView, PrestasiDeleteView, \
                             ProgramPrestasiIndexView, ProgramPrestasiCreateView, ProgramPrestasiUpdateView, ProgramPrestasiDeleteView,\
+                            ProgramPrestasiDetailView,\
                             PretasiPrintExcelView, PrestasiPrintExcelThisYearView, ProgramPrestasiPrintExcelThisYearView
 
 
@@ -13,7 +14,7 @@ urlpatterns = [
 
     path('program/', ProgramPrestasiIndexView.as_view(), name='program-prestasi-list'),
     path('program/create/', ProgramPrestasiCreateView.as_view(), name='program-prestasi-create'),
-    path('program/detail/<int:pk>/', ProgramPrestasiUpdateView.as_view(), name='program-prestasi-detail'),
+    path('program/detail/<int:pk>/', ProgramPrestasiDetailView.as_view(), name='program-prestasi-detail'),
     path('program/update/<int:pk>/', ProgramPrestasiUpdateView.as_view(), name='program-prestasi-update'),
     path('program/delete/<int:pk>/', ProgramPrestasiDeleteView.as_view(), name='program-prestasi-delete'),
 

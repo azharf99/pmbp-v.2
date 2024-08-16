@@ -24,8 +24,8 @@ class ReportIndexView(ListView):
 
     def get_queryset(self) -> QuerySet[Any]:
         if not self.request.user.is_superuser:
-            return Report.objects.filter(teacher=self.request.user.teacher)
-        return Report.objects.all()
+            return Report.objects.select_related("extracurricular").prefetch_related("students",  "teacher").filter(teacher=self.request.user.teacher)
+        return Report.objects.select_related("extracurricular").prefetch_related("students", "teacher").all()
 
 
 class ReportDetailView(DetailView):

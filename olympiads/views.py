@@ -2,6 +2,7 @@ import locale
 import datetime
 from typing import Any
 from django.conf import settings
+from django.db.models.query import QuerySet
 from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 import pytz
@@ -128,6 +129,9 @@ class OlympiadFieldDetailView(DetailView):
 
 class OlympiadReportIndexView(ListView):
     model = OlympiadReport
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return OlympiadReport.objects.select_related("field_name__teacher").prefetch_related("students", "field_name__members").all()
 
 
 class OlympiadReportDetailView(DetailView):

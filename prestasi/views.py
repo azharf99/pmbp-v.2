@@ -122,12 +122,25 @@ class PretasiPrintExcelView(ListView):
         buffer = BytesIO()
         workbook = Workbook(buffer)
         worksheet = workbook.add_worksheet()
-        worksheet.write_row(0, 0, ["Data Prestasi SMA IT AL BINAA"])
-        worksheet.write_row(1, 0, ['No', 'Peraih Prestasi', 'Kelas', 'Kategori Lomba', 'Jenis Lomba', 'Tingkat Lomba', 'Tahun Lomba', 'Nama Lomba', 'Bidang Lomba', 'Predikat', 'Penyelengggara', 'Sekolah'])
+        merge_format = workbook.add_format({
+            "bold": 1,
+            "border": 1,
+            "align": "center",
+            "valign": "vcenter",
+        })
+        title_format = workbook.add_format({
+            "bold": 1,
+            "border": 1,
+            "align": "center",
+            "valign": "vcenter",
+            "fg_color": "yellow",
+        })
+        worksheet.merge_range("A1:L1", "Data Prestasi SMA IT AL BINAA", merge_format)
+        worksheet.write_row(1, 0, ['No', 'Peraih Prestasi', 'Kelas', 'Kategori Lomba', 'Jenis Lomba', 'Tingkat Lomba', 'Tahun Lomba', 'Nama Lomba', 'Bidang Lomba', 'Predikat', 'Penyelengggara', 'Sekolah'], title_format)
         row = 2
         col = 0
         for data in self.queryset:
-            worksheet.write_row(row, col, [row, data.awardee, data.kelas_awardee, data.category, data.type, data.level, data.year, data.name, data.field, data.predicate, data.organizer, data.school])
+            worksheet.write_row(row, col, [row, data.awardee, data.awardee_class, data.category, data.type, data.level, data.year, data.name, data.field, data.predicate, data.organizer, data.school])
             row += 1
 
         worksheet.autofit()
@@ -145,12 +158,26 @@ class PrestasiPrintExcelThisYearView(ListView):
         buffer = BytesIO()
         workbook = Workbook(buffer)
         worksheet = workbook.add_worksheet()
-        worksheet.write_row(0, 0, [f"Data Prestasi SMA IT AL BINAA T.A. {settings.TAHUN_AJARAN}"])
-        worksheet.write_row(1, 0, ['No', 'Peraih Prestasi', 'Kelas', 'Kategori Lomba', 'Jenis Lomba', 'Tingkat Lomba', 'Tahun Lomba', 'Nama Lomba', 'Bidang Lomba', 'Predikat', 'Penyelengggara', 'Sekolah'])
+        merge_format = workbook.add_format({
+            "bold": 1,
+            "border": 1,
+            "align": "center",
+            "valign": "vcenter",
+        })
+        title_format = workbook.add_format({
+            "bold": 1,
+            "border": 1,
+            "align": "center",
+            "valign": "vcenter",
+            "fg_color": "yellow",
+        })
+        worksheet.merge_range("A1:L1", f"Data Prestasi SMA IT AL BINAA T.A. {settings.TAHUN_AJARAN}", merge_format)
+        worksheet.write_row(1, 0, ['No', 'Peraih Prestasi', 'Kelas', 'Kategori Lomba', 'Jenis Lomba', 'Tingkat Lomba', 'Tahun Lomba', 'Nama Lomba', 'Bidang Lomba', 'Predikat', 'Penyelengggara', 'Sekolah'], title_format)
         row = 2
         col = 0
+        worksheet.autofit()
         for data in self.queryset:
-            worksheet.write_row(row, col, [row, data.awardee, data.kelas_awardee, data.category, data.type, data.level, data.year, data.name, data.field, data.predicate, data.organizer, data.school])
+            worksheet.write_row(row, col, [row, data.awardee, data.awardee_class, data.category, data.type, data.level, data.year, data.name, data.field, data.predicate, data.organizer, data.school])
             row += 1
 
         worksheet.autofit()
@@ -171,6 +198,8 @@ class ProgramPrestasiIndexView(ListView):
         c["tahun_ajaran"] = settings.TAHUN_AJARAN
         return c
 
+class ProgramPrestasiDetailView(DetailView):
+    model = ProgramPrestasi
 
 
 class ProgramPrestasiCreateView(LoginRequiredMixin, CreateView):
