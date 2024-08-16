@@ -29,7 +29,7 @@
 </head>
 
 <body class="bg-gray-100 dark:bg-black dark:text-gray-200">
-  <header class="bg-indigo-500 dark:bg-gradient-to-r dark:from-slate-900 dark:via-purple-800 dark:to-black w-full sticky top-0">
+  <header class="bg-blue-500 dark:bg-gradient-to-r dark:from-slate-900 dark:via-purple-800 dark:to-black w-full sticky top-0">
     <nav class="backdrop-blur-sm mx-auto flex w-full items-center justify-between p-6 lg:px-8" aria-label="Global">
       <div class="flex lg:flex-1">
         <a href="{% url 'app-index' %}" class="-m-1.5 p-1.5">
@@ -39,7 +39,7 @@
       </div>
       <div class="flex lg:hidden items-center">
         <label for="AcceptConditions2"
-              class="relative inline-block h-6 w-12 mx-4 cursor-pointer rounded-full bg-gray-300 transition [-webkit-tap-highlight-color:_transparent] has-[:checked]:bg-green-500">
+              class="relative inline-block h-6 w-12 mr-4 cursor-pointer rounded-full bg-gray-300 transition [-webkit-tap-highlight-color:_transparent] has-[:checked]:bg-green-500">
               <input type="checkbox" id="AcceptConditions2"
                 class="peer sr-only [&:checked_+_span_svg[data-checked-icon]]:block [&:checked_+_span_svg[data-unchecked-icon]]:hidden" />
     
@@ -55,9 +55,22 @@
     
               </span>
         </label>
-        <div class="rounded-full p-1 border-2 border-gray-300 mr-4 dark:border-fuchsia-400 bg-white">
-          <img src="{% static 'images/Binaaul-Mustaqbal.png' %}" alt="Profile" height="25px" width="25px">
+        {% if request.user.is_authenticated %}
+        <div class="px-4 relative">
+          <button class="mr-4 rounded-full border-2 border-white dark:border-fuchsia-400" id="avatar">
+            <div>
+              <img class="rounded-full" src="{{ request.user.teacher.photo|thumbnail_url:'avatar' }}" alt="Profile" height="25px" width="25px" />
+            </div>
+          </button>
+          <div class="absolute grid my-2 z-10 left-0 p-2 bg-white dark:bg-gray-800 rounded-md hidden w-full" id="user_menu">
+            <a href="{% url 'profile' %}" class="p-1 my-2 text-xs font-semibold hover:text-blue-700">Profile</a>
+            <form action="{% url 'logout' %}" method="post" class="hover:bg-indigo-200 dark:hover:bg-gray-700 rounded-lg">
+              {% csrf_token %}
+              <input type="submit" value="Keluar &rarr;" class="text-xs p-1 text-red-500 font-semibold leading-6 py-1 cursor-pointer">
+            </form>
+          </div>
         </div>
+        {% endif %}
         <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
           id="openMobileNav">
           <span class="sr-only">Open main menu</span>
@@ -77,7 +90,7 @@
       
       <div class="hidden lg:flex lg:flex-1 lg:justify-end items-center">
         <label for="AcceptConditions"
-          class="relative inline-block h-6 w-12 mx-4 cursor-pointer rounded-full bg-gray-300 transition [-webkit-tap-highlight-color:_transparent] has-[:checked]:bg-green-500">
+          class="relative inline-block h-6 w-12 mr-4 cursor-pointer rounded-full bg-gray-300 transition [-webkit-tap-highlight-color:_transparent] has-[:checked]:bg-green-500">
           <input type="checkbox" id="AcceptConditions"
             class="peer sr-only [&:checked_+_span_svg[data-checked-icon]]:block [&:checked_+_span_svg[data-unchecked-icon]]:hidden" />
   
@@ -94,15 +107,21 @@
           </span>
         </label>
         {% if request.user.is_authenticated %}
-        <div class="rounded-full border-2 border-white mr-4 dark:border-fuchsia-400">
-          {% load thumbnail %}
-          <img src="{{request.user.teacher.photo|thumbnail_url:'avatar'}}" alt="Profile" height="30px" width="30px" class="rounded-full">
+        <div class="px-4 relative">
+          <button class="rounded-full mr-4 border-2 border-white  dark:border-fuchsia-400" id="avatar2">
+            <div>
+              <img class="rounded-full" src="{{ request.user.teacher.photo|thumbnail_url:'avatar' }}" alt="Profile" height="25px" width="25px" />
+            </div>
+          </button>
+          <div class="absolute grid my-2 z-10 left-0 p-2 bg-white dark:bg-gray-800 rounded-md hidden w-full" id="user_menu2">
+            <a href="{% url 'profile' %}" class="p-1 my-2 text-xs font-semibold hover:text-blue-700">Profile</a>
+            <form action="{% url 'logout' %}" method="post" class="hover:bg-indigo-200 dark:hover:bg-gray-700 rounded-lg">
+              {% csrf_token %}
+              <input type="submit" value="Keluar &rarr;" class="text-xs p-1 text-red-500 font-semibold leading-6 py-1 cursor-pointer">
+            </form>
+          </div>
         </div>
         <a href="{% url 'dashboard' %}" class="text-sm font-semibold leading-6 text-gray-100 px-2 py-1 border rounded-md">Dashboard</a>
-        <form action="{% url 'logout' %}" method="post" class="mx-2 hover:bg-indigo-200 dark:hover:bg-gray-700 rounded-lg">
-          {% csrf_token %}
-          <input type="submit" value="Keluar &rarr;" class="text-sm font-semibold leading-6 text-gray-100 p-2">
-        </form>
         {% else %}
         <a href="{% url 'login' %}" class="text-sm font-semibold leading-6 text-gray-100">Masuk <span
             aria-hidden="true">&rarr;</span></a>
@@ -114,12 +133,8 @@
       <!-- Background backdrop, show/hide based on slide-over state. -->
       <div class="fixed inset-0 z-10"></div>
       <div
-        class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white dark:bg-black  px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-        <div class="flex items-center justify-between">
-          <a href="#" class="-m-1.5 p-1.5">
-            <span class="sr-only">PMBP - SMAS IT AL BINAA</span>
-            <img class="h-8 w-auto" src="{% static 'images/Binaaul-Mustaqbal.png' %}" alt="" />
-          </a>
+        class="fixed inset-y-0 right-0 z-10 w-3/4 overflow-y-auto bg-white dark:bg-black  px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <div class="flex items-center justify-end">
           <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-white" id="closeMobileNav">
             <span class="sr-only">Close menu</span>
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -166,7 +181,7 @@
   
 
   <main>
-    <section class="bg-indigo-500 dark:bg-gradient-to-r dark:from-slate-900 dark:to-black md:flex md:items-center">
+    <section class="bg-blue-500 dark:bg-gradient-to-r dark:from-slate-900 dark:to-black md:flex md:items-center">
       <div class="py-4 px-4 md:text-left text-center lg:py-16 md:w-3/4">
         <h1
           class="mb-4 text-4xl lg:px-10 font-extrabold tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-b from-white to-teal-200 md:text-5xl lg:text-6xl dark:via-fuchsia-400 dark:to-white">
@@ -210,13 +225,13 @@
         <div class="flex items-start gap-4 p-2">
           <img
             src="{{object.logo|thumbnail_url:'small'}}"
-            alt="{{object.nama_ekskul|title}} {{forloop.counter}}" class="size-20 rounded-lg object-cover" />
+            alt="{{object.name|title}} {{forloop.counter}}" class="size-20 rounded-lg object-cover" />
 
           <div>
             <h3 class="text-lg/tight font-medium">
-              {{object.nama_ekskul|title}}
+              {{object.name|title}}
             </h3>
-            {% for pembina in object.pembina.all %}
+            {% for pembina in object.teacher.all %}
             <p class="mt-0.5">
               {{pembina.teacher_name|title}}
             </p>
@@ -236,18 +251,18 @@
         <div class="flex items-start gap-4 p-2">
           <img
             src="{{object.photo|thumbnail_url:'medium'}}"
-            alt="{{object.prestasi.peraih_prestasi|title}} {{forloop.counter}}" class="size-20 rounded-lg object-cover" />
+            alt="{{object.awardee|title}} {{forloop.counter}}" class="size-20 rounded-lg object-cover" />
 
           <div>
             <h3 class="text-lg/tight font-medium">
-              {{object.prestasi.peraih_prestasi|title}}
+              {{object.awardee|title}}
             </h3>
             
             <p class="mt-0.5">
-              {{object.prestasi.kategori_kemenangan|title}}
+              {{object.predicate|title}}
             </p>
             <p class="mt-0.5">
-              {{object.prestasi.nama_lomba|title}}
+              {{object.name|title}} {{object.year}}
             </p>
           </div>
         </div>
@@ -374,6 +389,20 @@
   </footer>
 
   <script src="{% static 'js/dashboard.js' %}"></script>
+  <script>
+    const avatar = document.getElementById("avatar");
+    const user_menu = document.getElementById("user_menu");
+    avatar.addEventListener("click", ()=>{
+        user_menu.classList.toggle("hidden")
+        console.log("Haii")
+    })
+    const avatar2 = document.getElementById("avatar2");
+    const user_menu2 = document.getElementById("user_menu2");
+    avatar2.addEventListener("click", ()=>{
+        user_menu2.classList.toggle("hidden")
+        console.log("Haii")
+    })
+  </script>
 </body>
 
 </html>

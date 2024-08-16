@@ -23,7 +23,7 @@ class ReportIndexView(ListView):
     paginate_by = 10
 
     def get_queryset(self) -> QuerySet[Any]:
-        if not self.request.user.is_superuser:
+        if self.request.user.is_authenticated and not self.request.user.is_superuser:
             return Report.objects.select_related("extracurricular").prefetch_related("students",  "teacher").filter(teacher=self.request.user.teacher)
         return Report.objects.select_related("extracurricular").prefetch_related("students", "teacher").all()
 

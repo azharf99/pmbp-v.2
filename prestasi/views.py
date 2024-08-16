@@ -308,13 +308,13 @@ class ProgramPrestasiPrintExcelThisYearView(ListView):
         worksheet.merge_range("A1:F1", "Program Prestasi SMA IT Al Binaa Tahun Ajaran 2024-2025", merge_format)
         worksheet.merge_range("A2:F2", f"Tahun Ajaran {settings.TAHUN_AJARAN}", merge_format)
 
-        worksheet.write_row(3, 0, ['No', 'Program Prestasi', 'Tanggal', 'Nama Peserta', 'Pencapaian', 'Catatan'], title_format)
+        worksheet.write_row(3, 0, ['No', 'Program Prestasi', 'Tanggal', 'Nama Peserta', 'Kelas Peserta', 'Pencapaian', 'Catatan'], title_format)
         row = 4
         num = 1
         col = 0
         for data in self.queryset:
             for peserta in data.nama_peserta.all():
-                worksheet.write_row(row, col, [num, data.program_prestasi, data.tanggal, peserta.nama_siswa, data.pencapaian, data.catatan])
+                worksheet.write_row(row, col, [num, data.program_prestasi, f"{data.tanggal}", peserta.student_name, peserta.student_class, data.pencapaian, data.catatan])
                 num += 1
                 row += 1
 
