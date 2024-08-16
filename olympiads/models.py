@@ -1,3 +1,5 @@
+import os
+from uuid import uuid4
 from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
@@ -5,6 +7,20 @@ from users.models import Teacher
 from students.models import Student
 from django.utils.translation import gettext as _
 # Create your models here.
+
+def path_and_rename(path):
+    def wrapper(instance, filename):
+        ext = filename.split('.')[-1]
+        # get filename
+        if instance.pk:
+            filename = '{}_{}.{}'.format(instance.field_name, instance.report_date, ext)
+        else:
+            # set filename as random string
+            filename = '{}.{}'.format(uuid4().hex, ext)
+        # return the whole path to the file
+        return os.path.join(path, filename)
+    return wrapper
+
 
 class OlympiadField(models.Model):
     field_name = models.CharField(_("Olympiad Field Name"), max_length=50)
@@ -41,7 +57,7 @@ class OlympiadReport(models.Model):
     field_name = models.ForeignKey(OlympiadField, on_delete=models.CASCADE, verbose_name=_("Olympiad Field"))
     report_date = models.DateField(_("Report Date"))
     students = models.ManyToManyField(Student, blank=True, verbose_name=_("Student's Students"), help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
-    report_photo = models.ImageField(_("Report Photo"), upload_to='olimpiade', default='no-image.png', help_text="Format foto harus .jpg atau .jpeg")
+    report_photo = models.ImageField(_("Report Photo"), upload_to=path_and_rename('olimpiade'), default='no-image.png', help_text="Format foto harus .jpg atau .jpeg")
     notes = models.TextField(_("Olympiad Notes"), max_length=200, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

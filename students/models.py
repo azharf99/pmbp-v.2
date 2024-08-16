@@ -1,9 +1,9 @@
-from tkinter import N
-from turtle import mode
+import os
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.utils import timezone
+from uuid import uuid4
 
 pilih_kelas = (
         ('X-MIPA-A', 'X-A'),
@@ -32,6 +32,20 @@ pilih_kelas = (
         ('XII-MIPA-H', 'XII-H'),
     )
 
+def path_and_rename(path):
+    def wrapper(instance, filename):
+        ext = filename.split('.')[-1]
+        # get filename
+        if instance.pk:
+            filename = '{}_{}.{}'.format(instance.nis, instance.student_name, ext)
+        else:
+            # set filename as random string
+            filename = '{}.{}'.format(uuid4().hex, ext)
+        # return the whole path to the file
+        return os.path.join(path, filename)
+    return wrapper
+
+
 # Create your models here.
 class Student(models.Model):
     nis = models.CharField(max_length=20, unique=True)
@@ -45,7 +59,7 @@ class Student(models.Model):
     email = models.EmailField(max_length=50, blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
     student_status = models.CharField(max_length=20, blank=True, default="Aktif")
-    photo = models.ImageField(upload_to='student', blank=True, null=True, default='blank-profile.png', help_text="Format foto .jpg/.jpeg")
+    photo = models.ImageField(upload_to=path_and_rename('student'), blank=True, null=True, default='blank-profile.png', help_text="Format foto .jpg/.jpeg")
     academic_year = models.CharField(max_length=20, blank=True, null=True, default=f"{timezone.now().year}/{timezone.now().year + 1}")
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
