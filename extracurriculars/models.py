@@ -33,10 +33,10 @@ jenis = (
 
 class Extracurricular(models.Model):
     name = models.CharField(_("Extracurricular/SC Name"), max_length=50)
-    teacher = models.ManyToManyField(Teacher, verbose_name=_("Teachers"), help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
+    teacher = models.ManyToManyField(Teacher, verbose_name=_("Teachers"), help_text=_("Ketik nama yang ingin dicari dan pilih pembimbing. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
     schedule = models.CharField(_("Schedule"), max_length=15, choices=days)
     time = models.CharField(_("Time"), max_length=15, choices=pilihan_waktu)
-    members = models.ManyToManyField(Student, blank=True, verbose_name=_("Members"), help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
+    members = models.ManyToManyField(Student, blank=True, verbose_name=_("Members"), help_text=_("Ketik nama yang ingin dicari dan pilih anggota ekskul. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
     description = models.TextField(blank=True, null=True)
     logo = models.ImageField(upload_to='ekskul/logo', default='no-image.png', blank=True, null=True, help_text="format logo .jpg/.jpeg")
     type = models.CharField(_("Type"), max_length=20, choices=jenis, blank=True)

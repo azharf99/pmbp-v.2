@@ -8,10 +8,10 @@ from students.models import Student
 # Create your models here.
 class Report(models.Model):
     extracurricular = models.ForeignKey(Extracurricular, on_delete=models.CASCADE)
-    teacher = models.ManyToManyField(Teacher, help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
+    teacher = models.ManyToManyField(Teacher, help_text=_("Ketik nama yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
     report_date = models.DateField(_("Report Date"))
     report_notes = models.TextField(_("Notes"), max_length=200, blank=True)
-    students = models.ManyToManyField(Student, help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
+    students = models.ManyToManyField(Student, help_text=_("Ketik nama yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
     photo = models.ImageField(upload_to='ekskul/laporan', default='no-image.png', help_text=_("Image must be .jpg/.jpeg/.png format"))
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

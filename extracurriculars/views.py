@@ -56,6 +56,7 @@ class ExtracurricularCreateView(LoginRequiredMixin, CreateView):
         send_WA_create_update_delete(self.request.user.teacher.phone, "menambahkan", f"ekskul {self.object}", "data/", f"{self.object.slug}/")
         messages.success(self.request, "Input Data Berhasil!")
         return HttpResponseRedirect(self.get_success_url())
+
     
 
 class ExtracurricularUpdateView(LoginRequiredMixin, UpdateView):

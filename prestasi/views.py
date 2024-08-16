@@ -21,6 +21,11 @@ class PrestasiIndexView(ListView):
     queryset = Prestasi.objects.filter(created_at__gt=settings.TANGGAL_TAHUN_AJARAN)
     paginate_by = 9
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        c["tahun_ajaran"] = settings.TAHUN_AJARAN
+        return c
+
 
 class PrestasiDetailView(DetailView):
     model = Prestasi
@@ -160,6 +165,11 @@ class ProgramPrestasiIndexView(ListView):
     model = ProgramPrestasi
     queryset = ProgramPrestasi.objects.filter(tanggal__gt=settings.TANGGAL_TAHUN_AJARAN).order_by('-created_at', '-tanggal',)
     paginate_by = 10
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        c["tahun_ajaran"] = settings.TAHUN_AJARAN
+        return c
 
 
 

@@ -10,7 +10,7 @@ class OlympiadField(models.Model):
     field_name = models.CharField(_("Olympiad Field Name"), max_length=50)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, verbose_name=_("Olympiad's Teacher"))
     schedule = models.TextField(_("Olympiad Field Schedule"), max_length=200)
-    members = models.ManyToManyField(Student, blank=True,  verbose_name=_("Olympiad's Students"), help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
+    members = models.ManyToManyField(Student, blank=True,  verbose_name=_("Olympiad's Students"), help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
     type = models.CharField(_("Olympiad Type"), max_length=50, choices=(("KSM", _("KSM")), ("OSN", _("OSN"))))
     slug = models.SlugField()
     created_at = models.DateTimeField(auto_now_add=True)

@@ -40,7 +40,7 @@ class Dashboard(ListView):
         context["active_extracurricular"] = Report.objects.select_related('extracurricular', 'teacher').values_list('extracurricular', flat=True).distinct()
         context["inactive_extracurricular"] = Extracurricular.objects.exclude(id__in=context["active_extracurricular"])
         context["report"] = Report.objects.filter(report_date__month=timezone.now().month).select_related('extracurricular', 'teacher').values('report_date').annotate(dcount=Count('report_date')).distinct().order_by('-report_date')[:11]
-        context["report_extracurricular"] = Report.objects.select_related('extracurricular', 'teacher').filter(report_date__month=timezone.now().month, report_date__year=timezone.now().year).values('extracurricular__name').annotate(count=Count('extracurricular')).distinct()
+        context["report_extracurricular"] = Report.objects.select_related('extracurricular', 'teacher').filter(report_date__month=timezone.now().month, report_date__year=timezone.now().year).values('extracurricular__name').annotate(count=Count('extracurricular')).order_by().distinct()
         context["logs"] = UserLog.objects.all()[:10]
         return context
 

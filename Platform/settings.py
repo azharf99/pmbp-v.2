@@ -193,8 +193,8 @@ THUMBNAIL_ALIASES = {
         'small': {'size': (150, 150), 'crop': True},
         'medium': {'size': (350, 350), 'crop': True},
         'large': {'size': (750, 750), 'crop': True},
-        'landscape-small': {'size': (400, 225), 'crop': True},
         'landscape-super-small': {'size': (240, 135), 'crop': True},
+        'landscape-small': {'size': (400, 225), 'crop': True},
         'landscape': {'size': (800, 450), 'crop': True},
     },
 }

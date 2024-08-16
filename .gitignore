@@ -63,3 +63,5 @@ db.sqlite3
 *.json
 
 /x_folder/
+
+loader.py

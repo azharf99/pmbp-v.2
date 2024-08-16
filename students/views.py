@@ -221,7 +221,7 @@ class ActiveStudentListView(ListView):
     template_name = "students/student_active_list.html"
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Extracurricular.objects.prefetch_related("members").values("name", "members__student_name", "members__student_class").order_by("name", "members__student_class", "members__student_name")
+        return Extracurricular.objects.prefetch_related("members").filter(members__isnull=False).values("name", "members__student_name", "members__student_class").order_by("members__student_class", "members__student_name", "name")
 
 
 class NonActiveStudentListView(ListView):
@@ -270,7 +270,6 @@ class DownloadExcelActiveStudent(LoginRequiredMixin, ListView):
         send_WA_general(request.user.teacher.phone, 'download', 'data santri aktif ekskul')
 
         return FileResponse(buffer, as_attachment=True, filename='Santri Aktf Ekskul SMA IT Al Binaa.xlsx')
-        return HttpResponse("Hai")
     
 
 class DownloadExcelInactiveStudent(LoginRequiredMixin, ListView):

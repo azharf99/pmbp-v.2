@@ -9,7 +9,7 @@ from django.utils.translation import gettext as _
 # Create your models here.
 class Team(models.Model):
     team_leader = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name=_("Ketua Tim"), related_name='team_leaders')
-    members = models.ManyToManyField(Student, verbose_name=_("Anggota Tim"), related_name='teams', help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
+    members = models.ManyToManyField(Student, verbose_name=_("Anggota Tim"), related_name='teams', help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

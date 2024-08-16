@@ -2,34 +2,46 @@
 
 {% block content %}
   <main class="p-4 sm:ml-64 overflow-auto">
-    <h1 class="px-2 text-2xl font-bold text-blue-500 dark:text-white">Laporan Detail</h1>
+    <h1 class="px-2 text-2xl font-bold text-blue-500 dark:text-white">Prestasi Detail</h1>
     <!-- Breadcrumb -->
     <div class="flex items-center gap-2">
       <a href="{% url 'dashboard' %}" class="pl-2">Dashboard</a>
       <p class="text-2xl">
         &triangleright;
       </p>
-      <a href="{% url 'report-list' %}">Laporan List</a>
+    <a href="{% url 'prestasi-list' %}">Prestasi List</a>
       <p class="text-2xl">
         &triangleright;
       </p>
-      <a href="">Laporan Detail</a>
+      <a href="">Prestasi Detail</a>
     </div>
 
 
     <div class="grid grid-cols-1">
       <!-- Analytics Table -->
       <div class="p-4 mx-2 my-4 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
-        <h2 class="my-2 text-center text-xl font-semibold">Detail Data Laporan</h2>
+        <h2 class="my-2 text-center text-xl font-semibold">Detail Data Prestasi</h2>
         <div class="grid grid-cols-2">
-          <p class="p-1 border-b text-green-500 font-bold">NAMA {{object.extracurricular.get_type_display|default:""}}</p>
-          <p class="p-1 border-b">: {{object.extracurricular.name|default:"-"}}</p>
-          <p class="p-1 border-b text-green-500 font-bold">PEMBIMBING:</p>
-          <p class="p-1 border-b">: {{object.teacher.all|join:"., "}}</p>
-          <p class="p-1 border-b text-green-500 font-bold">TANGGAL LATIHAN:</p>
-          <p class="p-1 border-b">: {{object.report_date|date:"l j F Y"|default:"-"}}</p>
-          <p class="p-1 border-b text-green-500 font-bold">JUMLAH SANTRI:</p>
-          <p class="p-1 border-b">: {{object.students.all|join:"<br>: "|default:"0"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">PERAIH PRESTASI:</p>
+          <p class="p-1 border-b">: {{object.awardee}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">KELAS PERAIH PRESTASI:</p>
+          <p class="p-1 border-b">: {{object.awardee_class}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">NAMA PRESTASI</p>
+          <p class="p-1 border-b">: {{object.name|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">TINGKAT LOMBA:</p>
+          <p class="p-1 border-b">: {{object.level|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">KATEGORI LOMBA:</p>
+          <p class="p-1 border-b">: {{object.type|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">BIDANG:</p>
+          <p class="p-1 border-b">: {{object.field|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">TAHUN LOMBA:</p>
+          <p class="p-1 border-b">: {{object.year|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">PENYELENGGARA:</p>
+          <p class="p-1 border-b">: {{object.organizer|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold">SEKOLAH:</p>
+          <p class="p-1 border-b">: {{object.school|upper|default:"-"}}</p>
+          <p class="p-1 border-b text-green-500 font-bold py-2">SERTIFIKAT:</p>
+          <p class="p-1 border-b py-2">: <a href="{{object.certificate|default:'#'}}" class="rounded-md bg-green-500 p-1 text-white font-semibold">&downarrow; Sertifikat</a></p>
           <p class="p-1 border-b text-green-500 font-bold">Catatan:</p>
           <p class="p-1 border-b">: {{object.report_notes|default:"-"}}</p>
           <p class="p-1 border-b text-green-500 font-bold">CREATED AT</p>
@@ -39,7 +51,7 @@
         </div>
         <p class="p-1 border-b text-green-500 font-bold">FOTO:</p>
         {% load thumbnail %}
-        <p class="p-1 border-b"><img src="{{object.photo|thumbnail_url:'landscape'}}" alt="Foto Bimbingan"></p>
+        <p class="p-1 border-b"><img src="{{object.photo|thumbnail_url:'large'}}" alt="Foto Bimbingan"></p>
       </div>
     </div>
 

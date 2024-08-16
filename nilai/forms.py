@@ -5,6 +5,7 @@ class ScoreForm(forms.ModelForm):
     class Meta:
         model = Score
         fields = '__all__'
+        exclude = ["academic_year"]
         widgets = {
             'extracurricular': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             'student': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),

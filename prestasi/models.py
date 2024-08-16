@@ -18,7 +18,7 @@ class Prestasi(models.Model):
     field = models.CharField(_("Bidang Lomba"), max_length=100)
     predicate = models.CharField(_("Predikat"), max_length=100)
     certificate = models.FileField(_("Serfifikat"), upload_to='prestasi/sertifikat', null=True, blank=True)
-    photo = models.FileField(_("Foto"), upload_to='prestasi', null=True, blank=True)
+    photo = models.ImageField(_("Foto"), upload_to='prestasi', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

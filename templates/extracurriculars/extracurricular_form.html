@@ -73,15 +73,20 @@
         $(document).ready(function () {
             $('#id_members').selectize({
                 sortField: 'text',
-                maxItems: 100,
+                delimiter: "-",
+                maxItems: 80,
             });
         });
         $(document).ready(function () {
             $('#id_teacher').selectize({
                 sortField: 'text',
+                
                 maxItems: 5,
             });
         });
     </script>
+    {% if form_name == "Create" %}
+
+    {% endif %}
   
 {% endblock content %}
