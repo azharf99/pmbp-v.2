@@ -1,7 +1,12 @@
 from django import forms
 from extracurriculars.models import Extracurricular
+from students.models import Student
 
 class ExtracurricularForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields['members'].queryset = Student.objects.filter(student_status="Aktif")
+        
     class Meta:
         model = Extracurricular
         fields = '__all__'

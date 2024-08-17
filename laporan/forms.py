@@ -1,7 +1,12 @@
 from django import forms
 from laporan.models import Report
+from students.models import Student
 
 class ReportForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields['students'].queryset = Student.objects.filter(student_status="Aktif")
+
     class Meta:
         model = Report
         fields = '__all__'

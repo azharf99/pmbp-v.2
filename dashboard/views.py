@@ -44,7 +44,14 @@ class Dashboard(ListView):
         context["logs"] = UserLog.objects.all()[:10]
         return context
 
+class InactiveReportView(ListView):
+    model = Report
+    template_name = "extracurriculars/extracurricular_inactive_list.html"
 
+    def get_queryset(self) -> QuerySet[Any]:
+        active = Report.objects.filter(report_date__month=timezone.now().month, report_date__year=timezone.now().year).select_related('extracurricular').values_list('extracurricular', flat=True).distinct()
+        data = Extracurricular.objects.exclude(id__in=active)
+        return data
 
     
 

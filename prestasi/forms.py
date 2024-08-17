@@ -1,5 +1,6 @@
 from django import forms
 from prestasi.models import Prestasi, ProgramPrestasi
+from students.models import Student
 
 
 class PrestasiForm(forms.ModelForm):
@@ -21,6 +22,10 @@ class PrestasiForm(forms.ModelForm):
         }
 
 class ProgramPrestasiForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields['nama_peserta'].queryset = Student.objects.filter(student_status="Aktif")
+        
     class Meta:
         model = ProgramPrestasi
         fields = '__all__'

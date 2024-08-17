@@ -1,7 +1,12 @@
 from django import forms
 from olympiads.models import OlympiadField, OlympiadReport
+from students.models import Student
 
 class OlympiadFieldForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields['members'].queryset = Student.objects.filter(student_status="Aktif")
+        
     class Meta:
         model = OlympiadField
         fields = '__all__'
@@ -15,6 +20,10 @@ class OlympiadFieldForm(forms.ModelForm):
         }
 
 class OlympiadReportForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields['students'].queryset = Student.objects.filter(student_status="Aktif")
+
     class Meta:
         model = OlympiadReport
         fields = '__all__'
