@@ -39,16 +39,16 @@ class StudentCreateView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        self.obj = form.save(commit=False)
+        self.object = form.save()
         UserLog.objects.create(
                 user=self.request.user.teacher,
                 action_flag="CREATE",
                 app="STUDENT",
-                message=f"berhasil menambahkan data santri {self.obj}"
+                message=f"berhasil menambahkan data santri {self.object}"
             )
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'data santri {self.obj}', 'students/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'data santri {self.object}', 'students/')
         messages.success(self.request, "Input Data Berhasil! :)")
-        return super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
@@ -178,16 +178,16 @@ class StudentUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        self.obj = form.save(commit=False)
+        self.object = form.save()
         UserLog.objects.create(
                 user=self.request.user.teacher,
                 action_flag="UPDATE",
                 app="STUDENT",
-                message=f"berhasil update data santri {self.obj}"
+                message=f"berhasil update data santri {self.object}"
             )
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'update', f'data santri {self.obj}', 'students/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'update', f'data santri {self.object}', 'students/')
         messages.success(self.request, "Update Data Berhasil! :)")
-        return super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
@@ -204,14 +204,14 @@ class StudentDeleteView(LoginRequiredMixin, DeleteView):
         raise PermissionDenied
     
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        self.obj = self.get_object()
+        self.object = self.get_object()
         UserLog.objects.create(
                 user=self.request.user.teacher,
                 action_flag="DELETE",
                 app="STUDENT",
-                message=f"berhasil menghapus data santri {self.obj}"
+                message=f"berhasil menghapus data santri {self.object}"
             )
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f'data santri {self.obj}', 'students/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f'data santri {self.object}', 'students/')
         messages.success(self.request, "Data Berhasil Dihapus! :)")
         return super().post(request, *args, **kwargs)
 

@@ -56,9 +56,9 @@ class OlympiadFieldCreateView(LoginRequiredMixin, CreateView):
                 user=self.request.user.teacher,
                 action_flag="CREATE",
                 app="OLYMPIADS",
-                message=f"berhasil menambahkan bidang {self.object}"
+                message=f"berhasil menambahkan bidang olimpiade {self.object}"
             )
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'bidang {self.object}', 'olympiads/', f'detail/{self.object.slug}/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'bidang olimpiade {self.object}', 'olympiads/', f'detail/{self.object.slug}/')
         messages.success(self.request, "Data berhasil ditambahkan!")
         return HttpResponseRedirect(self.get_success_url())
     
@@ -88,9 +88,9 @@ class OlympiadFieldUpdateView(LoginRequiredMixin, UpdateView):
                 user=self.request.user.teacher,
                 action_flag="UPDATE",
                 app="OLYMPIADS",
-                message=f"berhasil mengubah bidang {self.object}"
+                message=f"berhasil mengubah bidang olimpiade {self.object}"
             )
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'bidang {self.object}', 'olympiads/', f'detail/{self.object.slug}/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'bidang olimpiade {self.object}', 'olympiads/', f'detail/{self.object.slug}/')
         messages.success(self.request, "Update Data berhasil!")
         return HttpResponseRedirect(self.get_success_url())    
     
@@ -115,9 +115,9 @@ class OlympiadFieldDeleteView(LoginRequiredMixin, DeleteView):
                 user=self.request.user.teacher,
                 action_flag="DELETE",
                 app="OLYMPIADS",
-                message=f"berhasil menghapus bidang {self.object}"
+                message=f"berhasil menghapus bidang olimpiade {self.object}"
             )
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f'bidang {self.object}', 'olympiads/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f'bidang olimpiade {self.object}', 'olympiads/')
         messages.success(self.request, "Data berhasil dihapus!")
         return super().post(request, *args, **kwargs)
     
@@ -154,10 +154,10 @@ class OlympiadReportCreateView(LoginRequiredMixin, CreateView):
                 user=self.request.user.teacher,
                 action_flag="INPUT",
                 app="OLYMPIAD REPORT",
-                message=f"berhasil menambahkan laporan {self.object}"
+                message=f"berhasil menambahkan laporan olimpiade {self.object}"
             )
             
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'laporan {self.object}', 'olympiads/', f'report/detail/{self.object.id}/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'laporan olimpiade {self.object}', 'olympiads/', f'report/detail/{self.object.id}/')
         return HttpResponseRedirect(self.get_success_url())
     
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
@@ -190,10 +190,10 @@ class OlympiadReportUpdateView(LoginRequiredMixin, UpdateView):
                 user=self.request.user.teacher,
                 action_flag="INPUT",
                 app="OLYMPIAD REPORT",
-                message=f"berhasil mengubah laporan {self.object}"
+                message=f"berhasil mengubah laporan olimpiade {self.object}"
             )
             
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'laporan {self.object}', 'olympiads/', f'report/detail/{self.object.id}/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'laporan olimpiade {self.object}', 'olympiads/', f'report/detail/{self.object.id}/')
         return HttpResponseRedirect(self.get_success_url())
     
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
@@ -216,10 +216,10 @@ class OlympiadReportDeleteView(LoginRequiredMixin, DeleteView):
                 user=self.request.user.teacher,
                 action_flag="DELETE",
                 app="OLYMPIAD REPORT",
-                message=f"berhasil menambahkan laporan {data}"
+                message=f"berhasil menambahkan laporan olimpiade {data}"
             )
             
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'laporan bidang bimbingan {data}', 'olympiads/report/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'laporan olimpiade bidang bimbingan {data}', 'olympiads/report/')
         messages.success(self.request, "Data berhasil dihapus!")
         return super().form_valid(form)
 

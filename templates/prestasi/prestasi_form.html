@@ -2,21 +2,21 @@
 
 {% block content %}
   <main class="p-4 sm:ml-64 overflow-auto">
-    <h1 class="px-2 text-2xl font-bold text-blue-500 dark:text-white">Laporan {{form_name}} Form</h1>
+    <h1 class="px-2 text-2xl font-bold text-blue-500 dark:text-white">Prestasi {{form_name}} Form</h1>
     <!-- Breadcrumb -->
     <div class="flex items-center gap-2">
       <a href="{% url 'dashboard' %}" class="pl-2">Dashboard</a>
       <p class="text-2xl">
         &triangleright;
       </p>
-      <a href="{% url 'report-list' %}">Laporan List</a>
+      <a href="{% url 'report-list' %}">Prestasi List</a>
       <p class="text-2xl">
         &triangleright;
       </p>
       {% if form_name == "Create" %}
-      <a href="{% url 'report-create' %}">Laporan {{form_name}} Form</a>
+      <a href="{% url 'report-create' %}">Prestasi {{form_name}} Form</a>
       {% else %}
-      <a href="">Laporan {{form_name}} Form</a>
+      <a href="">Prestasi {{form_name}} Form</a>
       {% endif %}
     </div>
     <!-- Analytics Card -->
@@ -48,8 +48,8 @@
           {% endif %}
           {% endfor %}
           {% endif %}
-          <h2 class="font-semibold text-xl">{{form_name}} Data Laporan</h2>
-          <form action="" method="post" class="flex flex-col gap-2 md:w-3/4 w-full">
+          <h2 class="font-semibold text-xl">{{form_name}} Data Prestasi</h2>
+          <form action="" method="post" enctype="multipart/form-data" class="flex flex-col gap-2 md:w-3/4 w-full">
               {% csrf_token %}
               {% for field in form %}
                   <div class="flex flex-col">

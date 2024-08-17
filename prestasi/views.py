@@ -58,7 +58,7 @@ class PrestasiCreateView(LoginRequiredMixin, CreateView):
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
-        c["form_view"] = "Create"
+        c["form_name"] = "Create"
         return c
 
 
@@ -76,7 +76,7 @@ class PrestasiUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
     
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        self.object = self.get_object()
+        self.object = form.save()
         UserLog.objects.create(
                 user=self.request.user.teacher,
                 action_flag="UPDATE",
@@ -89,7 +89,7 @@ class PrestasiUpdateView(LoginRequiredMixin, UpdateView):
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
-        c["form_view"] = "Update"
+        c["form_name"] = "Update"
         return c
     
 class PrestasiDeleteView(LoginRequiredMixin, DeleteView):
@@ -229,7 +229,7 @@ class ProgramPrestasiCreateView(LoginRequiredMixin, CreateView):
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
-        c["form_view"] = "Create"
+        c["form_name"] = "Create"
         return c
 
 
@@ -260,7 +260,7 @@ class ProgramPrestasiUpdateView(LoginRequiredMixin, UpdateView):
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
-        c["form_view"] = "Update"
+        c["form_name"] = "Update"
         return c
 
 class ProgramPrestasiDeleteView(LoginRequiredMixin, DeleteView):
