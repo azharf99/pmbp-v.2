@@ -18,6 +18,7 @@ from students.models import Student
 from students.forms import StudentForm
 from io import BytesIO
 import xlsxwriter
+from django.db.models import Q
 
 
 class StudentIndexView(ListView):
@@ -217,11 +218,20 @@ class StudentDeleteView(LoginRequiredMixin, DeleteView):
 
 
 class ActiveStudentListView(ListView):
-    model = Extracurricular
+    model = Student
     template_name = "students/student_active_list.html"
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Extracurricular.objects.prefetch_related("members").filter(members__isnull=False).values("name", "members__student_name", "members__student_class").order_by("members__student_class", "members__student_name", "name")
+        query = self.request.GET.get("query")
+        if query:
+            data = Student.objects.filter(Q(student_status="Aktif") & Q(student_name__icontains=query)).prefetch_related('extracurricular_set', 'report_set__extracurricular', 'report_set__students').all()
+            if data.exists():
+                messages.success(self.request, f"{len(data)} Data Berhasil Ditemukan!")
+            else:
+                messages.error(self.request, "Data Tidak Ditemukan!")
+            return data
+        
+        return Student.objects.filter(student_status="Aktif").prefetch_related('extracurricular_set', 'report_set__extracurricular', 'report_set__students').all()
 
 
 class NonActiveStudentListView(ListView):

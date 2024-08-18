@@ -16,8 +16,8 @@ class PathAndRename(object):
     def __call__(self, instance, filename):
         ext = filename.split('.')[-1]
         # set filename as random string
-        if instance.id:
-            filename = '{}_{}_{}_{}.{}'.format(instance.awardee, instance.predicate, instance.name, instance.year, ext)
+        if instance.pk:
+            filename = '{}.{}'.format(instance.user, ext)
         else:
             # set filename as random string
             filename = '{}.{}'.format(uuid4().hex, ext)

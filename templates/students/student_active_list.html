@@ -12,25 +12,43 @@
     <a href="{% url 'student-list' %}">List Santri Aktif</a>
   </div>
 
-  {% if messages %}
+  <div class="m-2 py-2 flex md:justify-end justify-center text-black">
+    <form action="{% url 'student-active' %}" method="get" role="search" class="flex md:w-1/2 w-full gap-2 justify-between">
+      <input type="search" name="query" id="search" value="{{request.GET.query}}" placeholder="Ketik nama santri ..." class="py-1 px-2 rounded-lg shadow-lg w-3/4 border border-blue-500" required>
+      <input type="submit" value="Cari Data" class="py-1 px-2 font-semibold text-white bg-blue-500 rounded-lg cursor-pointer w-1/4">
+    </form>
+  </div>
+
+  <div class="m-2 flex justify-center">
+    {% if messages %}
+
     {% for message in messages %}
-    <div class="m-2 flex justify-center">
-      <div
-        class="flex items-center p-4 mb-4 mx-2 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
-        role="alert">
-        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor" viewBox="0 0 20 20">
-          <path
-            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-        </svg>
-        <span class="sr-only">Info</span>
-        <div>
-          <span class="font-medium">Success! {{message.message}}</span>
-        </div>
+    {% if message.tags == "success" %}
+    <div class="flex items-center p-4 mb-4 mx-2 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+      <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+      </svg>
+      <span class="sr-only">Info</span>
+      <div>
+        <span class="font-medium">Success!</span> {{message.message}}
       </div>
     </div>
+    {% else %}
+    <div class="flex items-center p-4 mb-4 mx-2 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+      <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+      </svg>
+      <span class="sr-only">Info</span>
+      <div>
+        <span class="font-medium">Error!</span> {{message.message}}
+      </div>
+    </div>
+    {% endif %}
     {% endfor %}
-  {% endif %}
+
+    {% endif %}
+  </div>
+
 
   <div class="grid grid-cols-1">
     <!-- Analytics Table -->
@@ -53,26 +71,42 @@
       </div>
       {% endif %}
 
+      {% if object_list %}
       <div class="flex justify-center md:justify-end">
         <a href="{% url 'student-active-download' %}" class="p-2 rounded-lg text-white bg-indigo-500 text-xs">Download Data</a>
       </div>
+      {% endif %}
       
       {% if object_list %}
-      <table class="table-auto border-collapse w-full">
+      <table class="border-collapse w-full">
         <caption class="mb-4 font-semibold text-lg">List Santri Aktif</caption>
         <thead>
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">No</th>
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Nama</th>
-          <th class="p-2 border border-gray-400 bg-blue-100 text-black">Kelas</th>         
+          <th class="p-2 border border-gray-400 bg-blue-100 text-black">Kelas</th>       
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Ekskul/SC</th>
+          <th class="p-2 border border-gray-400 bg-blue-100 text-black">Kehadiran</th>
         </thead>
         <tbody>
           {% for object in object_list %}
           <tr>
             <td class="p-2 border border-gray-400 text-center">{{forloop.counter}}</td>
-            <td class="p-2 border border-gray-400">{{object.members__student_name|default:"Belum ada anggota"}}</td>            
-            <td class="p-2 border border-gray-400 text-center">{{object.members__student_class|default:"-"}}</td>
-            <td class="p-2 border border-gray-400">{{object.name|default:"-"}}</td>
+            <td class="p-2 border border-gray-400">{{object.student_name|default:"Belum ada anggota"}}</td>            
+            <td class="p-2 border border-gray-400 text-center">{{object.get_student_class_display|default:"-"}}</td>
+            <td class="p-2 border border-gray-400">
+              <ol class="list-decimal list-inside">
+              {% for obj in object.extracurricular_set.all %}
+                <li>{{obj|default:"-"}}</li>
+                {% endfor %}
+              </ol>
+            </td>
+            <td class="p-2 border border-gray-400">
+              <ol class="list-decimal list-inside">
+              {% for obj in object.report_set.all %}
+                <li>{{obj.extracurricular}} ({{obj.report_date|date:"j F Y"}})</li>
+                {% endfor %}
+              </ol>
+            </td>
           </tr>
           {% endfor %}
         </tbody>
