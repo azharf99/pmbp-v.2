@@ -1,7 +1,7 @@
 import os
 from uuid import uuid4
 from django.db import models
-from django.forms import ImageField
+from django.utils.deconstruct import deconstructible
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.utils.text import slugify
@@ -34,19 +34,26 @@ jenis = (
     )
 
 
-def path_and_rename(path):
-    def wrapper(instance, filename):
+
+
+@deconstructible
+class PathAndRename(object):
+
+    def __init__(self, sub_path):
+        self.path = sub_path
+
+    def __call__(self, instance, filename):
         ext = filename.split('.')[-1]
-        # get filename
-        if instance.pk:
+        # set filename as random string
+        if instance.id:
             filename = '{}.{}'.format(instance.slug, ext)
         else:
             # set filename as random string
             filename = '{}.{}'.format(uuid4().hex, ext)
         # return the whole path to the file
-        return os.path.join(path, filename)
-    return wrapper
+        return os.path.join(self.path, filename)
 
+path_and_rename = PathAndRename('ekskul/logo')
 
 class Extracurricular(models.Model):
     name = models.CharField(_("Extracurricular/SC Name"), max_length=50)
@@ -55,7 +62,7 @@ class Extracurricular(models.Model):
     time = models.CharField(_("Time"), max_length=15, choices=pilihan_waktu)
     members = models.ManyToManyField(Student, blank=True, verbose_name=_("Members"), help_text=_("Ketik nama yang ingin dicari dan pilih anggota ekskul. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
     description = models.TextField(blank=True, null=True)
-    logo = models.ImageField(upload_to=path_and_rename('ekskul/logo'), default='no-image.png', blank=True, null=True, help_text="format logo .jpg/.jpeg")
+    logo = models.ImageField(upload_to=path_and_rename, default='no-image.png', blank=True, null=True, help_text="format logo .jpg/.jpeg")
     type = models.CharField(_("Type"), max_length=20, choices=jenis, blank=True)
     slug = models.SlugField(_("Slug"), blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

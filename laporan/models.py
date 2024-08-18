@@ -6,19 +6,27 @@ from django.urls import reverse
 from extracurriculars.models import Extracurricular
 from users.models import Teacher
 from students.models import Student
+from django.utils.deconstruct import deconstructible
 
-def path_and_rename(path):
-    def wrapper(instance, filename):
+
+@deconstructible
+class PathAndRename(object):
+
+    def __init__(self, sub_path):
+        self.path = sub_path
+
+    def __call__(self, instance, filename):
         ext = filename.split('.')[-1]
-        # get filename
-        if instance.pk:
+        # set filename as random string
+        if instance.id:
             filename = '{}_{}.{}'.format(instance.extracurricular, instance.report_date, ext)
         else:
             # set filename as random string
             filename = '{}.{}'.format(uuid4().hex, ext)
         # return the whole path to the file
-        return os.path.join(path, filename)
-    return wrapper
+        return os.path.join(self.path, filename)
+
+path_and_rename = PathAndRename('ekskul/laporan')
 
 # Create your models here.
 class Report(models.Model):
@@ -27,7 +35,7 @@ class Report(models.Model):
     report_date = models.DateField(_("Report Date"))
     report_notes = models.TextField(_("Notes"), max_length=200, blank=True)
     students = models.ManyToManyField(Student, help_text=_("Ketik nama yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
-    photo = models.ImageField(upload_to=path_and_rename('ekskul/laporan'), default='no-image.png', help_text=_("Image must be .jpg/.jpeg/.png format"))
+    photo = models.ImageField(upload_to=path_and_rename, default='no-image.png', help_text=_("Image must be .jpg/.jpeg/.png format"))
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

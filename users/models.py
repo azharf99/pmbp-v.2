@@ -2,22 +2,29 @@ import os
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext as _
 from uuid import uuid4
 # Create your models here.
 
-def path_and_rename(path):
-    def wrapper(instance, filename):
+@deconstructible
+class PathAndRename(object):
+
+    def __init__(self, sub_path):
+        self.path = sub_path
+
+    def __call__(self, instance, filename):
         ext = filename.split('.')[-1]
-        # get filename
-        if instance.pk:
-            filename = '{}.{}'.format(instance.user, ext)
+        # set filename as random string
+        if instance.id:
+            filename = '{}_{}_{}_{}.{}'.format(instance.awardee, instance.predicate, instance.name, instance.year, ext)
         else:
             # set filename as random string
             filename = '{}.{}'.format(uuid4().hex, ext)
         # return the whole path to the file
-        return os.path.join(path, filename)
-    return wrapper
+        return os.path.join(self.path, filename)
+
+path_and_rename = PathAndRename('user')
 
 
 class Teacher(models.Model):
@@ -29,7 +36,7 @@ class Teacher(models.Model):
     job = models.CharField(max_length=100, blank=True)
     email = models.EmailField(default='smaitalbinaa.ekskul@outlook.com', blank=True)
     phone = models.CharField(max_length=20, blank=True, default=0)
-    photo = models.ImageField(upload_to=path_and_rename('user'), default='blank-profile.png', blank=True, null=True, help_text="format foto .jpg/.jpeg")
+    photo = models.ImageField(upload_to=path_and_rename, default='blank-profile.png', blank=True, null=True, help_text="format foto .jpg/.jpeg")
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 

@@ -38,13 +38,13 @@ class Project(models.Model):
     description = models.TextField(_("Deskripsi Project"), max_length=2000)
     step_to_achieve = models.TextField(_("Langkah Mencapai Project"), max_length=2000)
     task_organizing = models.TextField(_("Pembagian Tugas Project"), max_length=2000)
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
     def __str__(self):
-        return f"{self.project_name}"
+        return f"{self.project_name} - {self.team}"
     
     def get_absolute_url(self):
         return reverse('project-list')
