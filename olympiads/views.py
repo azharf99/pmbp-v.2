@@ -143,6 +143,11 @@ class OlympiadReportCreateView(LoginRequiredMixin, CreateView):
     form_class = OlympiadReportForm
     success_url = reverse_lazy("olympiad-report-create")
 
+    def get_form_kwargs(self) -> dict[str, Any]:
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         if request.user.teacher.id in OlympiadField.objects.values_list("teacher", flat=True).distinct() or request.user.is_superuser:
             return super().get(request, *args, **kwargs)
@@ -158,6 +163,7 @@ class OlympiadReportCreateView(LoginRequiredMixin, CreateView):
             )
             
         send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'laporan olimpiade {self.object}', 'olympiads/', f'report/detail/{self.object.id}/')
+        messages.success(self.request, "Data berhasil ditambahkan!")
         return HttpResponseRedirect(self.get_success_url())
     
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
@@ -173,6 +179,11 @@ class OlympiadReportCreateView(LoginRequiredMixin, CreateView):
 class OlympiadReportUpdateView(LoginRequiredMixin, UpdateView):
     model = OlympiadReport
     form_class = OlympiadReportForm
+
+    def get_form_kwargs(self) -> dict[str, Any]:
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         if request.user.teacher.id in OlympiadField.objects.values_list("teacher", flat=True).distinct() or request.user.is_superuser:
@@ -194,6 +205,7 @@ class OlympiadReportUpdateView(LoginRequiredMixin, UpdateView):
             )
             
         send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'laporan olimpiade {self.object}', 'olympiads/', f'report/detail/{self.object.id}/')
+        messages.success(self.request, "Update data berhasil!")
         return HttpResponseRedirect(self.get_success_url())
     
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:

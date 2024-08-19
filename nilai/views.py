@@ -6,7 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.forms import BaseModelForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import FileResponse, HttpRequest, HttpResponse, HttpResponseForbidden
+from django.http import FileResponse, HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.urls import reverse, reverse_lazy
@@ -41,6 +41,12 @@ class NilaiCreateView(LoginRequiredMixin, CreateView):
     model = Score
     form_class = ScoreForm
     success_url = reverse_lazy("nilai-create")
+
+
+    def get_form_kwargs(self) -> dict[str, Any]:
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         if request.user.teacher.id in Extracurricular.objects.values_list('teacher', flat=True).distinct() or self.request.user.is_superuser:
@@ -84,6 +90,11 @@ class NilaiQuickCreateView(LoginRequiredMixin, CreateView):
     form_class = ScoreForm
     template_name = 'nilai/score_create.html'
 
+    def get_form_kwargs(self) -> dict[str, Any]:
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         if request.user.teacher.id in Extracurricular.objects.values_list('teacher', flat=True).distinct() or self.request.user.is_superuser:
             return super().get(request, *args, **kwargs)
@@ -113,8 +124,8 @@ class NilaiQuickCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["extracurricular"] = Extracurricular.objects.all()
-        context["students"] = Student.objects.filter(student_status="Aktif")
+        context["extracurricular"] = Extracurricular.objects.prefetch_related("teacher", "members").filter(teacher=self.request.user.teacher)
+        context["students"] = Student.objects.filter(pk__in=context["extracurricular"].values_list("members", flat=True).distinct())
         return context
 
 
@@ -122,6 +133,11 @@ class NilaiUpdateView(LoginRequiredMixin, UpdateView):
     model = Score
     form_class = ScoreForm
     success_url = reverse_lazy("nilai-list")
+
+    def get_form_kwargs(self) -> dict[str, Any]:
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         if request.user.teacher in self.get_object().extracurricular.teacher.all() or self.request.user.is_superuser:

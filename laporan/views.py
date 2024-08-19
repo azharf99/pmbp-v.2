@@ -1,10 +1,9 @@
 import locale
 from typing import Any
-from urllib import request
 from django.core.exceptions import PermissionDenied
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
-from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -37,6 +36,10 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
     form_class = ReportForm
     success_url = reverse_lazy("report-create")
 
+    def get_form_kwargs(self) -> dict[str, Any]:
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
     
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         if request.user.teacher.id in Extracurricular.objects.values_list('teacher', flat=True).distinct() or self.request.user.is_superuser:
@@ -71,7 +74,12 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["filtered_student"] = Extracurricular.objects.prefetch_related("teacher", "members").filter(teacher=self.request.user.teacher).values("members").order_by("members")
+        data = Extracurricular.objects.prefetch_related("teacher", "members").filter(teacher=self.request.user.teacher)
+        teacher_set = []
+        context["extracurricular"] = data
+        teacher = [[teacher_set.append(i) if not teacher_set.__contains__(i) else i for i in datum.teacher.all()] for datum in data]
+        context["teacher"] = teacher_set
+        context["filtered_student"] = Extracurricular.objects.prefetch_related("teacher", "members").filter(teacher=self.request.user.teacher).values("members", "members__student_name", "members__student_class").order_by("members").distinct()
         context["form_name"] = "Create"
         return context
 
@@ -80,6 +88,11 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
     model = Report
     form_class = ReportForm
     success_url = reverse_lazy("report-list")
+
+    def get_form_kwargs(self) -> dict[str, Any]:
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         if request.user.teacher in self.get_object().teacher.all() or self.request.user.is_superuser:

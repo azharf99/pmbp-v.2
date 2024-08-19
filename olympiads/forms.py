@@ -21,8 +21,14 @@ class OlympiadFieldForm(forms.ModelForm):
 
 class OlympiadReportForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
-        self.fields['students'].queryset = Student.objects.filter(student_status="Aktif")
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        # # # Example condition: Filter categories based on the user
+        data = OlympiadField.objects.select_related("teacher").prefetch_related("members").filter(teacher=user.teacher)
+        if user.teacher.id in data.values_list('teacher', flat=True).distinct():
+            data_list = data.values_list("members", flat=True).distinct()
+            self.fields['students'].queryset = Student.objects.filter(pk__in=data_list)
+            self.fields['field_name'].queryset = data
 
     class Meta:
         model = OlympiadReport
