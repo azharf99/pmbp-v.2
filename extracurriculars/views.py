@@ -65,7 +65,7 @@ class ExtracurricularUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy("extracurricular-list")
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        if request.user.id in self.get_object().teacher.values_list(flat=True) or self.request.user.is_superuser:
+        if request.user.teacher.id in self.get_object().teacher.values_list(flat=True) or self.request.user.is_superuser:
             return super().get(request, *args, **kwargs)
         raise PermissionDenied
 
