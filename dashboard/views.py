@@ -1,5 +1,5 @@
 from typing import Any
-from django.db.models import Count, QuerySet
+from django.db.models import Count, QuerySet, Q
 from django.views.generic import ListView
 from django.utils import timezone
 from extracurriculars.models import Extracurricular
@@ -14,11 +14,11 @@ class HomeView(ListView):
     template_name = 'index.html'
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Prestasi.objects.exclude(photo='no-image.png', photo__isnull=True)[:12]
+        return Prestasi.objects.exclude(Q(photo='no-image.png') | Q(photo__isnull=True))[:12]
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['ekskul'] = Extracurricular.objects.prefetch_related('teacher').exclude(logo='no-image.png').order_by('type', 'name')
+        context['ekskul'] = Extracurricular.objects.prefetch_related('teacher').order_by('type', 'name')
         context['kegiatan'] = Report.objects.exclude(photo='no-image.png').select_related('extracurricular')[:12]
         return context
     
