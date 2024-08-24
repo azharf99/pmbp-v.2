@@ -83,8 +83,12 @@
           </div>
 
           <div class="text-center flex flex-col gap-4 justify-center">
-            <button class="py-2 px-2 bg-blue-500 text-white rounded-md" type="submit">Login</button>
-            <a href="{% url 'app-index' %}" class="py-1 px-2 bg-red-500 text-white rounded-md">&leftarrow; Home</a>
+            <button class="py-2 px-2 bg-blue-500 text-white rounded-md" type="submit" id="submit">Login</button>
+            <a href="{% url 'app-index' %}" id="back" class="py-1 px-2 bg-red-500 text-white rounded-md">&leftarrow; Home</a>
+          </div>
+          <div id="loading" class="hidden flex gap-4 justify-center items-center text-white p-2 bg-blue-500 rounded-md cursor-pointer my-4">
+            <div class="loader"></div>
+            <p>Loading ...</p>
           </div>
         </form>
 
@@ -94,7 +98,17 @@
   <!-- End #main -->
   
   <script src="{% static 'js/login.js' %}"></script>
+  {% include 'loader.html' %}
+
+  <script>
+    const back = document.getElementById("back");
+    document.addEventListener("submit", ()=>{
+      back.classList.add("hidden");
+    })
+  </script>
 
 </body>
+
+
 
 </html>

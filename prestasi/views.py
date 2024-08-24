@@ -18,6 +18,10 @@ from django.conf import settings
 # Create your views here.
 class PrestasiIndexView(ListView):
     model = Prestasi
+    paginate_by = 9
+    
+class PrestasiIndexThisYearView(ListView):
+    model = Prestasi
     queryset = Prestasi.objects.filter(created_at__gt=settings.TANGGAL_TAHUN_AJARAN)
     paginate_by = 9
 

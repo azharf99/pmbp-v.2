@@ -19,7 +19,7 @@ from django.conf import settings
 
 class ReportIndexView(ListView):
     model = Report
-    paginate_by = 10
+    paginate_by = 12
 
     def get_queryset(self) -> QuerySet[Any]:
         if self.request.user.is_authenticated and not self.request.user.is_superuser:

@@ -1,12 +1,13 @@
 from django.urls import path
 from prestasi.views import PrestasiIndexView, PrestasiCreateView, PrestasiDetailView, PrestasiUpdateView, PrestasiDeleteView, \
                             ProgramPrestasiIndexView, ProgramPrestasiCreateView, ProgramPrestasiUpdateView, ProgramPrestasiDeleteView,\
-                            ProgramPrestasiDetailView,\
+                            ProgramPrestasiDetailView, PrestasiIndexThisYearView,\
                             PretasiPrintExcelView, PrestasiPrintExcelThisYearView, ProgramPrestasiPrintExcelThisYearView
 
 
 urlpatterns = [
     path('', PrestasiIndexView.as_view(), name='prestasi-list'),
+    path('this-year/', PrestasiIndexThisYearView.as_view(), name='prestasi-this-year-list'),
     path('create/', PrestasiCreateView.as_view(), name='prestasi-create'),
     path('detail/<int:pk>/', PrestasiDetailView.as_view(), name='prestasi-detail'),
     path('update/<int:pk>/', PrestasiUpdateView.as_view(), name='prestasi-update'),
