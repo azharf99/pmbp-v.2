@@ -32,7 +32,7 @@ class Dashboard(ListView):
         context["extracurricular"] = self.get_queryset().filter(type="Ekskul")
         context["study_club"] = self.get_queryset().filter(type="SC")
         context["students"] = Student.objects.filter(student_status="Aktif")
-        context["active_students"] = Extracurricular.objects.select_related('members').values_list('members', flat=True).filter(members__isnull=False).distinct()
+        context["active_students"] = Student.objects.filter(student_status="Aktif", pk__in=Extracurricular.objects.select_related('members').values_list('members', flat=True).filter(members__isnull=False).distinct())
         context["inactive_students"] = Student.objects.filter(student_status="Aktif").exclude(id__in=context["active_students"]).order_by("student_class", "student_name")
         context["inactive_students_x"] = Student.objects.filter(student_status="Aktif", student_class__startswith="X-").exclude(id__in=context["active_students"]).order_by("student_class", "student_name")
         context["inactive_students_xi"] = Student.objects.filter(student_status="Aktif", student_class__startswith="XI-").exclude(id__in=context["active_students"]).order_by("student_class", "student_name")
