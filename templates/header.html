@@ -46,8 +46,8 @@
       </div>
       {% else %}
       <a href="{% url 'app-index' %}" class="mx-4 text-sm font-semibold leading-6 text-gray-100 px-2 border rounded-md">Home</a>
-      <a href="{% url 'login' %}" class="mx-4 text-sm font-semibold leading-6 text-gray-100 px-2">
-        <span aria-hidden="true">&rarr;</span></a>
+      <a href="{% url 'login' %}" class="mx-2 text-sm font-semibold leading-6 text-gray-100 px-2">
+        <span aria-hidden="true">Log in &rarr;</span></a>
       {% endif %}
       <button type="button" class="-m-2.5 items-center justify-center rounded-md p-2.5 text-gray-700"
         id="openMobileNav">
@@ -115,14 +115,18 @@
 <script>
   const avatar = document.getElementById("avatar");
   const user_menu = document.getElementById("user_menu");
-  avatar.addEventListener("click", ()=>{
-      user_menu.classList.toggle("hidden")
-      console.log("Haii")
-  })
+  if (avatar){
+    avatar.addEventListener("click", ()=>{
+        user_menu.classList.toggle("hidden")
+        console.log("Haii")
+    })
+  }
   const avatar2 = document.getElementById("avatar2");
   const user_menu2 = document.getElementById("user_menu2");
-  avatar2.addEventListener("click", ()=>{
-      user_menu2.classList.toggle("hidden")
-      console.log("Haii")
-  })
+  if (avatar2){
+    avatar2.addEventListener("click", ()=>{
+        user_menu2.classList.toggle("hidden")
+        console.log("Haii")
+    })
+  }
 </script>
