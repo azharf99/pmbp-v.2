@@ -59,6 +59,7 @@
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">No</th>
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Nama Project</th>
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tim</th>
+          <th class="p-2 border border-gray-400 bg-blue-100 text-black">Pembimbing</th>
           {% if request.user.is_superuser %}
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Aksi</th>
           {% endif %}
@@ -69,6 +70,7 @@
             <td class="p-2 border border-gray-400 text-center">{{forloop.counter}}</td>
             <td class="p-2 border border-gray-400">{{object.project_name}}</td>
             <td class="p-2 border border-gray-400">{{object.team|default:"-"}}</td>
+            <td class="p-2 border border-gray-400">{{object.teacher|default:"-"}}</td>
             {% if request.user.is_superuser %}
             <td class="p-2 border border-gray-400">
                 <div class="flex flex-wrap gap-2 justify-center">
