@@ -55,6 +55,12 @@
               {% for field in form %}
                   <div class="flex flex-col">
                       {{ field.errors }}
+                      {% if field.name == "students" %}
+                      <div class="flex justify-end">
+                        <button type="button" id="selectAll" class="text-end p-1 mt-4 bg-green-500 rounded-md">Pilih Semua</button>
+                        <button type="button" id="unselectAll" class="text-end p-1 mt-4 bg-red-500 rounded-md">Hapus Semua</button>
+                      </div>
+                      {% endif %}
                       {{ field.label_tag }} {{ field }}
                       {% if field.help_text %}
                         <p class="p-2 italic text-xs" id="{{ field.auto_id }}_helptext">
@@ -78,28 +84,82 @@
   {% include 'loader.html' %}
 
 
-  <script src="{% static 'js/jquery.min.js' %}"></script>
-  <script src="{% static 'js/selectize.min.js' %}"></script>
-  <link rel="stylesheet" href="{% static 'css/selectize.bootstrap3.min.css' %}"/>
-  <script>
-      $(document).ready(function () {
-          $('#id_extracurricular').selectize({
-              sortField: 'text',
-              maxItems: 1,
-          });
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/selectize.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/selectize.bootstrap3.min.css' %}"/>
+
+<script>
+  $(document).ready(function() {
+    $('#id_extracurricular').on('change', function() {
+        const firstSelectValue = $(this).val();
+        const secondSelect = $('#id_students');
+
+        // Clear current options
+        secondSelect.empty();
+
+        // URL for the API request (replace with your actual API endpoint)
+        // const apiUrl = `http://127.0.0.1:8000/extracurriculars/get-members/?query=${firstSelectValue}`;
+        const apiUrl = `https://pmbp.smasitalbinaa.com/extracurriculars/get-members/?query=${firstSelectValue}`;
+
+        // Fetch options from the API
+        $.getJSON(apiUrl, function(data) {
+            // Assuming the API returns an array of options like:
+            // [{ "id": 1, "student_class": "10A", "student_name": "John Doe" }, ...]
+
+            $.each(data, function(index, option) {
+                secondSelect.append($('<option>', {
+                    value: option.id,
+                    text: `(${option.student_class}) ${option.student_name}`
+                }));
+            });
+        }).fail(function(jqxhr, textStatus, error) {
+            console.error('Error fetching options:', error);
+            // Handle errors here
+        });
+
+        
       });
-      $(document).ready(function () {
-          $('#id_students').selectize({
-              sortField: 'text',
-              maxItems: 50,
-          });
+      
+      $('#id_teacher').selectize({
+          sortField: 'text',
+          maxItems: 3,
       });
-      $(document).ready(function () {
-          $('#id_teacher').selectize({
-              sortField: 'text',
-              maxItems: 3,
-          });
+
+});   
+</script>
+
+{% if form_name == "Create" %}
+<script>
+
+    $('#unselectAll').hide()
+    $('#selectAll').click(function() {
+        $('#id_students option').prop('selected', true);
+        $('#unselectAll').show()
+        $(this).hide()
+    });
+
+    $('#unselectAll').click(function() {
+        $('#id_students option').prop('selected', false);
+        $('#selectAll').show()
+        $(this).hide()
+    });
+
+</script>
+
+{% else %}
+
+<script>
+  $('#unselectAll').hide()
+  $('#selectAll').hide()
+  $(document).ready(()=>{
+    $('#id_students').selectize({
+          sortField: 'text',
+          maxItems: 100,
       });
-  </script>
+  })
+</script>
+
+{% endif %}
   
 {% endblock content %}

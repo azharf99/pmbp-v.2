@@ -14,7 +14,7 @@ from laporan.models import Report
 from laporan.forms import ReportForm
 from extracurriculars.models import Extracurricular
 from userlog.models import UserLog
-from utils.whatsapp import send_WA_create_update_delete, send_WA_print
+from utils.wa import send_WA_create_update_delete, send_WA_print
 from django.conf import settings
 
 class ReportIndexView(ListView):
@@ -68,7 +68,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             message=f"berhasil menambahkan data laporan ekskul/sc {self.object}"
         )
         
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'laporan pertemuan Ekskul/SC {self.object}', 'laporan/', f'{self.object.id}/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, f'{self.request.user.teacher} menambahkan', f'laporan pertemuan Ekskul/SC {self.object}', 'laporan/', f'{self.object.id}/')
         messages.success(self.request, "Input Laporan berhasil!")
         return HttpResponseRedirect(self.get_success_url())
 

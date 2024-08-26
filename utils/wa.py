@@ -32,12 +32,12 @@ _Ini adalah pesan otomatis, jangan dibalas._'''
 
 
 def send_WA_create_update_delete(phone="085701570100", action="", messages="", type="", slug=""):
-    if not settings.DEBUG and type == "laporan/" and action=="menambahkan":
+    if not settings.DEBUG and type == "laporan/" and "menambahkan" in action:
         url = "https://jogja.wablas.com/api/v2/send-message"
         payload = {
             "data": [
                 {
-                    'phone': '120363322382144100',
+                    'phone': '6281293034867-1565170276',
                     'message': f'''*[NOTIFIKASI PMBP]*
 Data masuk: {action} {messages}.
 Detail: https://pmbp.smasitalbinaa.com/{type}{slug}''',

@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'users',
     'students',
     'easy_thumbnails',
+    "corsheaders",
     'debug_toolbar',
 ]
 
@@ -68,6 +69,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -204,3 +206,31 @@ TAHUN_AJARAN = "2024/2025"
 TAHUN_AJARAN_STRIPPED = "2024-2025"
 from django.utils import timezone
 TANGGAL_TAHUN_AJARAN = timezone.make_aware(timezone.datetime(2024, 6, 1, 1, 1, 1))
+
+
+
+CORS_ALLOWED_ORIGINS = [
+    "https://smasitalbinaa.com",
+    "https://pmbp.smasitalbinaa.com",
+    "http://127.0.0.1:8000",
+]
+
+
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
+
+
+CORS_ALLOW_HEADERS = (
+    "accept",
+    "authorization",
+    "content-type",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+)
