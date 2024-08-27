@@ -1,7 +1,7 @@
 from typing import Any
 from django.core.exceptions import PermissionDenied
 from django.forms import BaseModelForm
-from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, UpdateView, CreateView, DeleteView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -31,16 +31,10 @@ class UserLogCreateView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        self.obj = form.save(commit=False)
-        UserLog.objects.create(
-                user=self.request.user.teacher,
-                action_flag="CREATE",
-                app="USERLOG",
-                message=f"berhasil menambahkan log {self.obj}"
-            )
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'log {self.obj}', 'logs/')
+        self.object = form.save()
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'log {self.object}', 'logs/')
         messages.success(self.request, "Input Data Berhasil! :)")
-        return super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
@@ -66,16 +60,10 @@ class UserLogUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        self.obj = form.save(commit=False)
-        UserLog.objects.create(
-                user=self.request.user.teacher,
-                action_flag="UPDATE",
-                app="USERLOG",
-                message=f"berhasil update log {self.obj}"
-            )
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'update', f'log {self.obj}', 'logs/')
+        self.object = form.save()
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'update', f'log {self.object}', 'logs/')
         messages.success(self.request, "Update Data Berhasil! :)")
-        return super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
@@ -93,12 +81,6 @@ class UserLogDeleteView(LoginRequiredMixin, DeleteView):
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         self.obj = self.get_object()
-        UserLog.objects.create(
-                user=self.request.user.teacher,
-                action_flag="DELETE",
-                app="USERLOG",
-                message=f"berhasil menghapus log {self.obj}"
-            )
         send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f'log {self.obj}', 'logs/')
         messages.success(self.request, "Data Berhasil Dihapus! :)")
         return super().post(request, *args, **kwargs)
