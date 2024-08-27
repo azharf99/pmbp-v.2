@@ -61,20 +61,21 @@ Detail: https://pmbp.smasitalbinaa.com/{type}{slug}'''
         except:
             return None
         
-    elif not settings.DEBUG and type == "olympiads/" and action=="menambahkan":
+    elif not settings.DEBUG and type == "olympiads/" and "menambahkan" in action:
         url = "https://jogja.wablas.com/api/v2/send-message"
         payload = {
             "data": [
                 {
-                    'phone': '120363322382144100',
-                    'message': f'''*[NOTIFIKASI PMBP]*
+                    # 'phone': '120363322382144100',
+                    'phone': '120363021651921651',
+                    'message': f'''*[NOTIFIKASI OLIMPIADE]*
 Data masuk: {action} {messages}.
 Detail: https://pmbp.smasitalbinaa.com/{type}{slug}''',
                     'isGroup': 'true'
                 },
                 {
-                    'phone': '6285701570100',
-                    'message': f'''*[NOTIFIKASI PMBP]*
+                    'phone': '6281293034867',
+                    'message': f'''*[NOTIFIKASI OLIMPIADE]*
 Data masuk: {action} {messages}.
 Detail: https://pmbp.smasitalbinaa.com/{type}{slug}'''
                 }

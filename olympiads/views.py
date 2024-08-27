@@ -16,7 +16,7 @@ from django.urls import reverse, reverse_lazy
 from olympiads.forms import OlympiadFieldForm, OlympiadReportForm
 from olympiads.models import OlympiadField, OlympiadReport
 from userlog.models import UserLog
-from utils.whatsapp import send_WA_create_update_delete, send_WA_print
+from utils.wa import send_WA_create_update_delete, send_WA_print
 from django.utils import timezone
 
 # Create your views here.
@@ -162,7 +162,7 @@ class OlympiadReportCreateView(LoginRequiredMixin, CreateView):
                 message=f"berhasil menambahkan laporan olimpiade {self.object}"
             )
             
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f'laporan olimpiade {self.object}', 'olympiads/', f'report/detail/{self.object.id}/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, f'{self.request.user.teacher} menambahkan', f'laporan olimpiade {self.object}', 'olympiads/', f'report/detail/{self.object.id}/')
         messages.success(self.request, "Data berhasil ditambahkan!")
         return HttpResponseRedirect(self.get_success_url())
     
