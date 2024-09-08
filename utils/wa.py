@@ -32,7 +32,7 @@ _Ini adalah pesan otomatis, jangan dibalas._'''
 
 
 def send_WA_create_update_delete(phone="085701570100", action="", messages="", type="", slug=""):
-    if not settings.DEBUG and type == "laporan/" and "menambahkan" in action:
+    if not settings.DEBUG and type == "report/" and "menambahkan" in action:
         url = "https://jogja.wablas.com/api/v2/send-message"
         payload = {
             "data": [
@@ -44,7 +44,7 @@ Detail: https://pmbp.smasitalbinaa.com/{type}{slug}''',
                     'isGroup': 'true'
                 },
                 {
-                    'phone': '6285701570100',
+                    'phone': '6281293034867',
                     'message': f'''*[NOTIFIKASI PMBP]*
 Data masuk: {action} {messages}.
 Detail: https://pmbp.smasitalbinaa.com/{type}{slug}'''
@@ -66,7 +66,6 @@ Detail: https://pmbp.smasitalbinaa.com/{type}{slug}'''
         payload = {
             "data": [
                 {
-                    # 'phone': '120363322382144100',
                     'phone': '120363021651921651',
                     'message': f'''*[NOTIFIKASI OLIMPIADE]*
 Data masuk: {action} {messages}.
@@ -74,7 +73,21 @@ Detail: https://pmbp.smasitalbinaa.com/{type}{slug}''',
                     'isGroup': 'true'
                 },
                 {
-                    'phone': '6281293034867',
+                    'phone': '120363328278016757',
+                    'message': f'''*[NOTIFIKASI OLIMPIADE]*
+Data bimbingan: {action} {messages}.
+Detail: https://pmbp.smasitalbinaa.com/{type}{slug}''',
+                    'isGroup': 'true'
+                },
+#                 {
+#                     'phone': '120363310795868820', #Grup Tanpa Bimbingan Internal
+#                     'message': f'''*[NOTIFIKASI OLIMPIADE]*
+# Data bimbingan: {action} {messages}.
+# Detail: https://pmbp.smasitalbinaa.com/{type}{slug}''',
+#                     'isGroup': 'true'
+#                 },
+                {
+                    'phone': '6285701570100',
                     'message': f'''*[NOTIFIKASI OLIMPIADE]*
 Data masuk: {action} {messages}.
 Detail: https://pmbp.smasitalbinaa.com/{type}{slug}'''

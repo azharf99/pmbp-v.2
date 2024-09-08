@@ -56,4 +56,21 @@ _Ini adalah pesan otomatis, jangan dibalas._'''
         return data
     except:
         return None
+    
+
+def send_WA_daily_plan(phone="085701570100", daily_plan="", messages="", problems="", id=""):
+    message = f'''*[NOTIFIKASI PMBP]*
+Daily Plan Masuk: {daily_plan} 
+Target: {messages}.
+Kendala: {problems}.
+
+Detail: https://pmbp.smasitalbinaa.com/projects/plan/detail/{id}/
+
+_Ini adalah pesan otomatis, jangan dibalas._'''
+    url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    try:
+        data = requests.get(url)
+        return data
+    except:
+        return None
 

@@ -1,3 +1,4 @@
+from calendar import c
 import locale
 import datetime
 from typing import Any
@@ -131,7 +132,25 @@ class OlympiadReportIndexView(ListView):
     model = OlympiadReport
 
     def get_queryset(self) -> QuerySet[Any]:
+        month = self.request.GET.get("month")
+        year = self.request.GET.get("year")
+        if month and year:
+            return OlympiadReport.objects.filter(report_date__month=month, report_date__year=year).select_related("field_name__teacher").prefetch_related("students", "field_name__members").all()
         return OlympiadReport.objects.select_related("field_name__teacher").prefetch_related("students", "field_name__members").all()
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        month = self.request.GET.get("month")
+        year = self.request.GET.get("year")
+        c["month"] = month
+        c["year"] = year
+        if month and year:
+            data = self.get_queryset()
+            if data.exists():
+                messages.success(self.request, f"{len(data)} Data Ditemukan!")
+            else:
+                messages.error(self.request, "Data Tidak Ditemukan!")
+        return c
 
 
 class OlympiadReportDetailView(DetailView):

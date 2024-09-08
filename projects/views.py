@@ -2,11 +2,13 @@
 from typing import Any
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.http import HttpRequest, HttpResponse
+from django.forms import BaseModelForm
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from projects.models import Team, Project, DailyPlan
 from projects.forms import TeamForm, ProjectForm, DailyPlanForm
+from utils.whatsapp import send_WA_daily_plan
 
 # Create your views here.
 class TeamIndexView(ListView):
@@ -105,6 +107,11 @@ class DailyPlanCreateView(CreateView):
     model = DailyPlan
     form_class = DailyPlanForm
     success_url = reverse_lazy("daily-plan-list")
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        self.object = form.save()
+        send_WA_daily_plan(self.object.project.teacher.phone, f"{self.object}", f"{self.object.target_today}", f"{self.object.problems}", self.object.id)
+        return HttpResponseRedirect(self.get_success_url())
     
 
 class DailyPlanUpdateView(UpdateView):

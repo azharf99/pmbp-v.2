@@ -22,9 +22,30 @@ class ReportIndexView(ListView):
     paginate_by = 12
 
     def get_queryset(self) -> QuerySet[Any]:
-        if self.request.user.is_authenticated and not self.request.user.is_superuser:
-            return Report.objects.select_related("extracurricular").prefetch_related("students",  "teacher").filter(teacher=self.request.user.teacher)
+        month = self.request.GET.get("month")
+        year = self.request.GET.get("year")
+        if month and year:
+            if self.request.user.is_authenticated and not self.request.user.is_superuser:
+                return Report.objects.filter(report_date__month=month, report_date__year=year).select_related("extracurricular").prefetch_related("students",  "teacher").filter(teacher=self.request.user.teacher)
+            return Report.objects.filter(report_date__month=month, report_date__year=year).select_related("extracurricular").prefetch_related("students", "teacher").all()
         return Report.objects.select_related("extracurricular").prefetch_related("students", "teacher").all()
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        month = self.request.GET.get("month")
+        year = self.request.GET.get("year")
+
+        c["month"] = month
+        c["year"] = year
+
+        if month and year:
+            data = self.get_queryset()
+            if data.exists():
+                messages.success(self.request, f"{len(data)} Data Ditemukan!")
+            else:
+                messages.error(self.request, "Data Tidak Ditemukan!")
+
+        return c
 
 
 class ReportDetailView(DetailView):
@@ -68,7 +89,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             message=f"berhasil menambahkan data laporan ekskul/sc {self.object}"
         )
         
-        send_WA_create_update_delete(self.request.user.teacher.phone, f'{self.request.user.teacher} menambahkan', f'laporan pertemuan Ekskul/SC {self.object}', 'laporan/', f'{self.object.id}/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, f'{self.request.user.teacher} menambahkan', f'laporan pertemuan Ekskul/SC {self.object}', 'report/', f'{self.object.id}/')
         messages.success(self.request, "Input Laporan berhasil!")
         return HttpResponseRedirect(self.get_success_url())
 
@@ -113,7 +134,7 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
             message=f"berhasil mengubah data laporan pertemuan ekskul {self.object}"
         )
 
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'laporan pertemuan Ekskul/SC {self.object}', 'laporan/', f'{self.object.id}/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'laporan pertemuan Ekskul/SC {self.object}', 'report/', f'{self.object.id}/')
         messages.success(self.request, "Input Laporan berhasil!")
         return super().form_valid(form)
 
@@ -143,7 +164,7 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
             message=f"berhasil menghapus data laporan pertemuan ekskul {obj}"
         )
 
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f'laporan pertemuan Ekskul/SC {obj}', 'laporan/', f'{obj.id}/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f'laporan pertemuan Ekskul/SC {obj}', 'report/', f'{obj.id}/')
         messages.success(self.request, "Input Laporan berhasil!")
         return super().post(request, *args, **kwargs)
     
@@ -170,12 +191,6 @@ class PrintToPrintView(LoginRequiredMixin, ListView):
         context['students'] = Extracurricular.objects.filter(slug=self.kwargs.get('slug')).order_by('members').values_list('members__student_name', 'members__student_class')
         context['angka'] = [x for x in range(15)]
         ekskul = get_object_or_404(Extracurricular, slug=self.kwargs.get('slug'))
-        UserLog.objects.create(
-            user=self.request.user.teacher,
-            action_flag="PRINT",
-            app="LAPORAN",
-            message=f"berhasil mencetak laporan pertemuan ekskul {ekskul}"
-        )
         send_WA_print(self.request.user.teacher.phone, 'laporan pertemuan Ekskul/SC', f"{ekskul}")
         return context
 
