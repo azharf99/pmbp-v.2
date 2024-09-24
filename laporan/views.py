@@ -89,7 +89,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             message=f"berhasil menambahkan data laporan ekskul/sc {self.object}"
         )
         
-        send_WA_create_update_delete(self.request.user.teacher.phone, f'{self.request.user.teacher} menambahkan', f'laporan pertemuan Ekskul/SC {self.object}', 'report/', f'{self.object.id}/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, f'{self.request.user.teacher} menambahkan', f'laporan pertemuan Ekskul/SC {self.object}', 'report/', f'detail/{self.object.id}/')
         messages.success(self.request, "Input Laporan berhasil!")
         return HttpResponseRedirect(self.get_success_url())
 
@@ -134,7 +134,7 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
             message=f"berhasil mengubah data laporan pertemuan ekskul {self.object}"
         )
 
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'laporan pertemuan Ekskul/SC {self.object}', 'report/', f'{self.object.id}/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'laporan pertemuan Ekskul/SC {self.object}', 'report/', f'detail/{self.object.id}/')
         messages.success(self.request, "Input Laporan berhasil!")
         return super().form_valid(form)
 
@@ -164,7 +164,7 @@ class ReportDeleteView(LoginRequiredMixin, DeleteView):
             message=f"berhasil menghapus data laporan pertemuan ekskul {obj}"
         )
 
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f'laporan pertemuan Ekskul/SC {obj}', 'report/', f'{obj.id}/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'menghapus', f'laporan pertemuan Ekskul/SC {obj}', 'report/')
         messages.success(self.request, "Input Laporan berhasil!")
         return super().post(request, *args, **kwargs)
     
