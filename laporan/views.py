@@ -1,5 +1,7 @@
 import locale
+from re import search
 from typing import Any
+from urllib import request
 from django.core.exceptions import PermissionDenied
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
@@ -24,19 +26,27 @@ class ReportIndexView(ListView):
     def get_queryset(self) -> QuerySet[Any]:
         month = self.request.GET.get("month")
         year = self.request.GET.get("year")
-        if month and year:
+        search = self.request.GET.get("search")
+        
+        if month and year and search:
+            return Report.objects.filter(extracurricular__name__icontains=search, report_date__month=month, report_date__year=year).select_related("extracurricular").prefetch_related("students", "teacher").all()
+        elif month and year:
             if self.request.user.is_authenticated and not self.request.user.is_superuser:
-                return Report.objects.filter(report_date__month=month, report_date__year=year).select_related("extracurricular").prefetch_related("students",  "teacher").filter(teacher=self.request.user.teacher)
+                return Report.objects.filter(teacher=self.request.user.teacher, report_date__month=month, report_date__year=year).select_related("extracurricular").prefetch_related("students",  "teacher")
             return Report.objects.filter(report_date__month=month, report_date__year=year).select_related("extracurricular").prefetch_related("students", "teacher").all()
+        elif self.request.user.is_authenticated and not self.request.user.is_superuser:
+            return Report.objects.select_related("extracurricular").prefetch_related("students",  "teacher").filter(teacher=self.request.user.teacher)
         return Report.objects.select_related("extracurricular").prefetch_related("students", "teacher").all()
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
         month = self.request.GET.get("month")
         year = self.request.GET.get("year")
+        search = self.request.GET.get("search")
 
         c["month"] = month
         c["year"] = year
+        c["search"] = search
 
         if month and year:
             data = self.get_queryset()
