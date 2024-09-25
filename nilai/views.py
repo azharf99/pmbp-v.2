@@ -1,5 +1,7 @@
 from io import BytesIO
+import json
 from typing import Any
+from urllib import response
 from django.db import models
 from django.db.models.query import QuerySet
 from django.core.exceptions import PermissionDenied
@@ -10,6 +12,7 @@ from django.http import FileResponse, HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.urls import reverse, reverse_lazy
+import requests
 from extracurriculars.models import Extracurricular
 from nilai.models import Score
 from nilai.forms import ScoreForm
@@ -101,8 +104,12 @@ class NilaiQuickCreateView(LoginRequiredMixin, CreateView):
         raise PermissionDenied
     
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        extracurricular = Extracurricular.objects.get(id=request.POST.get("extracurricular"))
-        for i in range(1, Student.objects.filter(student_status="Aktif").count()+1):
+        ex_id = request.POST.get("extracurricular")
+        extracurricular = Extracurricular.objects.get(id=ex_id)
+        data = requests.get(f"https://pmbp.smasitalbinaa.com/extracurriculars/get-members/?query={ex_id}")
+        # data = requests.get(f"http://127.0.0.1:8000/extracurriculars/get-members/?query={ex_id}")
+        response = json.loads(data.text)
+        for i in range(1, len(response)+1):
             nilai = request.POST.get(f"score{i}")
             if nilai:
                 Score.objects.update_or_create(
@@ -112,6 +119,11 @@ class NilaiQuickCreateView(LoginRequiredMixin, CreateView):
                         "score": nilai,
                     }
                 )
+
+        if not response[0]["id"]:
+            messages.error(self.request, "Anggota belum ada!")
+            return redirect(reverse("nilai-quick-create"))
+
         UserLog.objects.create(
             user=self.request.user.teacher,
             action_flag="QUICK CREATE",
@@ -124,8 +136,12 @@ class NilaiQuickCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["extracurricular"] = Extracurricular.objects.prefetch_related("teacher", "members").filter(teacher=self.request.user.teacher)
-        context["students"] = Student.objects.filter(pk__in=context["extracurricular"].values_list("members", flat=True).distinct())
+        if self.request.user.is_superuser:
+            context["extracurricular"] = Extracurricular.objects.prefetch_related("teacher", "members").all()
+            context["students"] = None
+        else:
+            context["extracurricular"] = Extracurricular.objects.prefetch_related("teacher", "members").filter(teacher=self.request.user.teacher)
+            context["students"] = Student.objects.filter(pk__in=context["extracurricular"].values_list("members", flat=True).distinct())
         return context
 
 

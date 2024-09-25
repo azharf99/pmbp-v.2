@@ -60,18 +60,16 @@
                 <option value="{{object.id}}">{{object}}</option>
                 {% endfor %}
               </select>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-              {% for object in students %}
-              <select name="student{{forloop.counter}}" id="student{{object.id}}" class="col-span-2 rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg" required>
-                <option value="{{object.id}}">{{object}}</option>
-              </select>
-              <select name="score{{forloop.counter}}" id="score{{object.id}}" class="rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg" required>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-2" id="student_list">
+              <!-- <select name="student{{forloop.counter}}" aria-readonly="true" id="student{{object.id}}" class="col-span-2 rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg" required>
+                <option value="{{object.id}}">{{object}} aaaa</option>
+              </select> -->
+              <!-- <select name="score{{forloop.counter}}" id="score{{object.id}}" class="rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg">
                 <option value >Pilih Nilai {{object.student_name|title|truncatechars:15}}</option>
                 <option value="A">A</option>
                 <option value="B">B</option>
                 <option value="C">C</option>
-              </select>
-              {% endfor %}
+              </select> -->
             </div>
 
           </fieldset>
@@ -83,28 +81,63 @@
 
   </main>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
-  <script>
-      $(document).ready(function () {
-          $('#id_extracurricular').selectize({
-              sortField: 'text',
-              maxItems: 1,
+
+<script>
+  document.getElementById('extracurricular').addEventListener('change', function() {
+      const firstSelectValue = this.value;
+      const studentList = document.getElementById('student_list');
+
+      studentList.innerText = ''
+
+      // URL for the API request (replace with your actual API endpoint)
+      // const apiUrl = `http://127.0.0.1:8000/extracurriculars/get-members/?query=${firstSelectValue}`;
+      const apiUrl = `https://pmbp.smasitalbinaa.com/extracurriculars/get-members/?query=${firstSelectValue}`;
+
+      const scoreList = ["A", "B", "C"]
+      // Fetch options from the API
+      fetch(apiUrl)
+          .then(response => response.json())
+          .then(students => {
+              students.forEach((student, index, arr) => {
+                  
+                  const studentInput = document.createElement("input");
+                  studentInput.type = "hidden"
+                  studentInput.readOnly = true
+                  studentInput.id = student.id;
+                  studentInput.name = `student${index+1}`;
+                  studentInput.value = student.id;
+                  const studentLabel = document.createElement("label");
+                  studentLabel.className = "col-span-2 rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"
+                  studentLabel.htmlFor = student.id
+                  studentLabel.innerText = `(${student.student_class}) ${student.student_name}`;
+
+                  if(student.id !== null){
+                    const studentScoreSelect = document.createElement("select");
+                    studentScoreSelect.className = "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"
+                    studentScoreSelect.htmlFor = student.id
+                    studentScoreSelect.name = `score${index+1}`;
+                    studentScoreSelect.id = `score${student.id}`;
+  
+                    scoreList.forEach((score)=>{
+                      const studentScore = document.createElement("option");
+                      studentScore.value = score
+                      studentScore.innerText = score
+                      studentScoreSelect.appendChild(studentScore)
+                    })
+                    
+                    studentList.appendChild(studentLabel);
+                    studentList.appendChild(studentInput);
+                    studentList.appendChild(studentScoreSelect);
+                  }
+
+                });
+          })
+          .catch(error => {
+              console.error('Error fetching options:', error);
+              // Handle errors here
           });
-      });
-      $(document).ready(function () {
-          $('#id_student').selectize({
-              sortField: 'text',
-              maxItems: 1,
-          });
-      });
-      $(document).ready(function () {
-          $('#id_score').selectize({
-              sortField: 'text',
-              maxItems: 1,
-          });
-      });
-  </script>
+  });
+
+</script>
   
 {% endblock content %}
