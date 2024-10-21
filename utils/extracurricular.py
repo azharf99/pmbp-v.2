@@ -8,14 +8,15 @@ sshtunnel.TUNNEL_TIMEOUT = 5.0
 
 token = 'IeFSDe7RzYEDn4QJxKLX9Wc3luhUnMgvdQPB5Gr8tshU97RywNjkgpdG5XRZr8BT'
 
-def send_whatsapp(phone, pembina_ekskul, nama_ekskul):
+def send_whatsapp(phone='085701570100', pembina_ekskul='', nama_ekskul=''):
     message = f'''*[NOTIFIKASI PMBP]*
 Assalamu'alaikum ustadz {pembina_ekskul}. 
 Bulan ini belum ada laporan pertemuan ekskul {nama_ekskul}.
 Link input laporan di: https://pmbp.smasitalbinaa.com/
 
 _Ini adalah pesan otomatis dari system, jangan dibalas._'''
-    url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone is not '0' else '85701570100'}&pesan={message}"
+    # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
     try:
         data = requests.get(url)
         return data

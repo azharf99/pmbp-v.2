@@ -7,7 +7,9 @@ def send_WA_general(phone="085701570100", action="", messages=""):
 Anda berhasil {action} {messages}.
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
-    url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone is not '0' else '85701570100'}&pesan={message}"
+
     try:
         data = requests.get(url)
         return data
@@ -22,7 +24,9 @@ Anda berhasil {action}.
 https://wa.me/6285701570100
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
-    url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone is not '0' else '85701570100'}&pesan={message}"
+
     try:
         data = requests.get(url)
         return data
@@ -37,7 +41,9 @@ Detail laporan:
 https://pmbp.smasitalbinaa.com/{type}{slug}
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
-    url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone is not '0' else '85701570100'}&pesan={message}"
+
     try:
         data = requests.get(url)
         return data
@@ -50,7 +56,9 @@ def send_WA_print(phone="085701570100", doc_type="", messages=""):
 Anda berhasil mencetak {doc_type} {messages}.
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
-    url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone is not '0' else '85701570100'}&pesan={message}"
+
     try:
         data = requests.get(url)
         return data
@@ -67,7 +75,8 @@ Kendala: {problems}.
 Detail: https://pmbp.smasitalbinaa.com/projects/plan/detail/{id}/
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
-    url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone is not '0' else '85701570100'}&pesan={message}"
     try:
         data = requests.get(url)
         return data
