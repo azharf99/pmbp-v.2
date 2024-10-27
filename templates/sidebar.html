@@ -43,6 +43,11 @@
                 </a>
               </li>
               <li>
+                <a href="{% url 'extracurricular-update' data.slug %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
+                  Hapus Anggota
+                </a>
+              </li>
+              <li>
                 <a href="{% url 'extracurricular-detail' data.slug %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Detail {{data.type}}
                 </a>
