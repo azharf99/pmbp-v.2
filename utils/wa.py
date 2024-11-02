@@ -25,7 +25,7 @@ https://wa.me/6285701570100
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone != '0' else '85701570100'}&pesan={message}"
-    # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
+    # url_wablas = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
     try:
         data = requests.get(url)
         return data
@@ -35,7 +35,7 @@ _Ini adalah pesan otomatis, jangan dibalas._'''
 
 def send_WA_create_update_delete(phone="085701570100", action="", messages="", type="", slug=""):
     if not settings.DEBUG and type == "report/" and "menambahkan" in action:
-        url = "https://jogja.wablas.com/api/v2/send-message"
+        url_wablas = "https://jogja.wablas.com/api/v2/send-message"
         payload = {
             "data": [
                 {
@@ -59,12 +59,12 @@ Detail: https://pmbp.smasitalbinaa.com/{type}{slug}'''
             "Content-Type": "application/json"
         }
         try:
-            requests.post(url, headers=headers, data=json.dumps(payload), verify=False)
+            requests.post(url_wablas, headers=headers, data=json.dumps(payload), verify=False)
         except:
             return None
         
     elif not settings.DEBUG and type == "olympiads/" and "menambahkan" in action:
-        url = "https://jogja.wablas.com/api/v2/send-message"
+        url_wablas = "https://jogja.wablas.com/api/v2/send-message"
         payload = {
             "data": [
                 {
@@ -101,7 +101,7 @@ Detail: https://pmbp.smasitalbinaa.com/{type}{slug}'''
             "Content-Type": "application/json"
         }
         try:
-            requests.post(url, headers=headers, data=json.dumps(payload), verify=False)
+            requests.post(url_wablas, headers=headers, data=json.dumps(payload), verify=False)
         except:
             return None
         

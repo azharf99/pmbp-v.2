@@ -1,4 +1,4 @@
-from calendar import c
+from calendar import c, month
 import locale
 import datetime
 from typing import Any
@@ -132,18 +132,31 @@ class OlympiadReportIndexView(ListView):
     model = OlympiadReport
 
     def get_queryset(self) -> QuerySet[Any]:
+        mode = self.request.GET.get("mode", False)
         month = self.request.GET.get("month")
         year = self.request.GET.get("year")
-        if month and year:
+
+        if mode:
+            date_now = timezone.now()
+            return OlympiadReport.objects.filter(report_date__month=date_now.month, report_date__year=date_now.year).values("field_name__field_name", "field_name__slug").order_by().distinct()
+        
+        elif month and year:
             return OlympiadReport.objects.filter(report_date__month=month, report_date__year=year).select_related("field_name__teacher").prefetch_related("students", "field_name__members").all()
         return OlympiadReport.objects.select_related("field_name__teacher").prefetch_related("students", "field_name__members").all()
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
+        mode = self.request.GET.get("mode")
         month = self.request.GET.get("month")
         year = self.request.GET.get("year")
-        c["month"] = month
-        c["year"] = year
+        print(mode, month, year)
+        if mode:
+            c["mode"] = mode
+            c["month"] = timezone.now().month
+            c["year"] = timezone.now().year
+        else:
+            c["month"] = month
+            c["year"] = year
         if month and year:
             data = self.get_queryset()
             if data.exists():
@@ -254,17 +267,55 @@ class OlympiadReportDeleteView(LoginRequiredMixin, DeleteView):
         messages.success(self.request, "Data berhasil dihapus!")
         return super().form_valid(form)
 
+class OlympiadReportOptionsView(LoginRequiredMixin, ListView):
+    model = OlympiadReport
+    template_name = 'olympiads/olympiadreport_options.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = OlympiadReport.objects.filter(field_name__slug=self.kwargs.get("slug")).values('report_date__month', 'report_date__year').order_by().distinct()
+        monthName = {0: "Bulan", 1:"Januari", 2:"Februari", 3:"Maret", 4:"April", 5:"Mei", 6:"Juni", 7:"Juli", 8:"Agustus", 9:"September", 10:"Oktober", 11:"November", 12:"Desember"}
+
+        monthList = list()
+        monthSet = set()
+        yearSet = set()
+        allDict = dict()
+        for i in data:
+                monthSet.add(i['report_date__month'])
+                yearSet.add(i['report_date__year'])
+        for i in monthSet:
+            monthList.append({"nama": monthName.get(i), "value": i})
+        allDict["month"] = monthList
+        allDict["year"] = list(yearSet)
+        if len(data) > 0 :
+            context["object_list"] = [allDict]
+        else:
+            context["object_list"] = None
+        context["slug"] = self.kwargs.get("slug")
+        context["show_type"] = "options"
+        return context
 
 class OlympiadReportPrintView(LoginRequiredMixin, ListView):
     model = OlympiadReport
     template_name = "olympiads/olympiadreport_print.html"
 
-    def get_queryset(self):        
+    def get_queryset(self):
+        month = self.request.GET.get("month")
+        year = self.request.GET.get("year")
+        if month and year:
+            return OlympiadReport.objects.select_related("field_name").filter(report_date__month=month, report_date__year=year, field_name__slug=self.kwargs.get('slug')).order_by('-report_date')
+            
         return OlympiadReport.objects.select_related("field_name").filter(field_name__slug=self.kwargs.get('slug')).order_by('-report_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         locale.setlocale(locale.LC_ALL, 'id_ID')
+        monthName = {0: "Bulan", 1:"Januari", 2:"Februari", 3:"Maret", 4:"April", 5:"Mei", 6:"Juni", 7:"Juli", 8:"Agustus", 9:"September", 10:"Oktober", 11:"November", 12:"Desember"}
+        try:
+            context['month'] = monthName.get(int(self.request.GET.get("month")))
+        except:
+            context['month'] = "Error"
+        context['year'] = self.request.GET.get("year")
         context['tahun_ajaran'] = settings.TAHUN_AJARAN
         context['olympiad_field'] = get_object_or_404(OlympiadField, slug=self.kwargs.get("slug"))
         UserLog.objects.create(

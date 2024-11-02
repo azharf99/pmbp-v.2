@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import OlympiadFieldIndexView, OlympiadFieldCreateView, OlympiadFieldDetailView, OlympiadFieldUpdateView, OlympiadFieldDeleteView,\
                     OlympiadReportIndexView, OlympiadReportCreateView, OlympiadReportUpdateView, OlympiadReportDetailView, OlympiadReportDeleteView,\
-                    OlympiadReportPrintView
+                    OlympiadReportOptionsView, OlympiadReportPrintView
 
 
 urlpatterns = [
@@ -17,5 +17,6 @@ urlpatterns = [
     path('report/update/<int:pk>/', OlympiadReportUpdateView.as_view(), name='olympiad-report-update'),
     path('report/delete/<int:pk>/', OlympiadReportDeleteView.as_view(), name='olympiad-report-delete'),
 
+    path('report/options/<slug:slug>/', OlympiadReportOptionsView.as_view(), name='olympiad-report-options'),
     path('report/print/<slug:slug>/', OlympiadReportPrintView.as_view(), name='olympiad-report-print'),
 ]

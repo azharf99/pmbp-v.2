@@ -30,7 +30,9 @@ class ReportIndexView(ListView):
         mode = self.request.GET.get("mode", False)
         
         if mode:
-            return Report.objects.filter(report_date__month=timezone.now().month, report_date__year=timezone.now().year).select_related("extracurricular").values("extracurricular", "extracurricular__name", "extracurricular__slug", "extracurricular__logo").distinct()
+            self.paginate_by = None
+            date_now = timezone.now()
+            return Report.objects.filter(report_date__month=date_now.month, report_date__year=date_now.year).select_related("extracurricular").values("extracurricular", "extracurricular__name", "extracurricular__slug", "extracurricular__logo").order_by().distinct()
         elif month and year and search:
             return Report.objects.filter(extracurricular__name__icontains=search, report_date__month=month, report_date__year=year).select_related("extracurricular").prefetch_related("students", "teacher").all()
         elif month and year:
@@ -48,9 +50,13 @@ class ReportIndexView(ListView):
         search = self.request.GET.get("search")
         mode = self.request.GET.get("mode")
 
-        c["month"] = month
-        c["year"] = year
-        c["search"] = search
+        if mode:
+            c["month"] = timezone.now().month
+            c["year"] = timezone.now().year
+        else:
+            c["month"] = month
+            c["year"] = year
+            c["search"] = search
         c["mode"] = mode
 
         if month and year:
