@@ -13,7 +13,6 @@ from utils.whatsapp import send_WA_daily_plan
 # Create your views here.
 class TeamIndexView(ListView):
     model = Team
-    paginate_by = 9
     
 
 class TeamDetailView(DetailView):
@@ -54,7 +53,6 @@ class TeamDeleteView(LoginRequiredMixin, DeleteView):
 
 class ProjectIndexView(ListView):
     model = Project
-    paginate_by = 9
     
 
 class ProjectDetailView(DetailView):
@@ -96,7 +94,6 @@ class ProjectDeleteView(LoginRequiredMixin, DeleteView):
 
 class DailyPlanIndexView(ListView):
     model = DailyPlan
-    paginate_by = 9
     
 
 class DailyPlanDetailView(DetailView):

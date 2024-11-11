@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-import imp
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -105,11 +104,11 @@ WSGI_APPLICATION = 'Platform.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-        'default': {
+        'dev': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         },
-        'dev':{
+        'default':{
             'ENGINE': 'django.db.backends.postgresql',
             'NAME' : os.getenv('POSTGRES_DB_NAME'),
             'USER' : os.getenv('POSTGRES_DB_USER'),
@@ -202,9 +201,14 @@ THUMBNAIL_ALIASES = {
 }
 
 
-TAHUN_AJARAN = "2024/2025"
-TAHUN_AJARAN_STRIPPED = "2024-2025"
 from django.utils import timezone
+year_now = timezone.now().year
+if timezone.now().month > 6:
+    TAHUN_AJARAN = f"{year_now}/{year_now+1}"
+    TAHUN_AJARAN_STRIPPED = f"{year_now}-{year_now+1}"
+else:
+    TAHUN_AJARAN = f"{year_now-1}/{year_now}"
+    TAHUN_AJARAN_STRIPPED = f"{year_now-1}-{year_now}"
 TANGGAL_TAHUN_AJARAN = timezone.make_aware(timezone.datetime(2024, 6, 1, 1, 1, 1))
 
 

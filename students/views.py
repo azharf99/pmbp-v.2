@@ -12,6 +12,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, FileRe
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from laporan.models import Report
 from userlog.models import UserLog
 from utils.whatsapp import send_WA_create_update_delete, send_WA_general
 from students.models import Student
@@ -19,6 +20,7 @@ from students.forms import StudentForm
 from io import BytesIO
 import xlsxwriter
 from django.db.models import Q
+from django.utils import timezone
 
 
 class StudentIndexView(ListView):
@@ -223,6 +225,13 @@ class ActiveStudentListView(ListView):
 
     def get_queryset(self) -> QuerySet[Any]:
         query = self.request.GET.get("query")
+        extracurricular = self.request.GET.get("extracurricular")
+
+        if extracurricular:
+            members = Extracurricular.objects.filter(slug=extracurricular)[0].members.all()
+            data = Report.objects.filter(extracurricular__slug=extracurricular, report_date__month=timezone.now().month)
+            for i in data:
+                datum = members.difference(i.students.all())
         if query:
             data = Student.objects.filter(Q(student_status="Aktif") & Q(student_name__icontains=query)).prefetch_related('extracurricular_set', 'report_set__extracurricular', 'report_set__students').all()
             if data.exists():
