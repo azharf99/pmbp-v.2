@@ -1,5 +1,6 @@
 from django.urls import path
-from nilai.views import NilaiDetailView, NilaiIndexView, PrintExcelView, NilaiCreateView, NilaiQuickCreateView, NilaiUpdateView, NilaiDeleteView
+from nilai.views import NilaiDetailView, NilaiIndexView, PrintExcelView, NilaiCreateView, \
+                        NilaiQuickCreateView, NilaiUpdateView, NilaiDeleteView, ExtracurricularScore
 
 urlpatterns = [
     path('', NilaiIndexView.as_view(), name='nilai-list'),
@@ -10,4 +11,5 @@ urlpatterns = [
     path('delete/<int:pk>/', NilaiDeleteView.as_view(), name='nilai-delete'),
 
     path('download/', PrintExcelView.as_view(), name='nilai-download'),
+    path('view/', ExtracurricularScore.as_view(), name='nilai-view'),
 ]

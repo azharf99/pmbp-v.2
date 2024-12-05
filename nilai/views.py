@@ -244,3 +244,18 @@ class PrintExcelView(LoginRequiredMixin, ListView):
         send_WA_print(self.request.user.teacher.phone, 'data nilai', f'Ekskul/SC santri')
         
         return FileResponse(buffer, as_attachment=True, filename='Nilai Ekskul-SC SMA IT Al Binaa.xlsx')
+    
+
+class ExtracurricularScore(ListView):
+    model = Score
+    template_name = "nilai/score_inactive_list.html"
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return Score.objects.select_related("student", "extracurricular").values_list("extracurricular", flat=True).distinct().order_by()
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        qs = self.get_queryset()
+        context = super().get_context_data(**kwargs)
+        context["include"] = Extracurricular.objects.filter(id__in=qs)
+        context["exclude"] = Extracurricular.objects.exclude(id__in=qs)
+        return context

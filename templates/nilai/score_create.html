@@ -74,13 +74,18 @@
 
           </fieldset>
               
-              <input type="submit" value="Input Data" class="text-white p-2 bg-blue-500 rounded-md cursor-pointer hover:bg-fuchsia-500 my-4">
-          </form>
+              <input type="submit" id="submit" value="Input Data" class="text-white p-2 bg-blue-500 rounded-md cursor-pointer hover:bg-fuchsia-500 my-4">
+              <div id="loading" class="hidden flex gap-4 justify-center items-center text-white p-2 bg-blue-500 rounded-md cursor-pointer my-4"></div>
+                <div class="loader"></div>
+                <p>Loading ...</p>
+              </div>
+            </form>
         </div>
     </div>
 
   </main>
 
+  {% include 'loader.html' %}
 
 <script>
   document.getElementById('extracurricular').addEventListener('change', function() {
