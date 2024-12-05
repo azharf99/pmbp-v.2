@@ -8,10 +8,10 @@ Anda berhasil {action} {messages}.
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
-    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone is not '0' else '85701570100'}&pesan={message}"
+    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
 
     try:
-        data = requests.get(url)
+        data = requests.get(url, timeout=5)
         return data
     except:
         return None
@@ -25,10 +25,10 @@ https://wa.me/6285701570100
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
-    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone is not '0' else '85701570100'}&pesan={message}"
+    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
 
     try:
-        data = requests.get(url)
+        data = requests.get(url, timeout=5)
         return data
     except:
         return None
@@ -42,10 +42,10 @@ https://pmbp.smasitalbinaa.com/{type}{slug}
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
-    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone is not '0' else '85701570100'}&pesan={message}"
+    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
 
     try:
-        data = requests.get(url)
+        data = requests.get(url, timeout=5)
         return data
     except:
         return None
@@ -57,10 +57,10 @@ Anda berhasil mencetak {doc_type} {messages}.
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
-    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone is not '0' else '85701570100'}&pesan={message}"
+    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
 
     try:
-        data = requests.get(url)
+        data = requests.get(url, timeout=5)
         return data
     except:
         return None
@@ -76,9 +76,9 @@ Detail: https://pmbp.smasitalbinaa.com/projects/plan/detail/{id}/
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
-    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone is not '0' else '85701570100'}&pesan={message}"
+    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
     try:
-        data = requests.get(url)
+        data = requests.get(url, timeout=5)
         return data
     except:
         return None

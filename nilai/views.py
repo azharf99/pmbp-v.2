@@ -60,8 +60,19 @@ class NilaiCreateView(LoginRequiredMixin, CreateView):
         return super().get_object(queryset)
     
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        if Score.objects.filter(student_id = request.POST.get('student')).exists():
-            messages.error(request, "Maaf, nilai siswa tersebut sudah terinput!")
+        student_id = request.POST.get('student')
+        extracurricular_id = request.POST.get('extracurricular')
+        score_id = request.POST.get('score')
+        if Score.objects.filter(student_id=student_id, extracurricular_id=extracurricular_id).exists():
+            ext = Extracurricular.objects.get(id=extracurricular_id)
+            stud = Student.objects.get(id=student_id)
+            Score.objects.update_or_create(
+                student=stud,
+                extracurricular=ext,
+                defaults={"score": score_id,}
+            )
+            send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'data nilai Ekskul/SC {ext} {stud}', 'nilai/')
+            messages.success(self.request, "Update nilai berhasil!")
             return redirect(reverse("nilai-create"))
         
         return super().post(request, *args, **kwargs)

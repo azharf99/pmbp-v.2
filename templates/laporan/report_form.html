@@ -50,7 +50,9 @@
           {% endfor %}
           {% endif %}
           <h2 class="font-semibold text-xl">{{form_name}} Data Laporan</h2>
-          <form action="" method="post" enctype="multipart/form-data" class="flex flex-col gap-2 md:w-3/4 w-full">
+          
+          <!-- ADD AN ID TO FORMS -->
+          <form action="" method="post" {% if form_name == "Create" %} id="uploadForm" {% endif %} enctype="multipart/form-data" class="flex flex-col gap-2 md:w-3/4 w-full">
               {% csrf_token %}
               {% for field in form %}
                   <div class="flex flex-col">
@@ -69,96 +71,56 @@
                       {% endif %}
                   </div>
               {% endfor %}
+              {% if form_name == "Create" %}
+              <!-- ADD WRAPPER FOR PROGRESS -->
+              <div id="progressWrapper" style="display: none;" class="flex justify-center items-center gap-2">
+                <progress id="progressBar" value="0" max="100" class="rounded-lg"></progress>
+                <span id="progressPercentage">0%</span>
+              </div>
+
+               <!-- ADD MESSAGE WRAPPER -->
+              <div id="messageWrapper" class="text-center p-4 mb-4 mx-2 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" style="display: none;">
+                
+                <ul id="messageList"></ul>
+              </div>
+              {% endif %}
               
               <input type="submit" id="submit" value="{{form_name|default:'Input'}} Data" class="text-white p-2 bg-blue-500 rounded-md cursor-pointer hover:bg-fuchsia-500 my-4">
               <div id="loading" class="hidden flex gap-4 justify-center items-center text-white p-2 bg-blue-500 rounded-md cursor-pointer my-4">
                 <div class="loader"></div>
                 <p>Loading ...</p>
               </div>
+              {% if form_name == "Create" %}
+              <!-- ADDING REFRESH BUTTON -->
+              <div id="refresh" class="hidden text-center text-white p-2 bg-blue-500 rounded-md my-4">
+              </div>
+              {% endif %}
             </form>
         </div>
     </div>
 
   </main>
 
-  {% include 'loader.html' %}
-
 
 
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <script src="{% static 'js/selectize.min.js' %}"></script>
 <link rel="stylesheet" href="{% static 'css/selectize.bootstrap3.min.css' %}"/>
+{% if debug %}
+<script src="{% static 'js/select-student-dev.js' %}"></script>
+{% else %}
+<script src="{% static 'js/select-student-prod.js' %}"></script>
+{% endif %}
+<script src="{% static 'js/select-teachers.js' %}"></script>
 
-<script>
-  $(document).ready(function() {
-    $('#id_extracurricular').on('change', function() {
-        const firstSelectValue = $(this).val();
-        const secondSelect = $('#id_students');
-
-        // Clear current options
-        secondSelect.empty();
-
-        // URL for the API request (replace with your actual API endpoint)
-        // const apiUrl = `http://127.0.0.1:8000/extracurriculars/get-members/?query=${firstSelectValue}`;
-        const apiUrl = `https://pmbp.smasitalbinaa.com/extracurriculars/get-members/?query=${firstSelectValue}`;
-
-        // Fetch options from the API
-        $.getJSON(apiUrl, function(data) {
-            // Assuming the API returns an array of options like:
-            // [{ "id": 1, "student_class": "10A", "student_name": "John Doe" }, ...]
-
-            $.each(data, function(index, option) {
-                secondSelect.append($('<option>', {
-                    value: option.id,
-                    text: `(${option.student_class}) ${option.student_name}`
-                }));
-            });
-        }).fail(function(jqxhr, textStatus, error) {
-            console.error('Error fetching options:', error);
-            // Handle errors here
-        });
-
-        
-      });
-      
-      $('#id_teacher').selectize({
-          sortField: 'text',
-          maxItems: 3,
-      });
-
-});   
-</script>
 
 {% if form_name == "Create" %}
-<script>
-
-    $('#unselectAll').hide()
-    $('#selectAll').click(function() {
-        $('#id_students option').prop('selected', true);
-        $('#unselectAll').show()
-        $(this).hide()
-    });
-
-    $('#unselectAll').click(function() {
-        $('#id_students option').prop('selected', false);
-        $('#selectAll').show()
-        $(this).hide()
-    });
-
-</script>
+<script src="{% static 'js/report-progress-upload.js' %}"></script>
 
 {% else %}
-
-<script>
-  $('#unselectAll').hide()
-  $('#selectAll').hide()
-  $(document).ready(()=>{
-    $('#id_students').selectize({
-          sortField: 'text',
-          maxItems: 100,
-      });
-  })
-</script>
+<!-- MOVING THIS LOADER FROM GLOBAL AREA TO THIS UPDATE AREA -->
+{% include 'loader.html' %}
+<script src="{% static 'js/report-student-update.js' %}"></script>
 
 {% endif %}
   

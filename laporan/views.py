@@ -1,11 +1,9 @@
 import locale
-from re import search
 from typing import Any
-from urllib import request
 from django.core.exceptions import PermissionDenied
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -88,13 +86,13 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
             return super().get(request, *args, **kwargs)
         raise PermissionDenied
     
-    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        if Report.objects.select_related("extracurricular", "teacher")\
-            .filter(report_date=request.POST.get("report_date"), extracurricular=request.POST.get("extracurricular"))\
-            .exists():
-            messages.error(self.request, "Laporan untuk tanggal ini sudah ada. Silahkan pilih tanggal lain")
-            return redirect(reverse("report-create"))
-        return super().post(request, *args, **kwargs)
+    # def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+    #     if Report.objects.select_related("extracurricular", "teacher")\
+    #         .filter(report_date=request.POST.get("report_date"), extracurricular=request.POST.get("extracurricular"))\
+    #         .exists():
+    #         messages.error(self.request, "Laporan untuk tanggal ini sudah ada. Silahkan pilih tanggal lain")
+    #         return redirect(reverse("report-create"))
+    #     return super().post(request, *args, **kwargs)
     
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
         messages.error(self.request, "Error! Input data ada yang salah.")
@@ -111,8 +109,15 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         )
         
         send_WA_create_update_delete(self.request.user.teacher.phone, f'{self.request.user.teacher} menambahkan', f'laporan pertemuan Ekskul/SC {self.object}', 'report/', f'detail/{self.object.id}/')
-        messages.success(self.request, "Input Laporan berhasil!")
-        return HttpResponseRedirect(self.get_success_url())
+        # messages.success(self.request, "Input Laporan berhasil!")
+        messages.success(self.request, '<p>Input Laporan berhasil!</p><p class="m-1">Silahkan lihat hasilnya <a href="https://pmbp.smasitalbinaa.com/report/" class="p-1 rounded-md bg-green-500 text-white font-bold">di sini</a></p>')
+        message_list = []
+        for message in messages.get_messages(self.request):
+            message_list.append(str(message))
+
+        # Send the message list with the JSON response
+        return JsonResponse({'status': 'success', 'messages': message_list})
+        # return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -123,6 +128,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         context["teacher"] = teacher_set
         context["filtered_student"] = Extracurricular.objects.prefetch_related("teacher", "members").filter(teacher=self.request.user.teacher).values("members", "members__student_name", "members__student_class").order_by("members").distinct()
         context["form_name"] = "Create"
+        context["debug"] = settings.DEBUG
         return context
 
 
