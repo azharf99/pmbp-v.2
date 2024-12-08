@@ -31,17 +31,12 @@ class NilaiIndexView(ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        nama = self.request.GET.get("nama")
-        kelas = self.request.GET.get("kelas")
-        if nama and kelas:
+        query = self.request.GET.get("query")
+        if query:
             return Score.objects.select_related("student", "extracurricular")\
-                    .filter(Q(student__student_name__icontains=nama) | Q(student__student_class__icontains=kelas))
-        if nama:
-            return Score.objects.select_related("student", "extracurricular")\
-                    .filter(Q(student__student_name__icontains=nama))
-        if kelas:
-            return Score.objects.select_related("student", "extracurricular")\
-                    .filter(Q(student__student_class__icontains=kelas))
+                    .filter(Q(student__student_name__icontains=query) | 
+                            Q(student__student_class__icontains=query) | 
+                            Q(extracurricular__name__icontains=query))
         if self.request.user.is_authenticated:
             if not self.request.user.is_superuser:
                 return Score.objects.select_related("student", "extracurricular").filter(extracurricular__teacher=self.request.user.teacher)
