@@ -238,3 +238,6 @@ CORS_ALLOW_HEADERS = (
     "x-csrftoken",
     "x-requested-with",
 )
+
+
+URL_POST_NILAI = "https://jurnal.albinaa.ponpes.id/pageAdminEskulAddMember2sWalikelas.php?a=2&kdx=B5BSULDYDW2U5D5"

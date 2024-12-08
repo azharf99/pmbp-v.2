@@ -1,7 +1,7 @@
+import datetime
 from io import BytesIO
 import json
 from typing import Any
-from urllib import response
 from django.db import models
 from django.db.models.query import QuerySet
 from django.core.exceptions import PermissionDenied
@@ -20,7 +20,8 @@ from students.models import Student
 from userlog.models import UserLog
 from utils.whatsapp import send_WA_create_update_delete, send_WA_print
 import xlsxwriter
-
+from django.conf import settings
+from django.utils import timezone
 
 # Create your views here.
 
@@ -259,3 +260,44 @@ class ExtracurricularScore(ListView):
         context["include"] = Extracurricular.objects.filter(id__in=qs)
         context["exclude"] = Extracurricular.objects.exclude(id__in=qs)
         return context
+
+
+class SyncronizeWithAIS(LoginRequiredMixin, CreateView):
+    model = Score
+    fields = '__all__'
+    template_name = "nilai/syncronize.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated and not request.user.is_superuser:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        session = requests.Session()
+        base_url = settings.URL_POST_NILAI
+        scores = Score.objects.select_related('extracurricular', 'student').all()
+        for score in scores:
+            with open(f'progress--{datetime.date.today()}.txt', 'a') as file:
+                file.write(f"{timezone.now()}--{score.student.nis}--{score.student.student_name}--{score.extracurricular.name}--{score.score}\n")
+            data = {
+                "nilai": score.score,
+                "nama_eskul_sc_k": score.extracurricular.name,
+                "nis_k": score.student.nis,
+            }
+            res = session.post(base_url, data=data, timeout=5)
+            if res.status_code != 200:
+                with open('error.txt', 'a') as file:
+                    file.write(f"{timezone.now()}--{score.student.nis}--{score.student.student_name}--{score.extracurricular.name}--{score.score}\n")
+        return redirect(reverse("nilai-syncronize"))
+    
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        c["error"] = []
+        with open('error.txt', 'r') as file:
+            for data in file:
+                c["error"].append(data.strip().split("--"))
+        return c
+    
+
+    
