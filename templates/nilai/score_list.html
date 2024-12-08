@@ -52,8 +52,15 @@
         </span>
       </div>
       {% endif %}
+      
+      <div class="p-2 flex justify-center items-center">
+        <form action="" method="get" class="flex justify-start items-center flex-wrap">
+          <input type="search" name="nama" id="nama" placeholder="Ketik nama" {% if nama %} value="{{nama}}" {% endif %} class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
+          <input type="search" name="kelas" id="kelas" placeholder="Ketik kelas" {% if kelas %} value="{{kelas}}" {% endif %} class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
+          <input type="submit" value="Cari Data" class="p-2 m-1 rounded-lg text-white bg-indigo-500 text-xs cursor-pointer">
+        </form>
+      </div>
       {% if object_list %}
-
       <div class="mx-4 flex justify-center md:justify-end">
         <a href="{% url 'nilai-download' %}" class="p-2 rounded-lg text-white bg-indigo-500 text-xs">Download Data</a>
       </div>
@@ -75,7 +82,7 @@
           <tr>
             <td class="p-2 border border-gray-400">{{forloop.counter}}</td>
             <td class="p-2 border border-gray-400">{{object.student.student_name}}</td>
-            <td class="p-2 border border-gray-400 text-center">{{object.student.get_student_class_display}}</td>
+            <td class="p-2 border border-gray-400 text-center">{{object.student.student_class}}</td>
             <td class="p-2 border border-gray-400">{{object.extracurricular}}</td>
             <td class="p-2 border border-gray-400 text-center">{{object.score}}</td>
             {% if request.user.is_authenticated %}

@@ -1,8 +1,9 @@
 import datetime
-from io import BytesIO
+import requests
 import json
-from typing import Any
+import xlsxwriter
 from django.db import models
+from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.core.exceptions import PermissionDenied
 from django.forms import BaseModelForm
@@ -12,16 +13,16 @@ from django.http import FileResponse, HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.urls import reverse, reverse_lazy
-import requests
 from extracurriculars.models import Extracurricular
 from nilai.models import Score
 from nilai.forms import ScoreForm
 from students.models import Student
 from userlog.models import UserLog
 from utils.whatsapp import send_WA_create_update_delete, send_WA_print
-import xlsxwriter
 from django.conf import settings
 from django.utils import timezone
+from io import BytesIO
+from typing import Any
 
 # Create your views here.
 
@@ -30,10 +31,28 @@ class NilaiIndexView(ListView):
     paginate_by = 50
 
     def get_queryset(self):
+        nama = self.request.GET.get("nama")
+        kelas = self.request.GET.get("kelas")
+        if nama and kelas:
+            return Score.objects.select_related("student", "extracurricular")\
+                    .filter(Q(student__student_name__icontains=nama) | Q(student__student_class__icontains=kelas))
+        if nama:
+            return Score.objects.select_related("student", "extracurricular")\
+                    .filter(Q(student__student_name__icontains=nama))
+        if kelas:
+            return Score.objects.select_related("student", "extracurricular")\
+                    .filter(Q(student__student_class__icontains=kelas))
         if self.request.user.is_authenticated:
             if not self.request.user.is_superuser:
-                return Score.objects.filter(extracurricular__teacher=self.request.user.teacher)
-        return Score.objects.all()
+                return Score.objects.select_related("student", "extracurricular").filter(extracurricular__teacher=self.request.user.teacher)
+        return Score.objects.select_related("student", "extracurricular").all()
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        c["nama"] = self.request.GET.get("nama")
+        c["kelas"] = self.request.GET.get("kelas")
+        return c
+    
 
 
 class NilaiDetailView(DetailView):
