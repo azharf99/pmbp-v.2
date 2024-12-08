@@ -1,4 +1,5 @@
 import datetime
+import os
 from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 import requests
@@ -369,36 +370,59 @@ class PrestasiSyncronizeWithAIS(LoginRequiredMixin, CreateView):
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         session = requests.Session()
         base_url = settings.URL_POST_PRESTASI
+
+        file_path = f'prestasi_progress--{datetime.date.today()}.txt'
+        error_path = 'prestasi_error.txt'
+
         prestasi = Prestasi.objects.filter(created_at__gt=settings.TANGGAL_TAHUN_AJARAN)
-        # Open the file in write mode to clear its contents
-        with open('prestasi_error.txt', 'w') as file:
-            pass  # The pass statement does nothing, but the file is now empty
+        id_set = set()
+        # Check if file exists
+        if not os.path.exists(file_path):
+            # Create the file if it does not exist
+            with open(file_path, 'w') as file:
+                pass
+
+
+        with open(file_path, 'r') as read_progress_file:
+            for id in read_progress_file:
+                id_set.add(id.strip().split("--")[1])
+        
+        
         for data in prestasi:
-            # with open(f'prestasi_progress--{datetime.date.today()}.txt', 'a') as file:
-            #     file.write(f"{timezone.now()}--{data.awardee}--{data.predicate}--{data.name}\n")
+            if f"{data.pk}" in id_set:
+                continue
+            with open(file_path, 'a') as append_file:
+                append_file.write(f"{timezone.now()}--{data.pk}--{data.awardee}--{data.predicate}--{data.name}\n")
+            if data.awardee == "MUHAMMAD IQBAL RASYID":
+                continue
             try:
                 student = Student.objects.get(student_name=data.awardee)
-                # data = {
-                #     "prestasi1": data.predicate,
-                #     "keteranganprestasi1": data.name,
-                #     "nisk": student.nis,
-                # }
-                # res = session.post(base_url, data=data, timeout=5)
-                # if res.status_code != 200:
-                #     with open('prestasi_error.txt', 'a') as file:
-                #         file.write(f"{timezone.now()}--{data.awardee}--{data.predicate}--{data.name}\n")
+                data = { 
+                    "prestasi1": data.predicate,
+                    "keteranganprestasi1": data.name,
+                    "nisk": student.nis,
+                }
+                res = session.post(base_url, data=data, timeout=5)
+                if res.status_code != 200:
+                    with open(error_path, 'a') as file:
+                        file.write(f"{timezone.now()}--{data.awardee}--{data.predicate}--{data.name}\n")
             except:
-                print("Data Santri Tidak Cocok!", data.awardee)
-                with open('prestasi_error.txt', 'a') as file:
+                with open(error_path, 'a') as file:
                     file.write(f"{timezone.now()}--{data.awardee}--{data.predicate}--{data.name}\n")
+        messages.success(request, "Sikronisasi Data Prestasi Berhasil!")
         return redirect(reverse("prestasi-syncronize"))
     
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
         c["error"] = []
+        error_path = 'prestasi_error.txt'
         
-        with open('prestasi_error.txt', 'r') as file:
+        if not os.path.exists(error_path):
+            with open(error_path, 'w') as file:
+                pass
+
+        with open(error_path, 'r') as file:
             for data in file:
                 c["error"].append(data.strip().split("--"))
         return c

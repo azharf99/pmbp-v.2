@@ -1,6 +1,7 @@
 import datetime
 import requests
 import json
+import os
 import xlsxwriter
 from django.db import models
 from django.db.models import Q
@@ -289,10 +290,27 @@ class SyncronizeWithAIS(LoginRequiredMixin, CreateView):
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         session = requests.Session()
         base_url = settings.URL_POST_NILAI
+        file_path = f'progress--{datetime.date.today()}.txt'
+        error_path = 'error.txt'
         scores = Score.objects.select_related('extracurricular', 'student').all()
+
+        id_set = set()
+        # Check if file exists
+        if not os.path.exists(file_path):
+            # Create the file if it does not exist
+            with open(file_path, 'w') as file:
+                pass
+
+        with open(file_path, 'r') as read_progress_file:
+            for id in read_progress_file:
+                id_set.add("".join(id.strip().split("--")[1:]))
+
         for score in scores:
-            with open(f'progress--{datetime.date.today()}.txt', 'a') as file:
-                file.write(f"{timezone.now()}--{score.student.nis}--{score.student.student_name}--{score.extracurricular.name}--{score.score}\n")
+            search = f"{score.student.nis}{score.student.student_name}{score.extracurricular.name}{score.score}"
+            if search in id_set:
+                continue
+            with open(file_path, 'a') as score_progress_file:
+                score_progress_file.write(f"{timezone.now()}--{score.student.nis}--{score.student.student_name}--{score.extracurricular.name}--{score.score}\n")
             data = {
                 "nilai": score.score,
                 "nama_eskul_sc_k": score.extracurricular.name,
@@ -300,15 +318,22 @@ class SyncronizeWithAIS(LoginRequiredMixin, CreateView):
             }
             res = session.post(base_url, data=data, timeout=5)
             if res.status_code != 200:
-                with open('error.txt', 'a') as file:
-                    file.write(f"{timezone.now()}--{score.student.nis}--{score.student.student_name}--{score.extracurricular.name}--{score.score}\n")
+                with open('error.txt', 'a') as error_file:
+                    error_file.write(f"{timezone.now()}--{score.student.nis}--{score.student.student_name}--{score.extracurricular.name}--{score.score}\n")
+        messages.success(request, "Sikronisasi Data Nilai Berhasil!")
         return redirect(reverse("nilai-syncronize"))
     
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
         c["error"] = []
-        with open('error.txt', 'r') as file:
+        error_path = 'error.txt'
+
+        if not os.path.exists(error_path):
+            with open(error_path, 'w') as file:
+                pass
+
+        with open(error_path, 'r') as file:
             for data in file:
                 c["error"].append(data.strip().split("--"))
         return c
