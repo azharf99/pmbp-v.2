@@ -29,6 +29,13 @@
       </span>
     </div>
   {% endif %}
+
+  <div class="p-2 flex justify-center items-center">
+    <form action="" method="get" class="flex justify-start items-center flex-wrap">
+      <input type="search" name="query" id="query" placeholder="Ketik nama / lomba" {% if query %} value="{{query}}" {% endif %} class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
+      <input type="submit" value="Cari Data" class="p-2 m-1 rounded-lg text-white bg-indigo-500 text-xs cursor-pointer">
+    </form>
+  </div>
   {% if object_list %}
   <h2 class="m-2 text-2xl font-semibold text-center text-balance">Daftar Prestasi SMAS IT Al Binaa {{tahun_ajaran}}</h2>
   <div class="grid grid-cols-1 md:grid-cols-3">

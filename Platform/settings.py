@@ -241,3 +241,4 @@ CORS_ALLOW_HEADERS = (
 
 
 URL_POST_NILAI = "https://jurnal.albinaa.ponpes.id/pageAdminEskulAddMember2sWalikelas.php?a=2&kdx=B5BSULDYDW2U5D5"
+URL_POST_PRESTASI = "https://jurnal.albinaa.ponpes.id/pageAdminEskulAddPrestasi2Walikelas2s.php?a=2&kdx=B5BSULDYDW2U5D5"

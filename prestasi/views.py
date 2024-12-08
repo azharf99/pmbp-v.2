@@ -1,10 +1,15 @@
+import datetime
+from django.db.models.query import QuerySet
+from django.shortcuts import redirect
+import requests
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse, FileResponse, HttpResponseForbidden, HttpResponseRedirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
+from students.models import Student
 from utils.whatsapp import send_WA_create_update_delete
 from io import BytesIO
 from prestasi.forms import PrestasiForm, ProgramPrestasiForm
@@ -13,20 +18,40 @@ from userlog.models import UserLog
 from typing import Any
 from xlsxwriter import Workbook
 from django.conf import settings
+from django.utils import timezone
+from django.db.models import Q
 
 
 # Create your views here.
 class PrestasiIndexView(ListView):
     model = Prestasi
     paginate_by = 9
+
+    def get_queryset(self) -> QuerySet[Any]:
+        query = self.request.GET.get("query")
+        if query:
+            return Prestasi.objects.filter(Q(awardee__icontains=query) | Q(awardee_class__icontains=query) | Q(name__icontains=query))
+        return super().get_queryset()
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        c["query"] = self.request.GET.get("query")
+        return c
     
 class PrestasiIndexThisYearView(ListView):
     model = Prestasi
     queryset = Prestasi.objects.filter(created_at__gt=settings.TANGGAL_TAHUN_AJARAN)
     paginate_by = 9
 
+    def get_queryset(self) -> QuerySet[Any]:
+        query = self.request.GET.get("query")
+        if query:
+            return Prestasi.objects.filter(Q(created_at__gt=settings.TANGGAL_TAHUN_AJARAN) & Q(awardee__icontains=query) | Q(awardee_class__icontains=query) | Q(name__icontains=query))
+        return super().get_queryset()
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
+        c["query"] = self.request.GET.get("query")
         c["tahun_ajaran"] = settings.TAHUN_AJARAN
         return c
 
@@ -329,3 +354,51 @@ class ProgramPrestasiPrintExcelThisYearView(ListView):
         buffer.seek(0)
 
         return FileResponse(buffer, as_attachment=True, filename=f'Program Prestasi SMA IT Al Binaa T.A. {settings.TAHUN_AJARAN_STRIPPED}.xlsx')
+
+
+class PrestasiSyncronizeWithAIS(LoginRequiredMixin, CreateView):
+    model = Prestasi
+    fields = '__all__'
+    template_name = "prestasi/syncronize.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated and not request.user.is_superuser:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        session = requests.Session()
+        base_url = settings.URL_POST_PRESTASI
+        prestasi = Prestasi.objects.filter(created_at__gt=settings.TANGGAL_TAHUN_AJARAN)
+        # Open the file in write mode to clear its contents
+        with open('prestasi_error.txt', 'w') as file:
+            pass  # The pass statement does nothing, but the file is now empty
+        for data in prestasi:
+            # with open(f'prestasi_progress--{datetime.date.today()}.txt', 'a') as file:
+            #     file.write(f"{timezone.now()}--{data.awardee}--{data.predicate}--{data.name}\n")
+            try:
+                student = Student.objects.get(student_name=data.awardee)
+                # data = {
+                #     "prestasi1": data.predicate,
+                #     "keteranganprestasi1": data.name,
+                #     "nisk": student.nis,
+                # }
+                # res = session.post(base_url, data=data, timeout=5)
+                # if res.status_code != 200:
+                #     with open('prestasi_error.txt', 'a') as file:
+                #         file.write(f"{timezone.now()}--{data.awardee}--{data.predicate}--{data.name}\n")
+            except:
+                print("Data Santri Tidak Cocok!", data.awardee)
+                with open('prestasi_error.txt', 'a') as file:
+                    file.write(f"{timezone.now()}--{data.awardee}--{data.predicate}--{data.name}\n")
+        return redirect(reverse("prestasi-syncronize"))
+    
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        c["error"] = []
+        
+        with open('prestasi_error.txt', 'r') as file:
+            for data in file:
+                c["error"].append(data.strip().split("--"))
+        return c

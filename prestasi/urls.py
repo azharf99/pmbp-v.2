@@ -2,7 +2,8 @@ from django.urls import path
 from prestasi.views import PrestasiIndexView, PrestasiCreateView, PrestasiDetailView, PrestasiUpdateView, PrestasiDeleteView, \
                             ProgramPrestasiIndexView, ProgramPrestasiCreateView, ProgramPrestasiUpdateView, ProgramPrestasiDeleteView,\
                             ProgramPrestasiDetailView, PrestasiIndexThisYearView,\
-                            PretasiPrintExcelView, PrestasiPrintExcelThisYearView, ProgramPrestasiPrintExcelThisYearView
+                            PretasiPrintExcelView, PrestasiPrintExcelThisYearView, ProgramPrestasiPrintExcelThisYearView,\
+                            PrestasiSyncronizeWithAIS
 
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
     path('downloads/', PretasiPrintExcelView.as_view(), name='prestasi-download'),
     path('download/', PrestasiPrintExcelThisYearView.as_view(), name='prestasi-download-tahun-ini'),
     path('program/download/', ProgramPrestasiPrintExcelThisYearView.as_view(), name='program-prestasi-download'),
+    path('syncronize/', PrestasiSyncronizeWithAIS.as_view(), name='prestasi-syncronize'),
 ]
