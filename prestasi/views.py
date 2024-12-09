@@ -393,8 +393,6 @@ class PrestasiSyncronizeWithAIS(LoginRequiredMixin, CreateView):
                 continue
             with open(file_path, 'a') as append_file:
                 append_file.write(f"{timezone.now()}--{data.pk}--{data.awardee}--{data.predicate}--{data.name}\n")
-            if data.awardee == "MUHAMMAD IQBAL RASYID":
-                continue
             try:
                 student = Student.objects.get(student_name=data.awardee)
                 data = { 

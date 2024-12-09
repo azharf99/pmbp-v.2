@@ -318,7 +318,7 @@ class SyncronizeWithAIS(LoginRequiredMixin, CreateView):
             }
             res = session.post(base_url, data=data, timeout=5)
             if res.status_code != 200:
-                with open('error.txt', 'a') as error_file:
+                with open(error_path, 'a') as error_file:
                     error_file.write(f"{timezone.now()}--{score.student.nis}--{score.student.student_name}--{score.extracurricular.name}--{score.score}\n")
         messages.success(request, "Sikronisasi Data Nilai Berhasil!")
         return redirect(reverse("nilai-syncronize"))
