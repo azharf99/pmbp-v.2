@@ -177,7 +177,7 @@
                   Progres Nilai Ekskul
                 </a>
               </li>
-              {% if request.user.is_authenticated %}
+              {% if request.user.is_superuser %}
               <li>
                 <a href="{% url 'nilai-syncronize' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Sync with AIS
@@ -314,7 +314,7 @@
                   Download Program Prestasi
                 </a>
               </li>
-              {% if request.user.is_authenticated %}
+              {% if request.user.is_superuser %}
               <li>
                 <a href="{% url 'prestasi-syncronize' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Sync with AIS
