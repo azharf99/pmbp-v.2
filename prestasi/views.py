@@ -84,7 +84,7 @@ class PrestasiCreateView(LoginRequiredMixin, CreateView):
             )
         send_WA_create_update_delete(self.request.user.teacher.phone, 'menambahkan', f' Prestasi {self.object}', 'prestasi/', f'detail/{self.object.id}/')
         messages.success(self.request, "Data berhasil ditambahkan!")
-        return HttpResponseRedirect(self.get_success_url())
+        return redirect(reverse('prestasi-create'))
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
