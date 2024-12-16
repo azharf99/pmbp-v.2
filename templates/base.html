@@ -17,11 +17,12 @@
   <meta property="og:url" content="https://pmbp.smasitalbinaa.com/" />
   <meta property="og:site_name" content="PMBP SMAS IT AL BINAA IBS" />
   <meta property="og:image" content="https://pmbp.smasitalbinaa.com/media/prestasi/IMG-20231225-WA0036_K4uvPoa.jpg" />
-  <link rel="icon" href="{% static 'icon/favicon.ico' %}">
-  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'icon/apple-touch-icon.png' %}">
-  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'icon/favicon-32x32.png' %}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'icon/favicon-16x16.png' %}">
-  <link rel="manifest" href="{% static 'icon/site.webmanifest' %}">
+  <link rel="icon" type="image/png" href="{% static '/icon/favicon-96x96.png' %}" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="{% static '/icon/favicon.svg' %}" />
+  <link rel="shortcut icon" href="{% static '/icon/favicon.ico' %}" />
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static '/icon/apple-touch-icon.png' %}" />
+  <meta name="apple-mobile-web-app-title" content="PMBP" />
+  <link rel="manifest" href="{% static 'manifest.json' %}" />
   <link rel="stylesheet" href="{% static 'css/build.css' %}">
 </head>
 
@@ -33,6 +34,16 @@
     {% endblock content %}
 
   <script src="{% static 'js/dashboard.js' %}"></script>
+  <script src="{% static 'js/service-worker.js' %}"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register("{% static 'js/service-worker.js' %}")
+        .then(reg => console.log('Service Worker Registered!', reg))
+        .catch(err => console.log('Service Worker registration failed:', err));
+    }
+  </script>
+  
 </body>
 
 </html>
