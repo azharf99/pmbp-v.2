@@ -34,15 +34,8 @@
     {% endblock content %}
 
   <script src="{% static 'js/dashboard.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
   <script src="{% static 'js/service-worker.js' %}"></script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register("{% static 'js/service-worker.js' %}")
-        .then(reg => console.log('Service Worker Registered!', reg))
-        .catch(err => console.log('Service Worker registration failed:', err));
-    }
-  </script>
   
 </body>
 
