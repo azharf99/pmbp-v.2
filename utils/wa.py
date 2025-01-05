@@ -48,14 +48,14 @@ def send_WA_create_update_delete(phone="085701570100", action="", messages="", t
 #                     'phone': '6281293034867-1565170276',
 #                     'message': f'''*[NOTIFIKASI PMBP]*
 # Data masuk: {action} {messages}.
-# Detail: https://pmbp.smasitalbinaa.com/{type}{slug}''',
+# Detail: https://pmbp.albinaa.sch.id/{type}{slug}''',
 #                     'isGroup': 'true'
 #                 },
 #                 {
 #                     'phone': '6281293034867',
 #                     'message': f'''*[NOTIFIKASI PMBP]*
 # Data masuk: {action} {messages}.
-# Detail: https://pmbp.smasitalbinaa.com/{type}{slug}'''
+# Detail: https://pmbp.albinaa.sch.id/{type}{slug}'''
 #                 }
 #             ]
 #         }
@@ -81,28 +81,28 @@ def send_WA_create_update_delete(phone="085701570100", action="", messages="", t
 #                     'phone': '120363021651921651',
 #                     'message': f'''*[NOTIFIKASI OLIMPIADE]*
 # Data masuk: {action} {messages}.
-# Detail: https://pmbp.smasitalbinaa.com/{type}{slug}''',
+# Detail: https://pmbp.albinaa.sch.id/{type}{slug}''',
 #                     'isGroup': 'true'
 #                 },
 #                 {
 #                     'phone': '120363328278016757',
 #                     'message': f'''*[NOTIFIKASI OLIMPIADE]*
 # Data bimbingan: {action} {messages}.
-# Detail: https://pmbp.smasitalbinaa.com/{type}{slug}''',
+# Detail: https://pmbp.albinaa.sch.id/{type}{slug}''',
 #                     'isGroup': 'true'
 #                 },
 #                 {
 #                     'phone': '120363310795868820', #Grup Tanpa Bimbingan Internal
 #                     'message': f'''*[NOTIFIKASI OLIMPIADE]*
 # Data bimbingan: {action} {messages}.
-# Detail: https://pmbp.smasitalbinaa.com/{type}{slug}''',
+# Detail: https://pmbp.albinaa.sch.id/{type}{slug}''',
 #                     'isGroup': 'true'
 #                 },
 #                 {
 #                     'phone': '6285701570100',
 #                     'message': f'''*[NOTIFIKASI OLIMPIADE]*
 # Data masuk: {action} {messages}.
-# Detail: https://pmbp.smasitalbinaa.com/{type}{slug}'''
+# Detail: https://pmbp.albinaa.sch.id/{type}{slug}'''
 #                 }
 #             ]
 #         }
@@ -121,7 +121,7 @@ def send_WA_create_update_delete(phone="085701570100", action="", messages="", t
     message = f'''*[NOTIFIKASI PMBP]*
 Anda berhasil {action} {messages}.
 Detail:
-https://pmbp.smasitalbinaa.com/{type}{slug}
+https://pmbp.albinaa.sch.id/{type}{slug}
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"

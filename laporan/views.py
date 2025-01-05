@@ -110,7 +110,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         
         send_WA_create_update_delete(self.request.user.teacher.phone, f'{self.request.user.teacher} menambahkan', f'laporan pertemuan Ekskul/SC {self.object}', 'report/', f'detail/{self.object.id}/')
         # messages.success(self.request, "Input Laporan berhasil!")
-        messages.success(self.request, '<p>Input Laporan berhasil!</p><p class="m-1">Silahkan lihat hasilnya <a href="https://pmbp.smasitalbinaa.com/report/" class="p-1 rounded-md bg-green-500 text-white font-bold">di sini</a></p>')
+        messages.success(self.request, '<p>Input Laporan berhasil!</p><p class="m-1">Silahkan lihat hasilnya <a href="https://pmbp.albinaa.sch.id/report/" class="p-1 rounded-md bg-green-500 text-white font-bold">di sini</a></p>')
         message_list = []
         for message in messages.get_messages(self.request):
             message_list.append(str(message))

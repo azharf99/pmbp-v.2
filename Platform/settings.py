@@ -215,7 +215,7 @@ TANGGAL_TAHUN_AJARAN = timezone.make_aware(timezone.datetime(2024, 6, 1, 1, 1, 1
 
 CORS_ALLOWED_ORIGINS = [
     "https://smasitalbinaa.com",
-    "https://pmbp.smasitalbinaa.com",
+    "https://pmbp.albinaa.sch.id",
     "http://127.0.0.1:8000",
 ]
 

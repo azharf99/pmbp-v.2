@@ -41,7 +41,7 @@ def send_WA_create_update_delete(phone="085701570100", action="", messages="", t
     message = f'''*[NOTIFIKASI PMBP]*
 Anda berhasil {action} {messages}.
 Detail laporan:
-https://pmbp.smasitalbinaa.com/{type}{slug}
+https://pmbp.albinaa.sch.id/{type}{slug}
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
@@ -77,7 +77,7 @@ Daily Plan Masuk: {daily_plan}
 Target: {messages}.
 Kendala: {problems}.
 
-Detail: https://pmbp.smasitalbinaa.com/projects/plan/detail/{id}/
+Detail: https://pmbp.albinaa.sch.id/projects/plan/detail/{id}/
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"

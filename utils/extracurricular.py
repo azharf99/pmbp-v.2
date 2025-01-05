@@ -12,7 +12,7 @@ def send_whatsapp(phone='085701570100', pembina_ekskul='', nama_ekskul=''):
     message = f'''*[NOTIFIKASI PMBP]*
 Assalamu'alaikum ustadz {pembina_ekskul}. 
 Bulan ini belum ada laporan pertemuan ekskul {nama_ekskul}.
-Link input laporan di: https://pmbp.smasitalbinaa.com/
+Link input laporan di: https://pmbp.albinaa.sch.id/
 
 _Ini adalah pesan otomatis dari system, jangan dibalas._'''
     url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone is not '0' else '85701570100'}&pesan={message}"

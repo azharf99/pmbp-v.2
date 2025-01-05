@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-app-cache-v4';
+const CACHE_NAME = 'my-app-cache-v5';
 const QUEUE_NAME = 'crud-queue';
 const STATIC_DIRS = [
     "/",
@@ -25,17 +25,6 @@ const STATIC_DIRS = [
     "/static/images/favicon.ico",
     "/static/images/hero.png",
     "/static/images/logo.png",
-    "/static/js/dashboard.js",
-    "/static/js/index.js",
-    "/static/js/jquery.min.js",
-    "/static/js/login.js",
-    "/static/js/main.js",
-    "/static/js/report-progress-upload.js",
-    "/static/js/report-student-update.js",
-    "/static/js/select-student-dev.js",
-    "/static/js/select-student-prod.js",
-    "/static/js/select-teachers.js",
-    "/static/js/selectize.min.js",
     "/static/screenshots/desktop-screenshot.png",
     "/static/screenshots/mobile-screenshot.png",
     "/static/screenshots/tablet-screenshot.png",
