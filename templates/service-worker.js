@@ -1,9 +1,8 @@
-const CACHE_NAME = 'my-app-cache-v5';
-const QUEUE_NAME = 'crud-queue';
-const STATIC_DIRS = [
+const CACHE_NAME = 'my-app-cache-v1';
+
+const FILES_TO_CACHE = [
     "/",
     "/static/manifest.json",
-    "/static/css/build.css",
     "/static/css/selectize.bootstrap3.min.css",
     "/static/icon/android-chrome-192x192.png",
     "/static/icon/android-chrome-512x512.png",
@@ -25,31 +24,39 @@ const STATIC_DIRS = [
     "/static/images/favicon.ico",
     "/static/images/hero.png",
     "/static/images/logo.png",
+    "/static/js/selectize.min.js",
     "/static/screenshots/desktop-screenshot.png",
     "/static/screenshots/mobile-screenshot.png",
     "/static/screenshots/tablet-screenshot.png",
 ]
 // Install event to cache static assets
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => {
-            return cache.addAll(STATIC_DIRS);
-        })
+      caches.open(CACHE_NAME).then((cache) => {
+        console.log('Opened cache');
+        return cache.addAll(FILES_TO_CACHE);
+      })
     );
-    console.log("Service Worker has been installed", event)
-});
+    self.skipWaiting();
+  });
+  
 
-// Activate event to clean up old caches
-self.addEventListener('activate', event => {
-    console.log("Service Worker has been activate", event)
+  // Activate event to clean up old caches
+  self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))
-            );
-        })
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              console.log('Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
     );
-});
+    event.waitUntil(self.clients.claim());
+  });
 
 // Intercept fetch requests and serve cached files
 self.addEventListener('fetch', (event) => {
@@ -62,14 +69,14 @@ self.addEventListener('fetch', (event) => {
 });
 
 
-self.addEventListener('push', event => {
-    const data = event.data.json();
-    const options = {
-        body: data.body,
-        icon: data.icon || '/default-icon.png',
-        badge: data.badge || '/default-badge.png'
-    };
-    event.waitUntil(
-        self.registration.showNotification(data.title, options)
-    );
-});
+// self.addEventListener('push', event => {
+//     const data = event.data.json();
+//     const options = {
+//         body: data.body,
+//         icon: data.icon || '/default-icon.png',
+//         badge: data.badge || '/default-badge.png'
+//     };
+//     event.waitUntil(
+//         self.registration.showNotification(data.title, options)
+//     );
+// });

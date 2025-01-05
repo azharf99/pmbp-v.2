@@ -76,6 +76,14 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
     form_class = ReportForm
     success_url = reverse_lazy("report-create")
 
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        if isinstance(response, HttpResponse):
+            response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response['Pragma'] = 'no-cache'
+            response['Expires'] = '0'
+        return response
+
     def get_form_kwargs(self) -> dict[str, Any]:
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
