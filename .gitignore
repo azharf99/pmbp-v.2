@@ -18,6 +18,9 @@ LOAD DATA/
 
 # production
 /build
+.gitignore
+todo.txt
+dir.py
 
 # misc
 .DS_Store

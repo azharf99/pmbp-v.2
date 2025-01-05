@@ -1,6 +1,7 @@
 import requests
 from django.conf import settings
-token = settings.TOKEN
+# token = settings.TOKEN
+token = "QEXvQ90p0OzvwZLWOFMpHYwo22JdXG"
 
 def send_WA_general(phone="085701570100", action="", messages=""):
     message = f'''*[NOTIFIKASI PMBP]*
@@ -8,7 +9,8 @@ Anda berhasil {action} {messages}.
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
-    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
+    # url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
+    url = f"https://sent.fafashop.my.id/send-message?api_key={token}&sender=6285776707304&number={phone}&message={message}"
 
     try:
         data = requests.get(url, timeout=5)
@@ -25,7 +27,8 @@ https://wa.me/6285701570100
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
-    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
+    # url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
+    url = f"https://sent.fafashop.my.id/send-message?api_key={token}&sender=6285776707304&number={phone}&message={message}"
 
     try:
         data = requests.get(url, timeout=5)
@@ -42,7 +45,8 @@ https://pmbp.smasitalbinaa.com/{type}{slug}
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
-    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
+    # url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
+    url = f"https://sent.fafashop.my.id/send-message?api_key={token}&sender=6285776707304&number={phone}&message={message}"
 
     try:
         data = requests.get(url, timeout=5)
@@ -57,7 +61,8 @@ Anda berhasil mencetak {doc_type} {messages}.
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
-    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
+    # url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
+    url = f"https://sent.fafashop.my.id/send-message?api_key={token}&sender=6285776707304&number={phone}&message={message}"
 
     try:
         data = requests.get(url, timeout=5)
@@ -76,7 +81,8 @@ Detail: https://pmbp.smasitalbinaa.com/projects/plan/detail/{id}/
 
 _Ini adalah pesan otomatis, jangan dibalas._'''
     # url = f"https://jogja.wablas.com/api/send-message?phone={phone}&message={message}&token={token}"
-    url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
+    # url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender=6285157030478&no=62{phone[1:] if phone.startswith('0') and phone != '0' else '85701570100'}&pesan={message}"
+    url = f"https://sent.fafashop.my.id/send-message?api_key={token}&sender=6285776707304&number={phone}&message={message}"
     try:
         data = requests.get(url, timeout=5)
         return data
