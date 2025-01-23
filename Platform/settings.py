@@ -11,12 +11,14 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
+import sys
 from dotenv import load_dotenv
 
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,9 +28,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-qc-ewe(l__6md70^d8f02(8q@u^srl^hee26y3&cols6u*)(z#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+if not DEBUG:
+    ALLOWED_HOSTS = ['pmbp.pythonanywhere.com', 'smaitalbinaa.pythonanywhere.com', 'pmbp.albinaa.sch.id']
+else:
+    ALLOWED_HOSTS = ['*']
 
 
 ID_DEVICE = os.getenv('ID_DEVICE')
@@ -61,7 +66,6 @@ INSTALLED_APPS = [
     'students',
     'easy_thumbnails',
     "corsheaders",
-    'debug_toolbar',
 ]
 
 
@@ -75,8 +79,22 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
+
+
+# Activate django debug toolbar
+TESTING = "test" in sys.argv
+
+if DEBUG and not TESTING:
+    INSTALLED_APPS = [
+        *INSTALLED_APPS,
+        "debug_toolbar",
+    ]
+    MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+        *MIDDLEWARE,
+    ]
+
 
 ROOT_URLCONF = 'Platform.urls'
 
@@ -103,29 +121,64 @@ WSGI_APPLICATION = 'Platform.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-        'dev': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        },
-        'default':{
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME' : os.getenv('POSTGRES_DB_NAME'),
-            'USER' : os.getenv('POSTGRES_DB_USER'),
-            'PASSWORD' : os.getenv('POSTGRES_DB_PASSWORD'),
-            'HOST' : os.getenv('POSTGRES_DB_HOST'),
-            'PORT' : os.getenv('POSTGRES_DB_PORT'),
-        },
-        'backup':{
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME' : os.getenv('POSTGRES_DB_NAME'),
-            'USER' : os.getenv('POSTGRES_DB_USER'),
-            'PASSWORD' : os.getenv('POSTGRES_DB_PASSWORD'),
-            'HOST' : os.getenv('POSTGRES_DB_HOST'),
-            'PORT' : os.getenv('POSTGRES_DB_PORT'),
-        }
-    }
+# DATABASES = {
+#         'dev': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'db.sqlite3',
+#         },
+#         'default':{
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME' : os.getenv('POSTGRES_DB_NAME'),
+#             'USER' : os.getenv('POSTGRES_DB_USER'),
+#             'PASSWORD' : os.getenv('POSTGRES_DB_PASSWORD'),
+#             'HOST' : os.getenv('POSTGRES_DB_HOST'),
+#             'PORT' : os.getenv('POSTGRES_DB_PORT'),
+#         },
+#         'backup':{
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME' : os.getenv('POSTGRES_DB_NAME'),
+#             'USER' : os.getenv('POSTGRES_DB_USER'),
+#             'PASSWORD' : os.getenv('POSTGRES_DB_PASSWORD'),
+#             'HOST' : os.getenv('POSTGRES_DB_HOST'),
+#             'PORT' : os.getenv('POSTGRES_DB_PORT'),
+#         }
+#     }
 
+
+if not DEBUG:
+    DATABASES = {
+            'default':{
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME' : os.getenv('MYSQL_DB_NAME'),
+                'USER' : os.getenv('MYSQL_DB_USER'),
+                'PASSWORD' : os.getenv('MYSQL_DB_PASSWORD'),
+                'HOST' : os.getenv('MYSQL_DB_HOST'),
+                'PORT' : os.getenv('MYSQL_DB_PORT'),
+                "OPTIONS": {
+                    'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                    'charset': 'utf8mb4',
+                    "autocommit": True,
+                }
+
+            }
+        }
+else:
+    DATABASES = {
+            'default':{
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME' : os.getenv('LOCAL_MYSQL_DB_NAME'),
+                'USER' : os.getenv('LOCAL_MYSQL_DB_USER'),
+                'PASSWORD' : os.getenv('LOCAL_MYSQL_DB_PASSWORD'),
+                'HOST' : os.getenv('LOCAL_MYSQL_DB_HOST'),
+                'PORT' : os.getenv('LOCAL_MYSQL_DB_PORT'),
+                "OPTIONS": {
+                    'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                    'charset': 'utf8mb4',
+                    "autocommit": True,
+                }
+
+            }
+        }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -178,14 +231,27 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# DJANGO DEBUG TOOLBAR
-INTERNAL_IPS = [
-    # ...
-    "127.0.0.1",
-    # ...
-]
+if DEBUG:
+    # Django debug toolbar
+    INTERNAL_IPS = [
+        # ...
+        "127.0.0.1",
+        # ...
+    ]
 
 SITE_ID = 1
+
+
+# EMAIL FOR SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR / "tmp/app-messages"
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  
+EMAIL_PORT = 587
+EMAIL_USE_LOCALTIME = True
+EMAIL_USE_TLS = True
+
 
 
 THUMBNAIL_ALIASES = {
@@ -213,31 +279,70 @@ TANGGAL_TAHUN_AJARAN = timezone.make_aware(timezone.datetime(2024, 6, 1, 1, 1, 1
 
 
 
-CORS_ALLOWED_ORIGINS = [
-    "https://smasitalbinaa.com",
-    "https://pmbp.albinaa.sch.id",
-    "http://127.0.0.1:8000",
-]
+if not DEBUG:
 
+    CORS_ALLOWED_ORIGINS = [
+        "https://smaitalbinaa.pythonanywhere.com",
+        "https://pythonanywhere.com",
+        "https://pmbp.albinaa.sch.id",
+        "http://localhost:8080",
+        "http://127.0.0.1:8000",
+        "http://127.0.0.1:9000",
+    ]
 
-CORS_ALLOW_METHODS = (
-    "DELETE",
-    "GET",
-    "OPTIONS",
-    "PATCH",
-    "POST",
-    "PUT",
-)
+    CORS_ALLOW_METHODS = (
+        "DELETE",
+        "GET",
+        "OPTIONS",
+        "PATCH",
+        "POST",
+        "PUT",
+    )
 
+    CORS_ALLOW_HEADERS = (
+        "accept",
+        "authorization",
+        "content-type",
+        "user-agent",
+        "x-csrftoken",
+        "x-requested-with",
+    )
 
-CORS_ALLOW_HEADERS = (
-    "accept",
-    "authorization",
-    "content-type",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-)
+    CSRF_TRUSTED_ORIGINS = [
+        "https://smaitalbinaa.pythonanywhere.com",
+        "https://pythonanywhere.com",
+        "https://pmbp.albinaa.sch.id",
+        "http://localhost:8080",
+        "http://127.0.0.1:8000",
+        "http://127.0.0.1:9000",
+    ]
+
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    X_FRAME_OPTIONS = 'DENY'
+
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'DEBUG',
+                'class': 'logging.FileHandler',
+                'filename': os.path.join(BASE_DIR, 'logs', 'app.log'),
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+                'level': 'DEBUG',
+                'propagate': True,
+            },
+        },
+    }
+
 
 
 URL_POST_NILAI = "https://jurnal.albinaa.ponpes.id/pageAdminEskulAddMember2sWalikelas.php?a=2&kdx=B5BSULDYDW2U5D5"
