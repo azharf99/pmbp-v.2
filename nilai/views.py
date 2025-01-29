@@ -19,7 +19,7 @@ from nilai.models import Score
 from nilai.forms import ScoreForm
 from students.models import Student
 from userlog.models import UserLog
-from utils.whatsapp import send_WA_create_update_delete, send_WA_print
+from utils.whatsapp import send_WA_create_update_delete, send_WA_general
 from django.conf import settings
 from django.utils import timezone
 from io import BytesIO
@@ -257,7 +257,7 @@ class PrintExcelView(LoginRequiredMixin, ListView):
             app="NILAI",
             message="berhasil download nilai semua ekskul/sc dalam format Excel"
         )
-        send_WA_print(self.request.user.teacher.phone, 'data nilai', f'Ekskul/SC santri')
+        send_WA_general(self.request.user.teacher.phone, 'data nilai', f'Ekskul/SC santri')
         
         return FileResponse(buffer, as_attachment=True, filename='Nilai Ekskul-SC SMA IT Al Binaa.xlsx')
     

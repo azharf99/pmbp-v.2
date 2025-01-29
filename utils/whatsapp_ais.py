@@ -10,10 +10,10 @@ sender_ais_phone = os.getenv("SENDER_AIS_PHONE")
 
 def send_WA_create_update_delete(phone: str | None = admin_phone, action: str = "", messages: str = "", type: str = "", slug: str = "") -> requests.Response | None:
     if not settings.DEBUG:
-        message = f'''*[NOTIFIKASI HUMAS]*
+        message = f'''*[NOTIFIKASI PMBP]*
 Anda berhasil {action} {messages}.
 Detail:
-https://humas.albinaa.sch.id/{type}{slug}'''
+https://pmbp.albinaa.sch.id/{type}{slug}'''
         
         url = f"https://sent.fafashop.my.id/send-message?api_key={token}&sender={sender_ais_phone}&number={phone}&message={message}"
 
@@ -27,10 +27,10 @@ https://humas.albinaa.sch.id/{type}{slug}'''
 
 def send_WA_general(phone: str | None = admin_phone, action: str = "", messages: str = "") -> requests.Response | None:        
     if not settings.DEBUG:      
-        message = f'''*[NOTIFIKASI HUMAS]*
+        message = f'''*[NOTIFIKASI PMBP]*
 Anda berhasil {action} {messages}.
 Detail:
-https://humas.albinaa.sch.id/'''
+https://pmbp.albinaa.sch.id/'''
         
         url = f"https://sent.fafashop.my.id/send-message?api_key={token}&sender={sender_ais_phone}&number={phone}&message={message}"
 

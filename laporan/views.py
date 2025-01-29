@@ -14,7 +14,7 @@ from laporan.models import Report
 from laporan.forms import ReportForm
 from extracurriculars.models import Extracurricular
 from userlog.models import UserLog
-from utils.wa import send_WA_create_update_delete, send_WA_print
+from utils.whatsapp_albinaa import send_WA_create_update_delete, send_WA_general
 from django.conf import settings
 
 class ReportIndexView(ListView):
@@ -226,7 +226,7 @@ class PrintToPrintView(LoginRequiredMixin, ListView):
         context['students'] = Extracurricular.objects.filter(slug=self.kwargs.get('slug')).order_by('members').values_list('members__student_name', 'members__student_class')
         context['angka'] = [x for x in range(15)]
         ekskul = get_object_or_404(Extracurricular, slug=self.kwargs.get('slug'))
-        send_WA_print(self.request.user.teacher.phone, 'laporan pertemuan Ekskul/SC', f"{ekskul}")
+        send_WA_general(self.request.user.teacher.phone, 'laporan pertemuan Ekskul/SC', f"{ekskul}")
         return context
 
 
@@ -274,7 +274,7 @@ class ReportOptionsView(LoginRequiredMixin, ListView):
 #             app="LAPORAN",
 #             message=f"berhasil mencetak laporan pertemuan ekskul {obj}"
 #         )
-#         send_WA_print(self.request.user.teacher.phone, 'laporan pertemuan Ekskul/SC', f"{obj}")
+#         send_WA_general(self.request.user.teacher.phone, 'laporan pertemuan Ekskul/SC', f"{obj}")
 #         return super().get(request, *args, **kwargs)
 
 #     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:

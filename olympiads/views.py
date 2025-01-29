@@ -17,7 +17,7 @@ from django.urls import reverse, reverse_lazy
 from olympiads.forms import OlympiadFieldForm, OlympiadReportForm
 from olympiads.models import OlympiadField, OlympiadReport
 from userlog.models import UserLog
-from utils.wa import send_WA_create_update_delete, send_WA_print
+from utils.whatsapp_albinaa import send_WA_create_update_delete, send_WA_general
 from django.utils import timezone
 
 # Create your views here.
@@ -324,5 +324,5 @@ class OlympiadReportPrintView(LoginRequiredMixin, ListView):
             app="LAPORAN",
             message=f"berhasil mencetak laporan olimpiade {context['olympiad_field']}"
         )
-        send_WA_print(self.request.user.teacher.phone, 'laporan olimpiade', f"{context['olympiad_field']}")
+        send_WA_general(self.request.user.teacher.phone, 'laporan olimpiade', f"{context['olympiad_field']}")
         return context

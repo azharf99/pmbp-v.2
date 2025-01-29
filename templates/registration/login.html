@@ -22,6 +22,11 @@
 </head>
 
 <body class="bg-gray-100 dark:bg-black dark:text-gray-200">
+  <div class="fixed hidden top-0 left-0 w-full h-full z-20 bg-teal-500 justify-center items-center" id="loadingOverlay">
+    <div class="loader"></div>
+    <p class="font-bold p-2">Loading ....</p>
+  </div>
+
   <main class="p-6 flex justify-center items-center h-screen">
     <section class="flex flex-col justify-center items-center bg-white dark:bg-gray-800 w-full md:w-1/2 rounded-lg shadow-lg">
       <div class="p-6 flex flex-col justify-center items-center">
@@ -69,12 +74,12 @@
 
           <div class="flex flex-col">
             <label for="yourUsername">Username</label>
-            <input type="text" name="username" class="rounded-md text-black py-1 px-2 border-2 border-blue-500" id="yourUsername" placeholder="Username" required>
+            <input type="text" name="username" autocomplete="username" class="rounded-md text-black py-1 px-2 border-2 border-blue-500" id="yourUsername" placeholder="Username" required>
           </div>
 
           <div class="flex flex-col">
             <label for="yourPassword">Password</label>
-            <input type="password" name="password" class="rounded-md text-black py-1 px-2 border-2 border-blue-500" id="yourPassword" placeholder="Password" required>
+            <input type="password" name="password" autocomplete="current-password" class="rounded-md text-black py-1 px-2 border-2 border-blue-500" id="yourPassword" placeholder="Password" required>
           </div>
 
           <div class="flex gap-2 items-center">
@@ -87,7 +92,6 @@
             <a href="{% url 'app-index' %}" id="back" class="py-1 px-2 bg-red-500 text-white rounded-md">&leftarrow; Home</a>
           </div>
           <div id="loading" class="hidden flex gap-4 justify-center items-center text-white p-2 bg-blue-500 rounded-md cursor-pointer my-4">
-            <div class="loader"></div>
             <p>Loading ...</p>
           </div>
         </form>
@@ -99,13 +103,6 @@
   
   <script src="{% static 'js/login.js' %}"></script>
   {% include 'loader.html' %}
-
-  <script>
-    const back = document.getElementById("back");
-    document.addEventListener("submit", ()=>{
-      back.classList.add("hidden");
-    })
-  </script>
 
 </body>
 

@@ -17,10 +17,67 @@
 
   <script>
     const submit = document.getElementById("submit");
+    const loadingOverlay = document.getElementById("loadingOverlay");
     const loading = document.getElementById("loading");
+    const back = document.getElementById("back");
 
-    document.addEventListener("submit", ()=>{
-      submit.classList.add("hidden");
-      loading.classList.remove("hidden");
-    })
+    if(loadingOverlay && back){
+      document.addEventListener("submit", ()=>{
+        submit.classList.add("hidden");
+        loadingOverlay.classList.remove("hidden");
+        loadingOverlay.classList.add("flex");
+        loading.classList.remove("hidden");
+        back.classList.add("hidden");
+      })
+  
+      document.addEventListener("pageShow", ()=>{
+        submit.classList.remove("hidden");
+        loadingOverlay.classList.add("hidden");
+        loadingOverlay.classList.remove("flex");
+        loading.classList.add("hidden");
+        back.classList.remove("hidden");
+      })
+    }
+
+    else if(back){
+      document.addEventListener("submit", ()=>{
+        submit.classList.add("hidden");
+        loading.classList.remove("hidden");
+        back.classList.add("hidden");
+      })
+  
+      document.addEventListener("pageShow", ()=>{
+        submit.classList.remove("hidden");
+        loading.classList.add("hidden");
+        back.classList.remove("hidden");
+      })
+    }
+    
+    else if (loadingOverlay){
+      document.addEventListener("submit", ()=>{
+        submit.classList.add("hidden");
+        loadingOverlay.classList.remove("hidden");
+        loadingOverlay.classList.add("flex");
+        loading.classList.remove("hidden");
+      })
+  
+      document.addEventListener("pageShow", ()=>{
+        submit.classList.remove("hidden");
+        loadingOverlay.classList.add("hidden");
+        loadingOverlay.classList.remove("flex");
+        loading.classList.add("hidden");
+      })
+    }
+    else{
+      document.addEventListener("submit", ()=>{
+        submit.classList.add("hidden");
+        loading.classList.remove("hidden");
+      })
+  
+      document.addEventListener("pageShow", ()=>{
+        submit.classList.remove("hidden");
+        loading.classList.add("hidden");
+      })
+      
+    }
   </script>

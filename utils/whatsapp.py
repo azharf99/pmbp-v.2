@@ -55,7 +55,7 @@ _Ini adalah pesan otomatis, jangan dibalas._'''
         return None
 
 
-def send_WA_print(phone="085701570100", doc_type="", messages=""):
+def send_WA_general(phone="085701570100", doc_type="", messages=""):
     message = f'''*[NOTIFIKASI PMBP]*
 Anda berhasil mencetak {doc_type} {messages}.
 
