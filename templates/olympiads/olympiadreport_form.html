@@ -2,6 +2,15 @@
 {% load static %}
 {% block content %}
   <main class="p-4 sm:ml-64 overflow-auto">
+    <div class="fixed hidden flex-col top-0 left-0 w-full h-full z-20 bg-teal-500 justify-center items-center" id="loadingOverlay">
+      <div class="flex justify-center items-center">
+        <div class="loader"></div>
+        <p class="font-bold p-2">Loading ....</p>
+      </div>
+      <p class="font-semibold p-2 my-4">Mohon menunggu hingga proses selesai.<p>
+      <p class="font-semibold p-2 my-4">Kecepatan tergantung ukuran foto yang di-upload.<p>
+    </div>
+
     <h1 class="px-2 text-2xl font-bold text-blue-500 dark:text-white">Olympiad Report {{form_name}} Form</h1>
     <!-- Breadcrumb -->
     <div class="flex items-center gap-2">
