@@ -40,7 +40,7 @@ class Report(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.extracurricular} {self.report_date}"
+        return f"{self.extracurricular} {self.report_date.strftime('%d %B %Y')}"
     
 
     def get_absolute_url(self):
