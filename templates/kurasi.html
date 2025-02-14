@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <main class="p-4 sm:ml-64 overflow-auto">
+    <h1 class="px-2 text-2xl font-bold text-blue-500 dark:text-white">List Kurasi Puspresnas</h1>
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2">
+      <a href="{% url 'dashboard' %}" class="pl-2">Dashboard</a>
+      <p class="text-2xl">
+        &triangleright;
+      </p>
+      <a href="">List Kurasi Puspresnas</a>
+    </div>
+
+    
+
+  <div class="p-2 flex justify-center items-center">
+    <form action="" method="get" class="flex justify-start items-center flex-wrap">
+      <input size="40" type="search" name="query" id="query" placeholder="Nama kompetisi/penyelenggara/negara" {% if query %} value="{{query}}" {% endif %} class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
+      <select name="rate_kurasi" id="rate_kurasi" class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
+        <option value>Pilih Rating</option>
+        <option value="5" {% if rate_kurasi == "5" %} selected {% endif %}>5</option>
+        <option value="4" {% if rate_kurasi == "4" %} selected {% endif %}>4</option>
+        <option value="3" {% if rate_kurasi == "3" %} selected {% endif %}>3</option>
+        <option value="2" {% if rate_kurasi == "2" %} selected {% endif %}>2</option>
+        <option value="1" {% if rate_kurasi == "1" %} selected {% endif %}>1</option>
+        <option value="0" {% if rate_kurasi == "0" %} selected {% endif %}>0</option>
+      </select>
+      <select name="category" id="category" class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
+        <option value>Pilih Categori</option>
+        <option value="Olahraga" {% if category == "Olahraga" %} selected {% endif %}>Olahraga</option>
+        <option value="Riset dan Inovasi" {% if category == "Riset dan Inovasi" %} selected {% endif %}>Riset dan Inovasi</option>
+        <option value="Seni Budaya" {% if category == "Seni Budaya" %} selected {% endif %}>Seni Budaya</option>
+      </select>
+      <select name="organizer_type" id="organizer_type" class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
+        <option value>Pilih Tipe</option>
+        <option value="Ajang Kompetisi" {% if organizer_type == "Ajang Kompetisi" %} selected {% endif %}>Ajang Kompetisi</option>
+        <option value="Ajang Non Kompetisi" {% if organizer_type == "Ajang Non Kompetisi" %} selected {% endif %}>Ajang Non Kompetisi</option>
+      </select>
+      <input type="submit" value="Cari Data" class="p-2 m-1 rounded-lg text-white bg-indigo-500 text-xs cursor-pointer">
+  </div>
+  
+  <div class="p-2 flex justify-end items-center">
+      <form>
+      <input type="hidden" name="page" id="page" value="{{page}}">
+      <label for="per_page">Jumlah data:</label>
+      <select name="per_page" id="per_page" class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
+        <option value="10" {% if per_page == "10" %} selected {% endif %}>10</option>
+        <option value="100" {% if per_page == "100" %} selected {% endif %}>100</option>
+        <option value="1000" {% if per_page == "1000" %} selected {% endif %}>1000</option>
+        <option value="2000" {% if per_page == "2000" %} selected {% endif %}>2000</option>
+        <option value="3000" {% if per_page == "3000" %} selected {% endif %}>3000</option>
+      </select>
+      <input type="submit" value="Tampilkan" class="p-2 m-1 rounded-lg text-white bg-indigo-500 text-xs cursor-pointer">
+    </form>
+    {% if page %}
+      <div class="hidden md:flex mx-2 justify-center md:justify-end gap-2">
+        <div class="flex justify-center items-center gap-2">
+            {% if prev_page %}
+            <form>
+              <select name="per_page" id="per_page" class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black" style="opacity: 0;">
+                <option value="10" {% if per_page == "10" %} selected {% endif %}>10</option>
+                <option value="100" {% if per_page == "100" %} selected {% endif %}>100</option>
+                <option value="1000" {% if per_page == "1000" %} selected {% endif %}>1000</option>
+                <option value="2000" {% if per_page == "2000" %} selected {% endif %}>2000</option>
+                <option value="3000" {% if per_page == "3000" %} selected {% endif %}>3000</option>
+              </select>
+              <input type="hidden" name="page" id="prev_page" value="{{prev_page}}">
+              <input type="submit" value="&laquo; prev" class="p-2 m-1 rounded-lg text-white bg-indigo-500 text-xs cursor-pointer">
+            </form>
+            {% endif %}
+      
+            <span>
+              page {{page}} of {{total_page}}.
+            </span>
+              
+            {% if next_page %}
+            <form>
+              <input type="submit" value="next &raquo;" class="p-2 m-1 rounded-lg text-white bg-indigo-500 text-xs cursor-pointer">
+              <select name="per_page" id="per_page" class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black" style="opacity: 0;">
+                <option value="10" {% if per_page == "10" %} selected {% endif %}>10</option>
+                <option value="100" {% if per_page == "100" %} selected {% endif %}>100</option>
+                <option value="1000" {% if per_page == "1000" %} selected {% endif %}>1000</option>
+                <option value="2000" {% if per_page == "2000" %} selected {% endif %}>2000</option>
+                <option value="3000" {% if per_page == "3000" %} selected {% endif %}>3000</option>
+              </select>
+              <input type="hidden" name="page" id="next_page" value="{{next_page}}">
+            </form>
+            {% endif %}
+          </div>
+      </div>
+      {% endif %}
+  </div>
+
+    
+  {% if messages %}
+    {% for message in messages %}
+    <div class="m-2 flex justify-center">
+      <div
+        class="flex items-center p-4 mb-4 mx-2 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
+        role="alert">
+        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor" viewBox="0 0 20 20">
+          <path
+            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+        </svg>
+        <span class="sr-only">Info</span>
+        <div>
+          <span class="font-medium">Success! {{message.message}}</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
+
+
+    <div class="grid grid-cols-1 md:grid-cols-3 text-white">
+      <!-- Analytics Table -->
+      {% for object in object_list %}
+      <div class="p-4 mx-2 my-4 relative
+      {% if object.rating == 5 %}
+      bg-green-500
+      {% elif object.rating == 4 %}
+      bg-purple-300 text-black
+      {% elif object.rating == 3 %}
+      bg-yellow-300 text-black
+      {% elif object.rating == 2 %}
+      bg-rose-500
+      {% else %}
+      bg-red-500
+      {% endif %} rounded-md shadow-lg flex flex-col justify-between">
+        <div>
+          <span class="absolute top-0 left-0 px-2 bg-blue-500 text-white rounded-br-lg">{{object.level|default:"-"}}</span>
+          <span class="absolute top-0 end-0 px-2 bg-indigo-600 text-white rounded-bl-lg">{{object.country|default:"-"}}</span>
+          <p class="m-1 text-balance text-center font-bold text-xl my-2">{{object.competition|default:"-"}}</p>
+          <p class="m-1 text-balance text-center">{{object.branch|title}}</p>
+          <p class="mx-4 my-2 text-balance text-center font-semibold rating p-1 bg-gray-100 rounded-lg text-2xl" id="{{object.rating}}--{{object.id}}"></p>
+          <p class="m-1 text-balance text-center font-medium text-sm">Score Kurasi: ({{object.score}})</p>
+          <p class="m-1 text-balance text-center mt-4 font-semibold">{{object.organizer|default:"-"}}</p>
+        </div>
+        <div class="flex justify-center gap-2 mt-4">
+          <a href="{{object.competition_useful_link}}" class="flex items-center gap-2 p-2 bg-green-50 text-green-500 font-semibold rounded-md">
+            Event &nearr;
+          </a>
+          <a href="{{object.organizer_useful_link}}" class="flex items-center gap-2 p-2 bg-green-50 text-green-500 font-semibold rounded-md">
+            Organizer &nearr;
+          </a>
+        </div>
+      </div>
+      {% empty %}
+        <p class="text-center">Data kosong!</p>
+      {% endfor %}
+    </div>
+
+    {% if page %}
+      <div class="flex mx-2 justify-center gap-2">
+        <div class="flex justify-center items-center gap-1">
+            {% if prev_page %}
+            <form class="flex flex-col">
+              <select name="per_page" id="per_page" class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black" style="opacity: 0;">
+                <option value="10" {% if per_page == "10" %} selected {% endif %}>10</option>
+                <option value="100" {% if per_page == "100" %} selected {% endif %}>100</option>
+                <option value="1000" {% if per_page == "1000" %} selected {% endif %}>1000</option>
+                <option value="2000" {% if per_page == "2000" %} selected {% endif %}>2000</option>
+                <option value="3000" {% if per_page == "3000" %} selected {% endif %}>3000</option>
+              </select>
+              <input type="hidden" name="page" id="prev_page" value="{{prev_page}}">
+              <input type="submit" value="&laquo; prev" class="p-2 m-1 rounded-lg text-white bg-indigo-500 text-xs cursor-pointer">
+            </form>
+            {% endif %}
+      
+            <span class="m-1 p-1">
+               {{page}} of {{total_page}}.
+            </span>
+              
+            {% if next_page %}
+            <form class="flex flex-col">
+              <select name="per_page" id="per_page" class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black" style="opacity: 0;">
+                <option value="10" {% if per_page == "10" %} selected {% endif %}>10</option>
+                <option value="100" {% if per_page == "100" %} selected {% endif %}>100</option>
+                <option value="1000" {% if per_page == "1000" %} selected {% endif %}>1000</option>
+                <option value="2000" {% if per_page == "2000" %} selected {% endif %}>2000</option>
+                <option value="3000" {% if per_page == "3000" %} selected {% endif %}>3000</option>
+              </select>
+              <input type="hidden" name="page" id="next_page" value="{{next_page}}">
+              <input type="submit" value="next &raquo;" class="p-2 m-1 rounded-lg text-white bg-indigo-500 text-xs cursor-pointer">
+            </form>
+            {% endif %}
+          </div>
+      </div>
+      {% endif %}
+    
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", (e)=>{
+      let rating_elements = document.getElementsByClassName('rating')
+      
+      for (const element of rating_elements) {
+        [rating, id] = element.id.split('--')
+        if (rating){
+          element.textContent = "⭐".repeat(rating)
+        } else {
+          element.textContent = "Belum ada rating"
+        }
+      }
+
+    })
+
+
+  
+  </script>
+{% endblock content %}
