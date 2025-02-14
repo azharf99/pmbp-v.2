@@ -42,7 +42,7 @@
   
   <div class="p-2 flex justify-end items-center">
       <form>
-      <input type="hidden" name="page" id="page" value="{{page}}">
+      <input type="hidden" name="page" id="page"  {% if page %} value="{{page}}" {% else %} value="1" {% endif %}>
       <label for="per_page">Jumlah data:</label>
       <select name="per_page" id="per_page" class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
         <option value="10" {% if per_page == "10" %} selected {% endif %}>10</option>
