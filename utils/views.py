@@ -1,22 +1,7 @@
 import requests
-from io import BytesIO
 from typing import Any
-from django.db.models.query import QuerySet
-from django.http import FileResponse, HttpRequest, HttpResponse
-# from classes.models import Class
-# from courses.models import Course
-from django.contrib.auth.models import User
-from django.db.models import Count
-from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView, TemplateView
-from datetime import datetime
-
-import requests.sessions
-# from schedules.models import Schedule
-# from reports.models import Report
-# from userlogs.models import UserLog
-# from utils.mixins import BaseModelView, BaseModelQueryListView
-from utils.constants import WEEKDAYS
-from xlsxwriter import Workbook
+from django.views.generic import TemplateView
+    
 
 class CurrationListView(TemplateView):
     template_name = "kurasi.html"
