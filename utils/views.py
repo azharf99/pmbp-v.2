@@ -69,8 +69,6 @@ class CurrationListView(TemplateView):
             response = requests.get(url, headers=headers)
             res = response.json()
         
-        print(res)
-
         context = super().get_context_data(**kwargs)
         total_page = res['result']['pagination']['total_page']
         context.update({"object_list": res['result']['list']})

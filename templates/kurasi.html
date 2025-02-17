@@ -136,7 +136,8 @@
           <span class="absolute top-0 left-0 px-2 bg-blue-500 text-white rounded-br-lg">{{object.level|default:"-"}}</span>
           <span class="absolute top-0 end-0 px-2 bg-indigo-600 text-white rounded-bl-lg">{{object.country|default:"-"}}</span>
           <p class="m-1 text-balance text-center font-bold text-xl my-2">{{object.competition|default:"-"}}</p>
-          <p class="m-1 text-balance text-center">{{object.branch|title}}</p>
+          <p class="m-1 text-balance text-center">{{object.branch|title}} {{object.batch}}</p>
+          <p class="m-1 text-balance text-center">{{object.competition_start}} - {{object.competition_end}}</p>
           <p class="mx-4 my-2 text-balance text-center font-semibold rating p-1 bg-gray-100 rounded-lg text-2xl" id="{{object.rating}}--{{object.id}}"></p>
           <p class="m-1 text-balance text-center font-medium text-sm">Score Kurasi: ({{object.score}})</p>
           <p class="m-1 text-balance text-center mt-4 font-semibold">{{object.organizer|default:"-"}}</p>
