@@ -41,6 +41,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard/', include('dashboard.urls')),
     path('extracurriculars/', include('extracurriculars.urls')),
+    path('files/', include('files.urls')),
     path('report/', include('laporan.urls')),
     path('kurasi/', CurrationListView.as_view(), {}, "curration-list"),
     path('logs/', include('userlog.urls')),

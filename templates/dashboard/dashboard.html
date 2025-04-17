@@ -127,85 +127,6 @@
         </div>
       </article>
 
-      <article class="rounded-lg border border-gray-100 bg-white dark:bg-gray-800 p-4 drop-shadow-lg">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-500 dark:text-slate-200">
-              Total Prestasi Terkurasi
-            </p>
-
-            <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
-              {{total_prestasi}}
-            </p>
-          </div>
-
-          <span class="rounded-full bg-blue-100 p-3 text-blue-600">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6  transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
-            </svg>
-          </span>
-        </div>
-        <div class="mt-1 flex gap-1 text-green-600">
-          <p class="flex gap-2 text-xs">
-            {% for data in object_sebaran %}
-            <span class="font-medium">{{data.1}}</span>
-            <span class="text-gray-500 dark:text-slate-200">({{data.0}})</span>
-            {% endfor %}
-          </p>
-        </div>
-      </article>
-
-      <article class="rounded-lg border border-gray-100 bg-white dark:bg-gray-800 p-4 drop-shadow-lg">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-500 dark:text-slate-200">
-              Prestasi Sekolah
-            </p>
-
-            <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
-              {{total_prestasi}}
-            </p>
-          </div>
-
-          <span class="rounded-full bg-blue-100 p-3 text-blue-600">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6  transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
-            </svg>
-          </span>
-        </div>
-        <div class="mt-1 flex gap-1 text-green-600">
-          <p class="flex gap-2 text-xs">
-            {% for data in object_sekolah %}
-            <span class="font-medium">{{data.score}}</span>
-            <span class="text-gray-500 dark:text-slate-200">({{data.name_kategori}})</span>
-            {% endfor %}
-          </p>
-        </div>
-      </article>
-      
-      <article class="rounded-lg border border-gray-100 bg-white dark:bg-gray-800 p-4 drop-shadow-lg">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-500 dark:text-slate-200">
-              Jumlah Siswa Berprestasi
-            </p>
-
-            <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
-              {{total_data}}
-            </p>
-          </div>
-
-          <span class="rounded-full bg-blue-100 p-3 text-blue-600">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6  transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
-            </svg>
-          </span>
-        </div>
-      </article>
-
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3">
@@ -241,30 +162,7 @@
           </div>
         </div>
         <!-- Analytics Table -->
-        <div class="p-4 mx-2 my-4 bg-white dark:bg-slate-800 rounded-md shadow-lg">
-          <table class="table-auto border-collapse w-full">
-            <caption class="my-4">DAFTAR SANTRI BERPRESTASI TERKURASI</caption>
-            <thead>
-              <th class="p-2 border border-gray-400">NO</th>
-              <th class="p-2 border border-gray-400">Nama</th>
-              <th class="p-2 border border-gray-400">Medali</th>
-              <th class="p-2 border border-gray-400">Dewnload</th>
-            </thead>
-            <tbody>
-              {% for object in object_siswa %}
-              <tr>
-                <td class="p-2 border border-gray-400">{{forloop.counter}}</td>
-                <td class="p-2 border border-gray-400">{{object.name}}</td>
-                <td class="p-2 border border-gray-400 text-center">{{object.jumlah_medals}}</td>
-                <td class="p-2 border border-gray-400 text-center">
-                  <a href="https://simt.kemdikbud.go.id/export-cv?id={{object.participant}}&name={{object.name}}" target="_blank" rel="noopener noreferrer" class="py-1 px-4 bg-green-500 rounded-lg"><span class="font-bold">&DownArrowBar;</span></a>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-
+        
         <div class="p-4 mx-2 my-4 bg-white dark:bg-slate-800 rounded-md shadow-lg">
           <table class="table-auto border-collapse w-full">
             <caption class="my-4">DAFTAR SANTRI TIDAK AKTIF EKSTRAKURIKULER/SC</caption>
