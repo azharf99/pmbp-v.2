@@ -17,7 +17,7 @@ class Score(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     score = models.CharField(max_length=3, choices=pilih_nilai)
     semester = models.CharField(max_length=7, choices=(("Ganjil", "Ganjil"), ("Genap", "Genap")), default="Ganjil", null=True)
-    academic_year = models.CharField(max_length=20, default=f"{timezone.now().year}/{timezone.now().year+1}", blank=True, null=True)
+    academic_year = models.CharField(max_length=20, default=f"{timezone.now().year}/{timezone.now().year + 1}" if timezone.now().month >= 7 else f"{timezone.now().year - 1}/{timezone.now().year}", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
