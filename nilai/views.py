@@ -33,20 +33,27 @@ class NilaiIndexView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get("query")
+        semester = "Ganjil" if timezone.now().month >= 7 else "Genap"
+        academic_year = f"{timezone.now().year}/{timezone.now().year + 1}" if timezone.now().month >= 7 else f"{timezone.now().year - 1}/{timezone.now().year}"
+
         if query:
             return Score.objects.select_related("student", "extracurricular")\
+                    .filter(semester=semester, academic_year=academic_year)\
                     .filter(Q(student__student_name__icontains=query) | 
                             Q(student__student_class__icontains=query) | 
                             Q(extracurricular__name__icontains=query))
         if self.request.user.is_authenticated:
             if not self.request.user.is_superuser:
-                return Score.objects.select_related("student", "extracurricular").filter(extracurricular__teacher=self.request.user.teacher)
-        return Score.objects.select_related("student", "extracurricular").all()
+                return Score.objects.select_related("student", "extracurricular").filter(extracurricular__teacher=self.request.user.teacher, semester=semester, academic_year=academic_year)
+        return Score.objects.select_related("student", "extracurricular").filter(semester=semester, academic_year=academic_year)
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
         c["nama"] = self.request.GET.get("nama")
         c["kelas"] = self.request.GET.get("kelas")
+        c["semester"] = "Ganjil" if timezone.now().month >= 7 else "Genap"
+        c["academic_year"] = f"{timezone.now().year}/{timezone.now().year + 1}" if timezone.now().month >= 7 else f"{timezone.now().year - 1}/{timezone.now().year}"
+        
         return c
     
 
@@ -85,6 +92,7 @@ class NilaiCreateView(LoginRequiredMixin, CreateView):
             Score.objects.update_or_create(
                 student=stud,
                 extracurricular=ext,
+                semester = "Ganjil" if timezone.now().month >= 7 else "Genap",
                 defaults={"score": score_id,}
             )
             send_WA_create_update_delete(self.request.user.teacher.phone, 'mengubah', f'data nilai Ekskul/SC {ext} {stud}', 'nilai/')
@@ -142,6 +150,7 @@ class NilaiQuickCreateView(LoginRequiredMixin, CreateView):
                 Score.objects.update_or_create(
                     student_id = request.POST.get(f"student{i}"),
                     extracurricular = extracurricular,
+                    semester = "Ganjil" if timezone.now().month >= 7 else "Genap",
                     defaults={
                         "score": nilai,
                     }

@@ -16,12 +16,13 @@ class Score(models.Model):
     extracurricular = models.ForeignKey(Extracurricular, on_delete=models.CASCADE, null=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     score = models.CharField(max_length=3, choices=pilih_nilai)
+    semester = models.CharField(max_length=7, choices=(("Ganjil", "Ganjil"), ("Genap", "Genap")), default="Ganjil", null=True)
     academic_year = models.CharField(max_length=20, default=f"{timezone.now().year}/{timezone.now().year+1}", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.student} {self.score}"
+        return f"{self.student} {self.extracurricular.name} {self.score} {self.semester} {self.academic_year}"
 
 
     def get_absolute_url(self):
