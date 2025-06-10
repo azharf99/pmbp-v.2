@@ -110,7 +110,7 @@ class LPJPMBPView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         achievements_this_academic_year = Prestasi.objects.filter(year__gte=settings.TAHUN_AWAL_AJARAN, created_at__gte=settings.TANGGAL_TAHUN_AJARAN, created_at__lte=settings.TANGGAL_TAHUN_AJARAN_END)
-        achievements_prev_academic_year = Prestasi.objects.filter(year__gte=settings.TAHUN_AWAL_AJARAN, created_at__gte=settings.TANGGAL_TAHUN_AJARAN, created_at__lte=settings.TANGGAL_TAHUN_AJARAN_END)
+        achievements_prev_academic_year = Prestasi.objects.filter(year__gte=settings.TAHUN_AWAL_AJARAN_LALU, year__lte=settings.TAHUN_AWAL_AJARAN, created_at__gte=settings.TANGGAL_TAHUN_AJARAN_LALU, created_at__lte=settings.TANGGAL_TAHUN_AJARAN)
         
         filtered_category_achievements = [
                                             [item for item in achievements_this_academic_year if item.level.lower() == "kabupaten" or item.level.lower() == "tingkat kabupaten"],

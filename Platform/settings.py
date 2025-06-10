@@ -273,14 +273,18 @@ if timezone.now().month > 6:
     TAHUN_AJARAN = f"{year_now}/{year_now+1}"
     TAHUN_AJARAN_STRIPPED = f"{year_now}-{year_now+1}"
     TANGGAL_TAHUN_AJARAN = timezone.make_aware(timezone.datetime(year_now, 7, 1, 1, 1, 1))
+    TANGGAL_TAHUN_AJARAN_LALU = timezone.make_aware(timezone.datetime(year_now - 1, 7, 1, 1, 1, 1))
     TANGGAL_TAHUN_AJARAN_END = timezone.make_aware(timezone.datetime(year_now+1, 6, 30, 1, 1, 1))
     TAHUN_AWAL_AJARAN = f"{year_now}"
+    TAHUN_AWAL_AJARAN_LALU = f"{year_now}"
 else:
     TAHUN_AJARAN = f"{year_now-1}/{year_now}"
     TAHUN_AJARAN_STRIPPED = f"{year_now-1}-{year_now}"
     TANGGAL_TAHUN_AJARAN = timezone.make_aware(timezone.datetime(year_now-1, 7, 1, 1, 1, 1))
+    TANGGAL_TAHUN_AJARAN_LALU = timezone.make_aware(timezone.datetime(year_now-2, 7, 1, 1, 1, 1))
     TANGGAL_TAHUN_AJARAN_END = timezone.make_aware(timezone.datetime(year_now, 6, 30, 1, 1, 1))
     TAHUN_AWAL_AJARAN = f"{year_now - 1}"
+    TAHUN_AWAL_AJARAN_LALU = f"{year_now - 2}"
 
 
 
