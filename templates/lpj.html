@@ -6,7 +6,7 @@
       <h1>LAPORAN PERTANGGUNG JAWABAN PROGRAM KERJA</p>
         <h2>BIDANG PENGEMBANGAN MINAT, BAKAT, DAN PRESTASI (PMBP)</p>
           <h3>SMA ISLAM TERPADU AL BINAA</p>
-            <h3>TAHUN PELAJARAN 2023/2024</p>
+            <h3>TAHUN PELAJARAN 2024/2025</p>
     </section>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-2 border-0 sm:gap-4 gap-2 p-2">
       <article class="rounded-lg border border-gray-100 bg-white dark:bg-gray-800 p-4 shadow-lg">
@@ -17,7 +17,7 @@
             </p>
 
             <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
-              11 Program
+              8 Program
             </p>
           </div>
 
@@ -33,13 +33,13 @@
 
         <div class="mt-1 flex gap-1 text-green-600 items-center">
           <p class="flex gap-2 text-sm">
-            <span class="font-bold">9 (81,82%)</span>
+            <span class="font-bold">8 (100%)</span>
             <span class="text-gray-500 dark:text-slate-200">Terlaksana</span>
           </p>
         </div>
         <div class="mt-1 flex gap-1 text-red-600">
           <p class="flex gap-2 text-sm">
-            <span class="font-bold">2 (18,18%)</span>
+            <span class="font-bold">0 (0%)</span>
             <span class="text-gray-500 dark:text-slate-200">Tidak Terlaksana</span>
           </p>
         </div>
@@ -52,7 +52,7 @@
             </p>
 
             <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
-              26 Entitas
+              {{extracurriculars_and_study_groups|length}} Entitas
             </p>
           </div>
 
@@ -68,13 +68,13 @@
 
         <div class="mt-1 flex gap-1 text-green-600">
           <p class="flex gap-2 text-sm">
-            <span class="font-medium">18 (69,23%)</span>
+            <span class="font-medium">{{extracurriculars|length}} ({% widthratio extracurriculars|length extracurriculars_and_study_groups|length 100 %}%)</span>
             <span class="text-gray-500 dark:text-slate-200">Ektrakurikuler</span>
           </p>
         </div>
         <div class="mt-1 flex gap-1 text-red-600">
           <p class="flex gap-2 text-sm">
-            <span class="font-medium">8 (30,77%)</span>
+            <span class="font-medium">{{study_clubs|length}} ({% widthratio study_clubs|length extracurriculars_and_study_groups|length 100 %}%)</span>
             <span class="text-gray-500 dark:text-slate-200"><em>Studi Club</em></span>
           </p>
         </div>
@@ -87,7 +87,7 @@
             </p>
 
             <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
-              26 Entitas
+              {{extracurriculars_and_study_groups|length}} Entitas
             </p>
           </div>
 
@@ -103,201 +103,349 @@
 
         <div class="mt-1 flex gap-1 text-green-600">
           <p class="flex gap-2 text-xs">
-            <span class="font-medium">18 (69,23%)</span>
+            <span class="font-medium">{{active_extracurricular|length}} ({% widthratio active_extracurricular|length extracurriculars_and_study_groups|length 100 %}%)</span>
             <span class="text-gray-500 dark:text-slate-200">aktif/pernah melakukan pertemuan</span>
           </p>
         </div>
         <div class="mt-1 flex gap-1 text-red-600">
           <p class="flex gap-2 text-xs">
-            <span class="font-medium">8 (30,77%)</span>
+            <span class="font-medium">{{inactive_extracurricular|length}} ({% widthratio inactive_extracurricular|length extracurriculars_and_study_groups|length 100 %}%)</span>
             <span class="text-gray-500 dark:text-slate-200">tidak pernah melakukan pertemuan</span>
           </p>
         </div>
       </article>
+      <article class="rounded-lg border border-gray-100 bg-white dark:bg-gray-800 p-4 shadow-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-slate-200">
+              Prestasi Santri T.A. 2024/2025
+            </p>
+  
+            <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
+              {{achievements_this_academic_year}} Prestasi
+            </p>
+          </div>
+  
+          <span class="rounded-full bg-blue-100 p-3 text-blue-600">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
+            </svg>
+  
+          </span>
+        </div>
+  
+        <div class="mt-1 flex gap-1 text-green-600">
+          <p class="flex gap-2 text-sm">
+            <span class="font-medium">{{achievements_this_academic_year}} {% if achievements_this_academic_year > achievements_prev_academic_year %}(&uparrow;){% endif %}</span>
+            <span class="text-gray-500 dark:text-slate-200">Prestasi T.A. ini</span>
+          </p>
+        </div>
+        <div class="mt-1 flex gap-1 text-red-600">
+          <p class="flex gap-2 text-sm">
+            <span class="font-medium">{{achievements_prev_academic_year}}</span>
+            <span class="text-gray-500 dark:text-slate-200">Prestasi T.A. lalu</span>
+          </p>
+        </div>
+      </article>
+      <article class="rounded-lg border border-gray-100 bg-white dark:bg-gray-800 p-4 shadow-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-slate-200">
+              Kategori Prestasi Santri T.A. 2024/2025
+            </p>
+  
+            <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
+              {{achievements_this_academic_year}} Prestasi
+            </p>
+          </div>
+  
+          <span class="rounded-full bg-blue-100 p-3 text-blue-600">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
+            </svg>
+  
+          </span>
+        </div>
+  
+        <div class="mt-1 flex gap-1 text-green-600">
+          <p class="flex gap-2 text-sm">
+            <span class="font-medium">{{filtered_category_achievements.0|length}}</span>
+            <span class="text-gray-500 dark:text-slate-200">Tingkat Kabupaten/Kota</span>
+          </p>
+        </div>
+        <div class="mt-1 flex gap-1 text-green-600">
+          <p class="flex gap-2 text-sm">
+            <span class="font-medium">{{filtered_category_achievements.1|length}}</span>
+            <span class="text-gray-500 dark:text-slate-200">Tingkat Provinsi (Jabar/DKI)</span>
+          </p>
+        </div>
+        <div class="mt-1 flex gap-1 text-green-600">
+          <p class="flex gap-2 text-sm">
+            <span class="font-medium">{{filtered_category_achievements.2|length}}</span>
+            <span class="text-gray-500 dark:text-slate-200">Tingkat Nasional</span>
+          </p>
+        </div>
+        <div class="mt-1 flex gap-1 text-green-600">
+          <p class="flex gap-2 text-sm">
+            <span class="font-medium">{{filtered_category_achievements.3|length}}</span>
+            <span class="text-gray-500 dark:text-slate-200">Tingkat Internasional</span>
+          </p>
+        </div>
+      </article>
+      <article class="rounded-lg border border-gray-100 bg-white dark:bg-gray-800 p-4 shadow-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-slate-200">
+              Kategori Prestasi Santri T.A. 2024/2025
+            </p>
+  
+            <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
+              {{achievements_this_academic_year}} Prestasi
+            </p>
+          </div>
+  
+          <span class="rounded-full bg-blue-100 p-3 text-blue-600">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
+            </svg>
+  
+          </span>
+        </div>
+  
+        <div class="mt-1 flex gap-1 text-green-600">
+          <p class="flex gap-2 text-sm">
+            <span class="font-medium">{{filtered_predicate_achievements.0|length}}</span>
+            <span class="text-gray-500 dark:text-slate-200">Juara 1 / Medali Emas</span>
+          </p>
+        </div>
+        <div class="mt-1 flex gap-1 text-green-600">
+          <p class="flex gap-2 text-sm">
+            <span class="font-medium">{{filtered_predicate_achievements.1|length}}</span>
+            <span class="text-gray-500 dark:text-slate-200">Juara 2 / Medali Perak</span>
+          </p>
+        </div>
+        <div class="mt-1 flex gap-1 text-green-600">
+          <p class="flex gap-2 text-sm">
+            <span class="font-medium">{{filtered_predicate_achievements.2|length}}</span>
+            <span class="text-gray-500 dark:text-slate-200">Juara 3 / Medali Perunggu</span>
+          </p>
+        </div>
+        <div class="mt-1 flex gap-1 text-green-600">
+          <p class="flex gap-2 text-sm">
+            <span class="font-medium">{{filtered_predicate_achievements.3|length}}</span>
+            <span class="text-gray-500 dark:text-slate-200">Juara Harapan</span>
+          </p>
+        </div>
+      </article>
     </div>
+    
+
+    <article class="p-2 w-full overflow-auto">
+        <p class="font-bold">A.	IDENTITAS LAPORAN</p>
+        <table class="w-full px-4">
+            <tr>
+                <td class="px-4">Nama Wakil Kepala Sekolah</td>
+                <td>: Panji Asmara, S.Pd</td>
+            </tr>
+            <tr>
+                <td class="px-4">Bidang Tugas</td>
+                <td>: PMBP</td>
+            </tr>
+            <tr>
+                <td class="px-4">Periode Laporan</td>
+                <td>: Juli 2024 - Juni 2025</td>
+            </tr>
+            <tr>
+                <td class="px-4">Tanggal Penyusunan</td>
+                <td>: 10 Juni 2025</td>
+            </tr>
+        </table>
+    </article>
+    <article class="p-2 w-full">
+      <p class="font-bold">B.   LATAR BELAKANG</p>
+      <p class="px-4">Pembinaan minat, bakat dan prestasi (PMBP) adalah bidang yang mengurus ekstrakurikuler dan study club, Dimana bidang ini menjadi wadah untuk membina minat dan bakat santri. Bidang PMBP juga focus dalam membimbing dan membina duta-duta prestasi dalam berbagai ajang perlombaan.</p>
+    </article>
+    <article class="p-2 w-full overflow-auto">
+        <p class="font-bold">C.	TUJUAN</p>
+        <ol class="px-4 list-decimal list-inside">
+            <li>Meloloskan 15 santri ke OSN-P 2025</li>
+            <li>Meloloskan 3 santri ke OSN-N 2025</li>
+            <li>Meloloskan 1 santri ke Olimpiade Internasional 2025</li>
+            <li>Meloloskan 1 santri ke KSM-N 2025</li>
+            <li>Muncul santri yang memiliki life skill Service Ac dan Bakery Art di tahun 2025</li>
+        </ol>
+    </article>
 
     <div class="grid grid-cols-1 sm:gap-4 gap-2">
       <article class="p-2 w-full">
         <div class="overflow-auto shadow-lg">
-          <table class="table-auto border-collapse rounded-lg bg-white dark:bg-gray-800 w-full dark:text-white">
-            <caption class="font-bold">
-              A. PROGRAM KERJA TA. 2023/2024
-            </caption>
+          <table
+                        class="table-auto border-collapse rounded-lg bg-white dark:bg-gray-800 w-full dark:text-white">
+                        <caption class="font-bold">
+                            D. RENCANA KERJA TAHUNAN
+                        </caption>
 
-            <thead>
-              <tr>
-                <th class="border dark:border-black p-1">No</th>
-                <th class="border dark:border-black p-1">Program Kerja</th>
-                <th class="border dark:border-black p-1">Tujuan</th>
-                <th class="border dark:border-black p-1 rounded-tr-lg">Sasaran</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">1</td>
-                <td class="border dark:border-black py-1 px-3">Raimuna Pramuka</td>
-                <td class="border dark:border-black py-1 px-3">Pembinaan Karakter Santri Lewat Program Kepramukaan</td>
-                <td class="border dark:border-black py-1 px-3">Santri Pilihan dari Kelas 10 dan 11</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">2</td>
-                <td class="border dark:border-black py-1 px-3">Camp Kenaikan Tingkat Pramuka</td>
-                <td class="border dark:border-black py-1 px-3">Latihan Kemandirian Santri dan Pemberian Reward Kenaikan
-                  Tingkat Kepramukaan</td>
-                <td class="border dark:border-black py-1 px-3">Santri Pilihan dari Kelas 10 dan 11</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">3</td>
-                <td class="border dark:border-black py-1 px-3">Olimpiade Sains Nasional (OSN)</td>
-                <td class="border dark:border-black py-1 px-3">Pengembangan Prestasi Santri Dalam Bidang Sains</td>
-                <td class="border dark:border-black py-1 px-3">Santri Hasil Seleksi dari Kelas 10 dan 11</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">4</td>
-                <td class="border dark:border-black py-1 px-3">MTQ Kemenag RI</td>
-                <td class="border dark:border-black py-1 px-3">Pengembangan Prestasi Santri Dalam Bidang Al Quran Dan
-                  Bahasa Arab</td>
-                <td class="border dark:border-black py-1 px-3">Santri Hasil Seleksi dari Kelas 10, 11 dan 12</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">5</td>
-                <td class="border dark:border-black py-1 px-3">Olimpiade Bahasa Arab (OBA)</td>
-                <td class="border dark:border-black py-1 px-3">Pengembangan Prestasi Santri Dalam Bidang Bahasa Arab
-                </td>
-                <td class="border dark:border-black py-1 px-3">Santri Hasil Seleksi dari Kelas 10, 11 dan 12</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">6</td>
-                <td class="border dark:border-black py-1 px-3">Kompetisi Sains Madrasah (KSM) </td>
-                <td class="border dark:border-black py-1 px-3">Pengembangan Prestasi Santri Dalam Bidang Sains
-                  Terintergrasi Dengan Al Quran Dan As Sunnah</td>
-                <td class="border dark:border-black py-1 px-3">Santri Hasil Seleksi dari Kelas 10 dan 11</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">7</td>
-                <td class="border dark:border-black py-1 px-3">Olimpiade Penelitian Siswa Indonesia (OPSI)</td>
-                <td class="border dark:border-black py-1 px-3">Pembinaan Karakter Santri Lewat Program Kepramukaan</td>
-                <td class="border dark:border-black py-1 px-3">Santri Pilihan dari Kelas 10 dan 11</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">8</td>
-                <td class="border dark:border-black py-1 px-3">Festival Dan Lomba Seni Siswa Nasional (FLS2N)</td>
-                <td class="border dark:border-black py-1 px-3">Pengembangan Prestasi Santri Dalam Bidang Literasi Dan
-                  Seni</td>
-                <td class="border dark:border-black py-1 px-3">Santri Terpilih Hasil Penyeleksian Ekskul Dan Study Club
-                </td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">9</td>
-                <td class="border dark:border-black py-1 px-3">Mengikuti Lomba Eksternal Event-Event Indonesian Young
-                  Scientits Association</td>
-                <td class="border dark:border-black py-1 px-3">Pengembangan Prestasi Santri Dalam Bidang Penelitian Dan
-                  Karya Ilmiah</td>
-                <td class="border dark:border-black py-1 px-3">Santri-Santri Anggota Ekstrakurikuler Karya Ilmiah Remaja
-                  SMA IT Al Binaa</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">10</td>
-                <td class="border dark:border-black py-1 px-3">Event Beladiri Taekwondo</td>
-                <td class="border dark:border-black py-1 px-3">Pengembangan Karakter Santri Melalui Bidang Beladiri</td>
-                <td class="border dark:border-black py-1 px-3">Santri-Santri Anggota Ekstrakurikuler Taekwondo</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">11</td>
-                <td class="border dark:border-black py-1 px-3">Event lomba-lomba Akademik dan Olahraga</td>
-                <td class="border dark:border-black py-1 px-3">Pengembangan Prestasi Santri Dalam Bidang Akademik dan
-                  Olahraga</td>
-                <td class="border dark:border-black py-1 px-3">Santri-Santri Potensial yang Terpilih dari kelas 10, 11
-                  dan 12</td>
-              </tr>
-            </tbody>
-          </table>
+                        <thead>
+                            <tr>
+                                <th class="border dark:border-black p-1">No</th>
+                                <th class="border dark:border-black p-1">Program</th>
+                                <th class="border dark:border-black p-1">Tujuan</th>
+                                <th class="border dark:border-black p-1">Indikator</th>
+                                <th class="border dark:border-black p-1">Waktu Pelaksanaan</th>
+                                <!-- <th class="border dark:border-black p-1">Penanggung Jawab</th> -->
+                                <!-- <th class="border dark:border-black p-1">Anggaran</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border dark:border-black py-1 px-3 text-center">1</td>
+                                <td class="border dark:border-black py-1 px-3">OSN</td>
+                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
+                                  Prestasi Santri Dalam Bidang Sains</td>
+                                <td class="border dark:border-black py-1 px-3">Juara di OSN-K, OSN-P dan OSN nasional</td>
+                                <td class="border dark:border-black py-1 px-3">Juli 2024 - September 2025</td>
+                                <!-- <td class="border dark:border-black py-1 px-3">Azhar Faturohman, S.Si</td> -->
+                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 35.000.000,-</td> -->
+                            </tr>
+                            <tr>
+                                <td class="border dark:border-black py-1 px-3 text-center">2</td>
+                                <td class="border dark:border-black py-1 px-3">MTQ</td>
+                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
+                                  Prestasi Santri Dalam Bidang Al Quran Dan Bahasa Arab</td>
+                                  <td class="border dark:border-black py-1 px-3">Mengirimkan peserta putra dan putri ke
+                                    cabang Fahmil Quran Putra dan Tafsir Bahasa Arab serta Lolos Tingkat Provinsi Cabang
+                                    Fahmil Quran Putra</td>
+                                <td class="border dark:border-black py-1 px-3">Kondisional</td>
+                                <!-- <td class="border dark:border-black py-1 px-3">Panji Asmara, S.Pd</td> -->
+                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 3.500.000</td> -->
+                            </tr>
+                            <tr>
+                                <td class="border dark:border-black py-1 px-3 text-center">3</td>
+                                <td class="border dark:border-black py-1 px-3">OBA</td>
+                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
+                                  Prestasi Santri Dalam Bidang Bahasa Arab</td>
+                                <td class="border dark:border-black py-1 px-3">Lolos tingkat Nasional</td>
+                                <td class="border dark:border-black py-1 px-3">Juni - November 2024</td>
+                                <!-- <td class="border dark:border-black py-1 px-3">Panji Asmara, S.Pd</td> -->
+                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 3.000.000,-</td> -->
+                            </tr>
+                            <tr>
+                                <td class="border dark:border-black py-1 px-3 text-center">4</td>
+                                <td class="border dark:border-black py-1 px-3">Kompetisi Sains Madrasah (KSM)</td>
+                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
+                                  Prestasi Santri Dalam Bidang Sains Terintergrasi Dengan Al Quran Dan As Sunnah</td>
+                                <td class="border dark:border-black py-1 px-3">Lolos Tingkat Provinsi dan Nasional</td>
+                                <td class="border dark:border-black py-1 px-3">Juli - September 2024</td>
+                                  <!-- <td class="border dark:border-black py-1 px-3">Hario Sadewo, S.Si</td> -->
+                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 8.000.000,-</td> -->
+                            </tr>
+                            <tr>
+                                <td class="border dark:border-black py-1 px-3 text-center">5</td>
+                                <td class="border dark:border-black py-1 px-3">Mengikuti lomba eksternal potensial dari
+                                    IYSA dan penyelenggara lain (akademik dan olahraga)</td>
+                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
+                                  Prestasi Santri Dalam Bidang Akademik, Penelitian Dan Karya Ilmiah, serta Olahraga
+                                </td>
+                                <td class="border dark:border-black py-1 px-3">Mengirimkan santri potensial dalam bidang
+                                  karya ilmiah dalam event IYSA dan Lembaga lainnya</td>
+                                <td class="border dark:border-black py-1 px-3">Sepanjang Tahun ajaran</td>
+                                <!-- <td class="border dark:border-black py-1 px-3">Azhar Faturohman, S.Si dan Alif Rezky, M.Pd</td> -->
+                                <!-- <td class="border dark:border-black py-1 px-3">Subsidi dari sekolah :Rp. 5.000.000,-</td> -->
+                            </tr>
+                            <tr>
+                                <td class="border dark:border-black py-1 px-3 text-center">6</td>
+                                <td class="border dark:border-black py-1 px-3">Robotic</td>
+                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
+                                    Prestasi Santri Dalam Bidang Teknologi Informasi dan Robotika</td>
+                                <td class="border dark:border-black py-1 px-3">Melahirkan santri juara kompetisi robotic
+                                    Tingkat regional hingga nasional</td>
+                                <td class="border dark:border-black py-1 px-3">Sepanjang tahun ajaran</td>
+                                <!-- <td class="border dark:border-black py-1 px-3">Agus Setiawan, S.T</td> -->
+                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 13.000.000,-</td> -->
+                            </tr>
+                            <tr>
+                                <td class="border dark:border-black py-1 px-3 text-center">7</td>
+                                <td class="border dark:border-black py-1 px-3">English Club</td>
+                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
+                                    Prestasi Santri Dalam Bidang Bahasa Inggris (Asing)</td>
+                                <td class="border dark:border-black py-1 px-3">Melahirkan santri juara lomba debat dan
+                                    pidato Bahasa inggris</td>
+                                <td class="border dark:border-black py-1 px-3">Sepanjang tahun ajaran</td>
+                                <!-- <td class="border dark:border-black py-1 px-3">Dany Wardiman, S.Pd</td> -->
+                                <!-- <td class="border dark:border-black py-1 px-3">Rutinitas tiap bulan</td> -->
+                            </tr>
+                            <tr>
+                                <td class="border dark:border-black py-1 px-3 text-center">8</td>
+                                <td class="border dark:border-black py-1 px-3">Ekskul Life Skill Khusus Aitam</td>
+                                <td class="border dark:border-black py-1 px-3">Santri mengikuti pelatihan AC Maintenance and Service (ACMS) dan Bakery Art (BA)</td>
+                                <td class="border dark:border-black py-1 px-3">Muncul santri yang memiliki skill dalam perawatan AC dan produksi roti/snack</td>
+                                <td class="border dark:border-black py-1 px-3">Maksimal 3 bulan/program</td>
+                                <!-- <td class="border dark:border-black py-1 px-3">Tim PMBP</td> -->
+                                <!-- <td class="border dark:border-black py-1 px-3">
+                                    <ol>
+                                        <li>ACMS: Rp. 3.000.000</li>
+                                        <li>BA: Rp. 1500.000</li>
+                                    </ol>
+                                    <p>Total: Rp. 4.500.000,-</p>
+                                </td> -->
+                            </tr>
+                        </tbody>
+                    </table>
         </div>
       </article>
       <article class="p-2 w-full">
         <div class="overflow-auto shadow-lg">
           <table class="table-auto border-collapse rounded-lg bg-white dark:bg-gray-800 w-full dark:text-white">
             <caption class="font-bold">
-              B.1. PELAKSANAAN PROGRAM KERJA TA. 2023/2024
+              E. PELAKSANAAN PROGRAM
             </caption>
 
             <thead>
               <tr>
                 <th class="border dark:border-black p-1">No</th>
                 <th class="border dark:border-black p-1">Program Kerja</th>
-                <th class="border dark:border-black p-1">Waktu Pelaksanaan</th>
-                <th class="border dark:border-black p-1">Realisasi</th>
-                <th class="border dark:border-black p-1">Penanggungjawab</th>
-                <th class="border dark:border-black p-1 rounded-tr-lg">Deskripsi</th>
+                <th class="border dark:border-black p-1">Status</th>
+                <th class="border dark:border-black p-1">Capaian</th>
+                <th class="border dark:border-black p-1 rounded-tr-lg">Keterangan</th>
               </tr>
             </thead>
             <tbody>
-              <tr class="bg-red-500">
+              
+              <tr>
                 <td class="border dark:border-black py-1 px-3 text-center">1</td>
-                <td class="border dark:border-black py-1 px-3">Raimuna Pramuka</td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-                <td class="border dark:border-black py-1 px-3">Tidak terlaksana</td>
+                <td class="border dark:border-black py-1 px-3">Olimpiade Sains Nasional (OSN)</td>
+                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
                 <td class="border dark:border-black py-1 px-3">
-                  <ol class="list-decimal list-inside">
-                    <li>Ustadz Afirul Firman Syadani, SH</li>
-                    <li>Ustadz Muhammad Ikhsan, S.Pd</li>
-                    <li>Ustadz Aam Handani, S.Pd</li>
-                  </ol>
+                  <ul class="list-disc list-inside">
+                    <li>11 santri juara OSN-K 2024</li>
+                    <li>2 santri juara OSN-P 2024</li>
+                    <li>45 santri mengikuti OSN-K 2025</li>
+                  </ul>
                 </td>
-                <td class="border dark:border-black py-1 px-3">Kwaran Tidak menyelenggarakan Raimuna di Tahun Ajaran
-                  2023/2024. Kegiatan ini diganti dengan kegiatan internal SMA IT Al Binaa seperti Longmarch dan Uji SKK
-                  Penegak di luar lingkungan Al Binaa</td>
+                <td class="border dark:border-black py-1 px-3">-</td>
               </tr>
               <tr>
                 <td class="border dark:border-black py-1 px-3 text-center">2</td>
-                <td class="border dark:border-black py-1 px-3">Camp Kenaikan Tingkat Pramuka</td>
-                <td class="border dark:border-black py-1 px-3">13 Juni 2023</td>
-                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">
-                  <ol class="list-decimal list-inside">
-                    <li>Ustadz Afirul Firman Syadani, SH</li>
-                    <li>Ustadz Muhammad Ikhsan, S.Pd</li>
-                    <li>Ustadz Aam Handani, S.Pd</li>
-                  </ol>
-                </td>
-                <td class="border dark:border-black py-1 px-3">35 Santri yang lolos mengikuti kenaikan Tingkat Bantara
-                  dan beberapa sudah menyelesaikan SKK syarat kenaikan Laksana dan satu santri lolos dan dilantik
-                  menjadi Pramuka Garuda a/n Kevin Masahiro Adi (kls 11) di Pemda Bekasi. Satu-satunya anggota pramuka
-                  dari kec Pebayuran yang lolos garuda</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">3</td>
-                <td class="border dark:border-black py-1 px-3">Olimpiade Sains Nasional (OSN)</td>
-                <td class="border dark:border-black py-1 px-3">Maret 2023 - Oktober 2024</td>
-                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">Azhar Faturohman A., S.Si</td>
-                <td class="border dark:border-black py-1 px-3">
-                  <ul class="list-disc list-inside">
-                    <li>11 Santri Juara OSN-K 2023 dan 10 santri juara OSN-K 2024</li>
-                    <li>1 santri juara OSN-P 2023 dan 2 santri juara OSN-P 2024</li>
-                    <li>1 santri medali perak OSN 2023</li>
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">4</td>
                 <td class="border dark:border-black py-1 px-3">MTQ Kemenag RI</td>
-                <td class="border dark:border-black py-1 px-3">Mei 2024</td>
                 <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">Ustadz Panji Asmara, S.Pd</td>
                 <td class="border dark:border-black py-1 px-3">
                   <ul class="list-disc list-inside">
                     <li>3 santri juara 2 MTQ Fahmil Quran Tk Kabupaten Bekasi dan Karawang 2024</li>
                     <li>1 santri lolos ke provinsi dan juara 3 MTQ fahmil quran 2024</li>
                   </ul>
                 </td>
+                <td class="border dark:border-black py-1 px-3">-</td>
               </tr>
               <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">5</td>
+                <td class="border dark:border-black py-1 px-3 text-center">3</td>
                 <td class="border dark:border-black py-1 px-3">Olimpiade Bahasa Arab (OBA)</td>
-                <td class="border dark:border-black py-1 px-3">Juni - November 2023</td>
                 <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">Ustadz Panji Asmara, S.Pd</td>
                 <td class="border dark:border-black py-1 px-3">
                   Tidak tercapai target lolos Nasional dengan rincian sebagai berikut:
                   <ul class="list-disc list-inside">
@@ -305,13 +453,12 @@
                     <li>Tidak juara Provinsi Jabar</li>
                   </ul>
                 </td>
+                <td class="border dark:border-black py-1 px-3">-</td>
               </tr>
               <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">6</td>
+                <td class="border dark:border-black py-1 px-3 text-center">4</td>
                 <td class="border dark:border-black py-1 px-3">Kompetisi Sains Madrasah (KSM) </td>
-                <td class="border dark:border-black py-1 px-3">Juli - September 2023</td>
                 <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">Ustadz Hario Sadewo Purwahadi, S.Si</td>
                 <td class="border dark:border-black py-1 px-3">
                   Tidak tercapai target lolos Nasional dengan rincian sebagai berikut:
                   <ul class="list-disc list-inside">
@@ -321,198 +468,95 @@
                     <li>1 santri juara 2 KSM-P Geografi</li>
                   </ul>
                 </td>
+                <td class="border dark:border-black py-1 px-3">-</td>
               </tr>
               <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">7</td>
-                <td class="border dark:border-black py-1 px-3">Olimpiade Penelitian Siswa Indonesia (OPSI)</td>
-                <td class="border dark:border-black py-1 px-3">Juli - Oktober 2023</td>
-                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">Ustadz Rayis Syamlan, ST</td>
-                <td class="border dark:border-black py-1 px-3">2 santri mengikuti ajang OPSI namun belum mencapai final
-                </td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">8</td>
-                <td class="border dark:border-black py-1 px-3">Festival Dan Lomba Seni Siswa Nasional (FLS2N)</td>
-                <td class="border dark:border-black py-1 px-3">Maret - Desember 2024</td>
-                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">
-                  <ol class="list-decimal list-inside">
-                    <li>Ustadz Mustaani Parmula, S.Pd</li>
-                    <li>Ustadz MS Haromaen, S.Kom</li>
-                  </ol>
-                </td>
-                <td class="border dark:border-black py-1 px-3">2 santri Cipta Puisi, 1 santri Baca Puisi, 2 santri
-                  Fotografi, 2 santri Desain Poster. Belum ada pengumuman hasil lomba</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">9</td>
+                <td class="border dark:border-black py-1 px-3 text-center">5</td>
                 <td class="border dark:border-black py-1 px-3">Mengikuti Lomba Eksternal Event-Event Indonesian Young
                   Scientits Association</td>
-                <td class="border dark:border-black py-1 px-3">Januari 2023 - Juni 2024</td>
                 <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">
-                  <ol class="list-decimal list-inside">
-                    <li>Ustadz Rayis Syamlan, ST</li>
-                    <li>Azhar Faturohman A., S.Si</li>
-                  </ol>
-                </td>
                 <td class="border dark:border-black py-1 px-3">Berhasil mengikuti beberapa event seperti IIIEX, WSEEC,
                   AISEEF, YISF, CASTIC, I3NEW, WICE</td>
-              </tr>
-              <tr class="bg-red-500">
-                <td class="border dark:border-black py-1 px-3 text-center">10</td>
-                <td class="border dark:border-black py-1 px-3">Event Beladiri Taekwondo</td>
                 <td class="border dark:border-black py-1 px-3">-</td>
-                <td class="border dark:border-black py-1 px-3">Tidak Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">Khairil Mahmudin</td>
-                <td class="border dark:border-black py-1 px-3">Santri anggota taekwondo belum ada yang layak ikut
-                  turnamen. Jumlah peserta sangat minim dan jumlahnya makin melorot.</td>
               </tr>
               <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">11</td>
-                <td class="border dark:border-black py-1 px-3">Event lomba-lomba Akademik dan Olahraga</td>
-                <td class="border dark:border-black py-1 px-3">Sepanjang tahun ajaran</td>
+                <td class="border dark:border-black py-1 px-3 text-center">6</td>
+                <td class="border dark:border-black py-1 px-3">Robotic</td>
                 <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">Tim PMBP</td>
-                <td class="border dark:border-black py-1 px-3">Beragam event telah diikuti</td>
+                <td class="border dark:border-black py-1 px-3">Melahirkan santri juara kompetisi robotic Tingkat regional hingga nasional</td>
+                <td class="border dark:border-black py-1 px-3">-</td>
+              </tr>
+              <tr>
+                <td class="border dark:border-black py-1 px-3 text-center">6</td>
+                <td class="border dark:border-black py-1 px-3">English Club</td>
+                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
+                <td class="border dark:border-black py-1 px-3">Melahirkan santri juara lomba debat dan pidato Bahasa inggris</td>
+                <td class="border dark:border-black py-1 px-3">-</td>
+              </tr>
+              <tr>
+                <td class="border dark:border-black py-1 px-3 text-center">6</td>
+                <td class="border dark:border-black py-1 px-3">Ekskul Life Skill Khusus Aitam</td>
+                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
+                <td class="border dark:border-black py-1 px-3">Muncul santri yang memiliki skill dalam perawatan AC dan produksi roti/snack</td>
+                <td class="border dark:border-black py-1 px-3">-</td>
               </tr>
             </tbody>
           </table>
         </div>
       </article>
-      <!-- BAGIAN B.2
-      <article class="p-2 w-full">
-        <div class="overflow-auto shadow-lg">
-          <table class="table-auto border-collapse rounded-lg bg-white dark:bg-gray-800 w-full dark:text-white">
-            <caption class="font-bold">
-              B.2. PENGGUNAAN ANGGARAN PROGRAM KERJA TA. 2023/2024
-            </caption>
 
-            <thead>
-              <tr>
-                <th class="border dark:border-black p-1">No</th>
-                <th class="border dark:border-black p-1">Program Kerja</th>
-                <th class="border dark:border-black p-1 rounded-tr-lg">Anggaran Terserap</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">1</td>
-                <td class="border dark:border-black py-1 px-3">Raimuna Pramuka</td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">2</td>
-                <td class="border dark:border-black py-1 px-3">Camp Kenaikan Tingkat Pramuka</td>
-                <td class="border dark:border-black py-1 px-3">
-                  <ol class="list-inside list-decimal">
-                    <li>Camping Kenaikan Tk Bantara: Rp11.000.000</li>
-                    <li>Upacara di Stadion: Rp1.300.000</li>
-                    <li>Akomodasi Pelantikan Garuda: Rp600.000</li>
-                  </ol>
-                  <p class="p-2">Total: Rp12.900.000</p>
-                </td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">3</td>
-                <td class="border dark:border-black py-1 px-3">Olimpiade Sains Nasional (OSN)</td>
-                <td class="border dark:border-black py-1 px-3">
-                  <ol class="list-inside list-decimal">
-                    <li>OSN-K 2024: Rp11.403.000</li>
-                    <li>Reward Juara OSN-K 10 santri @450.000: Rp4.500.000</li>
-                    <li>Reward Pembimbing Juara OSN-K 6 x @400.000: Rp2.400.000</li>
-                    <li>OSN-P 2024: Rp10.403.000</li>
-                    <li>Reward Juara Juara OSN-P 2 x @750.000: Rp1.500.000</li>
-                    <li>Reward Pembimbing 1 Juara OSN-P 20% bimbingan x 600.000: Rp120.000</li>
-                    <li>Reward Pembimbing 1 Juara OSN-P 70% bimbingan x 600.000 : Rp420.000</li>
-                    <li>Reward Radya Fallah Medali Perak Nasional: Rp1.000.000</li>
-                    <li>Biaya pengantaran Radya pelatihan Pemprov Jabar Bandung: Rp750.000</li>
-                    <li>Biaya pengantaran Radya Pelatnas 1 Bandung: Rp750.000</li>
-                  </ol>
-                  <p class="p-2">Total: Rp33.246.000</p>
-                </td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">4</td>
-                <td class="border dark:border-black py-1 px-3">MTQ Kemenag RI</td>
-                <td class="border dark:border-black py-1 px-3">
-                  <ol class="list-inside list-decimal">
-                    <li>MTQ Bekasi: Rp713.100</li>
-                    <li>MTQ Karawang: Rp1.306.100</li>
-                    <li>MTQ Provinsi: Rp1.015.000</li>
-                  </ol>
-                  <p class="p-2">Total: Rp3.034.200</p>
-                </td>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">5</td>
-                <td class="border dark:border-black py-1 px-3">Olimpiade Bahasa Arab (OBA)</td>
-                <td class="border dark:border-black py-1 px-3">
-                  <ol class="list-inside list-decimal">
-                    <li>OBA-K: Rp500.000</li>
-                    <li>OBA-P: Rp1.000.000</li>
-                    <li>Reward Juara 1: Rp400.000</li>
-                    <li>Reward Juara 2: Rp350.000</li>
-                    <li>Reward Juara 3: Rp300.000</li>
-                  </ol>
-                  <p class="p-2">Total: Rp2.550.000</p>
-                </td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">6</td>
-                <td class="border dark:border-black py-1 px-3">Kompetisi Sains Madrasah (KSM) </td>
-                <td class="border dark:border-black py-1 px-3">
-                  <ol class="list-inside list-decimal">
-                    <li>KSM-K: Rp3.200.000</li>
-                    <li>KSM-P :Rp3.170.000</li>
-                    <li>Reward Juara 1 @2 x 400.000: Rp800.000</li>
-                    <li>Reward Juara 3: Rp300.000</li>
-                    <li>Reward Pembina Juara 1: Rp350.000</li>
-                    <li>Reward Pembina Juara 3: Rp250.000</li>
-                  </ol>
-                  <p class="p-2">Total: Rp8.070.000</p>
-                </td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">7</td>
-                <td class="border dark:border-black py-1 px-3">Olimpiade Penelitian Siswa Indonesia (OPSI)</td>
-                <td class="border dark:border-black py-1 px-3">Biaya mandiri menggunakan produk yg sudah jadi</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">8</td>
-                <td class="border dark:border-black py-1 px-3">Festival Dan Lomba Seni Siswa Nasional (FLS2N)</td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">9</td>
-                <td class="border dark:border-black py-1 px-3">Mengikuti Lomba Eksternal Event-Event Indonesian Young
-                  Scientits Association</td>
-                <td class="border dark:border-black py-1 px-3">Subsidi Transport dan reward para juara: Rp5.300.000</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">10</td>
-                <td class="border dark:border-black py-1 px-3">Event Beladiri Taekwondo</td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">11</td>
-                <td class="border dark:border-black py-1 px-3">Event lomba-lomba Akademik dan Olahraga</td>
-                <td class="border dark:border-black py-1 px-3">Transport dan akomodasi lomba: Rp. 2.300.000</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center" colspan="2">Total Dana yang terserap</td>
-                <td class="border dark:border-black py-1 px-3 bg-red-500">Rp67.400.200</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </article> -->
+      <article class="p-2 w-full overflow-auto">
+        <p class="font-bold">F.	EVALUASI DAN ANALISIS</p>
+        <ol class="px-4 list-decimal list-inside">
+            <li>
+              Kegiatan yang terlaksana:
+              <ul class="list-disc list-inside px-4">
+                <li>OSN</li>
+                <li>OBA</li>
+                <li>MTQ</li>
+                <li>KSM</li>
+                <li>IYSA</li>
+                <li>Lomba Debat B. Inggris</li>
+                <li>Robotic</li>
+                <li>Ekskul Life Skill Khusus Aitam</li>
+              </ul>
+            </li>
+            <li>
+              Kegiatan yang tidak terlaksana:
+              <ul class="list-disc list-inside px-4">
+                <li>-</li>
+              </ul>
+            </li>
+            <li>
+              Tingkat capaian target program:
+              <ul class="list-disc list-inside px-4">
+                <li>100%</li>
+              </ul>
+            </li>
+        </ol>
+      </article>
+
+      <article class="p-2 w-full overflow-auto">
+        <p class="font-bold">G.	REKOMENDASI DAN TINDAK LANJUT</p>
+        <ol class="px-4 list-decimal list-inside">
+            <li>-</li>
+        </ol>
+      </article>
+
+
+      <article class="p-2 w-full overflow-auto">
+        <p class="font-bold">H.	PENUTUP</p>
+        <p class="px-4">Pembinaan minat, bakat dan prestasi (PMBP) adalah bidang yang mengurus ekstrakurikuler dan study club, Dimana bidang ini menjadi wadah untuk membina minat dan bakat santri. Bidang PMBP juga focus dalam membimbing dan membina duta-duta prestasi dalam berbagai ajang perlombaan.</p>
+        
+      </article>
+
+
       <!-- BAGIAN C -->
       <article class="p-2 w-full">
         <div class="overflow-auto shadow-lg">
           <table class="table-auto border-collapse rounded-lg bg-white dark:bg-gray-800 w-full dark:text-white">
             <caption class="font-bold">
-              C. KONDISI UMUM EKSTRAKURIKULER DAN <em>STUDI CLUB</em> SMA IT AL BINAA 2023/2024
+              LAMPIRAN 1. KONDISI UMUM EKSTRAKURIKULER DAN <em>STUDI CLUB</em> SMA IT AL BINAA 2023/2024
             </caption>
 
             <thead>
@@ -522,232 +566,95 @@
                 <th class="border dark:border-black p-1">Nama</th>
                 <th class="border dark:border-black p-1">Pembina</th>
                 <th class="border dark:border-black p-1">Jumlah Anggota</th>
-                <th class="border dark:border-black p-1 rounded-tr-lg">Proyeksi di TA 2024/2025</th>
+                <th class="border dark:border-black p-1 rounded-tr-lg">Status di TA 2025/2026</th>
               </tr>
             </thead>
             <tbody>
+              {% for object in extracurriculars_and_study_groups %}
               <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">1</td>
-                <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                <td class="border dark:border-black py-1 px-3">Badminton</td>
-                <td class="border dark:border-black py-1 px-3">Masrur Agus Alwy, Lc &rarr; Akbar, S.Pd.I</td>
-                <td class="border dark:border-black py-1 px-3 text-center">- <br> (Hibernasi)</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
+                <td class="border dark:border-black py-1 px-3 text-center">{{forloop.counter}}</td>
+                <td class="border dark:border-black py-1 px-3">{{object.category}}</td>
+                <td class="border dark:border-black py-1 px-3">{{object.name}}</td>
+                <td class="border dark:border-black py-1 px-3">{{object.teacher.all|join:"<br>"}}</td>
+                <td class="border dark:border-black py-1 px-3 text-center">{{object.members.count}}</td>
+                <td class="border dark:border-black py-1 px-3">
+                  {% if object.short_name == "KIR" %}
+                  Tidak dilanjutkan
+                  {% else %}
+                  Dilanjutkan
+                  {% endif %}
+                </td>
               </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">2</td>
-                <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                <td class="border dark:border-black py-1 px-3">Basket</td>
-                <td class="border dark:border-black py-1 px-3">Andri Rinaldi</td>
-                <td class="border dark:border-black py-1 px-3 text-center">31</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">3</td>
-                <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                <td class="border dark:border-black py-1 px-3">Bola Voli</td>
-                <td class="border dark:border-black py-1 px-3">Helmi Sukma Zain</td>
-                <td class="border dark:border-black py-1 px-3 text-center">36</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">4</td>
-                <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                <td class="border dark:border-black py-1 px-3">Futsal</td>
-                <td class="border dark:border-black py-1 px-3">Naufal Farhan Lasandi, S.Pd.I &rarr; Prio Satrio &rarr;
-                  Iqbaludin</td>
-                <td class="border dark:border-black py-1 px-3 text-center">22</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">5</td>
-                <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                <td class="border dark:border-black py-1 px-3">Sepakbola</td>
-                <td class="border dark:border-black py-1 px-3">Zuhdi Muslim, S.Pd</td>
-                <td class="border dark:border-black py-1 px-3 text-center">40</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">6</td>
-                <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                <td class="border dark:border-black py-1 px-3">Sepak takraw</td>
-                <td class="border dark:border-black py-1 px-3">Muhammad Ikhsan, S.Pd</td>
-                <td class="border dark:border-black py-1 px-3 text-center">10</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">7</td>
-                <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                <td class="border dark:border-black py-1 px-3">Tenis Meja</td>
-                <td class="border dark:border-black py-1 px-3">Akhmad Zaini</td>
-                <td class="border dark:border-black py-1 px-3 text-center">10</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">8</td>
-                <td class="border dark:border-black py-1 px-3">Minat dan Bakat</td>
-                <td class="border dark:border-black py-1 px-3">BSMR</td>
-                <td class="border dark:border-black py-1 px-3">Anang Rachyudi, S.Kep</td>
-                <td class="border dark:border-black py-1 px-3 text-center">30</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">9</td>
-                <td class="border dark:border-black py-1 px-3">Minat dan Bakat</td>
-                <td class="border dark:border-black py-1 px-3">Desain Grafis</td>
-                <td class="border dark:border-black py-1 px-3">M.S. Haromain, S.Kom</td>
-                <td class="border dark:border-black py-1 px-3 text-center">9</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr class="bg-yellow-300 dark:bg-yellow-500">
-                <td class="border dark:border-black py-1 px-3 text-center">10</td>
-                <td class="border dark:border-black py-1 px-3">Minat dan Bakat</td>
-                <td class="border dark:border-black py-1 px-3">Hifzhul Hadits</td>
-                <td class="border dark:border-black py-1 px-3">Hasanuddin, S.Pd.I</td>
-                <td class="border dark:border-black py-1 px-3 text-center">4</td>
-                <td class="border dark:border-black py-1 px-3">Kondisional</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">11</td>
-                <td class="border dark:border-black py-1 px-3">Minat dan Bakat</td>
-                <td class="border dark:border-black py-1 px-3">Kopling</td>
-                <td class="border dark:border-black py-1 px-3">Priyo Widodo, S.Pi</td>
-                <td class="border dark:border-black py-1 px-3 text-center">33</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr class="bg-yellow-300 dark:bg-yellow-500">
-                <td class="border dark:border-black py-1 px-3 text-center">12</td>
-                <td class="border dark:border-black py-1 px-3">Minat dan Bakat</td>
-                <td class="border dark:border-black py-1 px-3">Mustholahul Hadits</td>
-                <td class="border dark:border-black py-1 px-3">Irpan Halim, Lc., M.Pd</td>
-                <td class="border dark:border-black py-1 px-3 text-center">- <br> (Hibernasi)</td>
-                <td class="border dark:border-black py-1 px-3">Kondisional</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">13</td>
-                <td class="border dark:border-black py-1 px-3">Minat dan Bakat</td>
-                <td class="border dark:border-black py-1 px-3">Pramuka</td>
-                <td class="border dark:border-black py-1 px-3">Afirul Firman Syadani, SH., Muh. Ikhsan, S.Pd. dan Aam
-                  Hamdani, S.Pd.</td>
-                <td class="border dark:border-black py-1 px-3 text-center">35</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">14</td>
-                <td class="border dark:border-black py-1 px-3">Sains dan Teknologi</td>
-                <td class="border dark:border-black py-1 px-3">Fisika</td>
-                <td class="border dark:border-black py-1 px-3">Deden Anugrah, M.P.Fis</td>
-                <td class="border dark:border-black py-1 px-3 text-center">19</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">15</td>
-                <td class="border dark:border-black py-1 px-3">Sains dan Teknologi</td>
-                <td class="border dark:border-black py-1 px-3">Kimia</td>
-                <td class="border dark:border-black py-1 px-3">Suharyadi, M.Pd., Gr</td>
-                <td class="border dark:border-black py-1 px-3 text-center">42</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">16</td>
-                <td class="border dark:border-black py-1 px-3">Sains dan Teknologi</td>
-                <td class="border dark:border-black py-1 px-3">Karya Ilmiah Remaja (KIR)</td>
-                <td class="border dark:border-black py-1 px-3">Azhar Faturohman A., S.Si dan Ir. Rayis Syamlan</td>
-                <td class="border dark:border-black py-1 px-3 text-center">20</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">17</td>
-                <td class="border dark:border-black py-1 px-3">Sains dan Teknologi</td>
-                <td class="border dark:border-black py-1 px-3">Koding</td>
-                <td class="border dark:border-black py-1 px-3">Azhar Faturohman A., S.Si</td>
-                <td class="border dark:border-black py-1 px-3 text-center">37</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr class="bg-yellow-300 dark:bg-yellow-500">
-                <td class="border dark:border-black py-1 px-3 text-center">18</td>
-                <td class="border dark:border-black py-1 px-3">Sains dan Teknologi</td>
-                <td class="border dark:border-black py-1 px-3">Koding Plasma</td>
-                <td class="border dark:border-black py-1 px-3">Alif Rezky, M.Pd</td>
-                <td class="border dark:border-black py-1 px-3 text-center">75</td>
-                <td class="border dark:border-black py-1 px-3">Kondisional</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">19</td>
-                <td class="border dark:border-black py-1 px-3">Sains dan Teknologi</td>
-                <td class="border dark:border-black py-1 px-3">Matematika</td>
-                <td class="border dark:border-black py-1 px-3">Hario Sadewo, S.Si</td>
-                <td class="border dark:border-black py-1 px-3 text-center">16</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">20</td>
-                <td class="border dark:border-black py-1 px-3">Bahasa</td>
-                <td class="border dark:border-black py-1 px-3">Bahasa Arab</td>
-                <td class="border dark:border-black py-1 px-3">Irpan Halim, Lc., M.H</td>
-                <td class="border dark:border-black py-1 px-3 text-center">28</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr class="bg-red-500">
-                <td class="border dark:border-black py-1 px-3 text-center">21</td>
-                <td class="border dark:border-black py-1 px-3">Bahasa</td>
-                <td class="border dark:border-black py-1 px-3">Bahasa Inggris</td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-                <td class="border dark:border-black py-1 px-3 text-center">- <br> (Hibernasi)</td>
-                <td class="border dark:border-black py-1 px-3">Tidak Dilanjutkan</td>
-              </tr>
-              <tr class="bg-yellow-300 dark:bg-yellow-500">
-                <td class="border dark:border-black py-1 px-3 text-center">22</td>
-                <td class="border dark:border-black py-1 px-3">Bahasa</td>
-                <td class="border dark:border-black py-1 px-3">Literasi</td>
-                <td class="border dark:border-black py-1 px-3">Mustaani, M.Pd</td>
-                <td class="border dark:border-black py-1 px-3 text-center">10</td>
-                <td class="border dark:border-black py-1 px-3">Kondisional</td>
-              </tr>
-              <tr class="bg-red-500">
-                <td class="border dark:border-black py-1 px-3 text-center">23</td>
-                <td class="border dark:border-black py-1 px-3">Bahasa</td>
-                <td class="border dark:border-black py-1 px-3">Jurnalistik</td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-                <td class="border dark:border-black py-1 px-3 text-center">- <br> (Hibernasi)</td>
-                <td class="border dark:border-black py-1 px-3">Tidak Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">24</td>
-                <td class="border dark:border-black py-1 px-3">Beladiri</td>
-                <td class="border dark:border-black py-1 px-3">Taekwondo</td>
-                <td class="border dark:border-black py-1 px-3">Khairil Mahmudin</td>
-                <td class="border dark:border-black py-1 px-3 text-center">5</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">25</td>
-                <td class="border dark:border-black py-1 px-3">Beladiri</td>
-                <td class="border dark:border-black py-1 px-3">Thifan Po Khan</td>
-                <td class="border dark:border-black py-1 px-3">Zaki Fauzan, S.Pd.I</td>
-                <td class="border dark:border-black py-1 px-3 text-center">?</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">26</td>
-                <td class="border dark:border-black py-1 px-3">Seni</td>
-                <td class="border dark:border-black py-1 px-3">Kaligrafi</td>
-                <td class="border dark:border-black py-1 px-3">Subakti, S.Pd.I</td>
-                <td class="border dark:border-black py-1 px-3 text-center">5</td>
-                <td class="border dark:border-black py-1 px-3">Dilanjutkan</td>
-              </tr>
+              {% endfor %}
             </tbody>
           </table>
-        </div>
-        <div class="my-4">
-          <p>Keterangan:</p>
-          <p class="text-green-500 font-bold">Dilanjutkan sebanyak 20 Ekskul/SC</p>
-          <p class="text-yellow-500 font-bold">Kondisional sebanyak 4 Ekskul/SC</p>
-          <p class="text-red-500 font-bold">Tidak Dilanjutkan sebanyak 2 Ekskul/SC</p>
         </div>
       </article>
 
     </div>
+    
+    <div class="p-6 pb-16 mx-2 my-2 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
+      <p class="text-center font-bold">Rekap Pertemuan Ekskul & SC</p>
+      <p class="text-center text-xs">Jumlah Pembinaan: {{reports_this_academic_year}} Pertemuan</p>
+      <div class="flex justify-center">
+        {% for object in reports_this_academic_year_by_month %}
+        <div class="px-4 border-b first:border-l border-gray-600 dark:border-white flex flex-col justify-end items-center relative">
+          <p class="text-xs">{{object.count}}</p>
+          <canvas height="{% widthratio object.count 10 400 %}px" class="bg-indigo-500 w-5">
+          </canvas>
+          <p class="absolute translate-y-9 text-xs rotate-45">{{object.report_date__month}}/{{object.report_date__year}}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="p-6 pb-16 mx-2 my-2 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
+      <p class="text-center font-bold">Rekap Pertemuan Olimpiade</p>
+      <p class="text-center text-xs">Jumlah Pembinaan: {{olympiad_reports}} Pertemuan</p>
+      <div class="flex justify-center">
+        {% for object in olympiad_reports_this_academic_year_by_month %}
+        <div class="px-4 border-b first:border-l border-gray-600 dark:border-white flex flex-col justify-end items-center relative">
+          <p class="text-xs">{{object.count}}</p>
+          <canvas height="{% widthratio object.count 5 400 %}px" class="bg-indigo-500 w-5">
+          </canvas>
+          <p class="absolute translate-y-9 text-xs rotate-45">{{object.report_date__month}}/{{object.report_date__year}}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+
+    {% for report_group in monthly_extracurricular_reports %}
+    <div class="p-6 mx-2 my-2 pt-4 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
+      <p class="text-center font-bold">Pertemuan Ekskul dan SC {{report_group.0.date_display}}</p>
+      <p class="text-center text-xs">Jumlah Ekskul & SC Aktif: {{report_group|length}}</p>
+      <div class="flex mb-24">
+          {% for object in report_group %}
+            <div class="px-4 border-b first:border-l border-gray-600 dark:border-white flex flex-col justify-end items-center relative">
+              <p class="text-xs">{{object.count}}</p>
+              <canvas height="{% widthratio object.count 1 400 %}px" class="bg-indigo-500 w-5"></canvas>
+              <p class="absolute translate-y-16 text-xs rotate-45">{{object.extracurricular__name}}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+      
+    {% for report_group in monthly_olympiad_reports %}
+    <div class="p-6 mx-2 my-2 pt-4 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
+      <p class="text-center font-bold">Pertemuan Bimbingan Olimpiade {{report_group.0.date_display}} </p>
+      <p class="text-center text-xs">Jumlah Bidang Olimpiade Aktif: {{report_group|length}}</p>
+      <div class="flex mb-24">
+          {% for object in report_group %}
+            <div class="px-4 border-b first:border-l border-gray-600 dark:border-white flex flex-col justify-end items-center relative">
+              <p class="text-xs">{{object.count}}</p>
+              <canvas height="{% widthratio object.count 1 400 %}px" class="bg-indigo-500 w-5"></canvas>
+              <p class="absolute translate-y-16 text-xs rotate-45">{{object.field_name__field_name}}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
   </main>
 
   <footer class="bg-gray-100 dark:bg-black sm:ml-64">

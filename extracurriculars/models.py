@@ -57,6 +57,7 @@ path_and_rename = PathAndRename('ekskul/logo')
 
 class Extracurricular(models.Model):
     name = models.CharField(_("Extracurricular/SC Name"), max_length=50)
+    short_name = models.CharField(_("Short Name"), max_length=20, blank=True, null=True)
     teacher = models.ManyToManyField(Teacher, verbose_name=_("Teachers"), help_text=_("Ketik nama yang ingin dicari dan pilih pembimbing. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
     schedule = models.CharField(_("Schedule"), max_length=15, choices=days)
     time = models.CharField(_("Time"), max_length=15, choices=pilihan_waktu)
@@ -64,6 +65,7 @@ class Extracurricular(models.Model):
     description = models.TextField(blank=True, null=True)
     logo = models.ImageField(upload_to=path_and_rename, default='no-image.png', blank=True, null=True, help_text="format logo .jpg/.jpeg")
     type = models.CharField(_("Type"), max_length=20, choices=jenis, blank=True)
+    category = models.CharField(_("Kategori"), max_length=50, blank=True, null=True)
     slug = models.SlugField(_("Slug"), blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

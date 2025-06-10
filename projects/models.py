@@ -8,8 +8,9 @@ from django.utils.translation import gettext as _
 
 # Create your models here.
 class Team(models.Model):
-    team_leader = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name=_("Ketua Tim"), related_name='team_leaders')
+    team_leader = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True, verbose_name=_("Ketua Tim"), related_name='team_leaders')
     members = models.ManyToManyField(Student, verbose_name=_("Anggota Tim"), related_name='teams', help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
+    prev_members = models.TextField(_("Anggota Sebelumnya"), blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -33,8 +34,8 @@ class Project(models.Model):
     project_name = models.CharField(_("Nama Project"), max_length=255)
     start_date = models.DateField(_("Tanggal Mulai Project"), max_length=255)
     end_date = models.DateField(_("Tanggal Akhir Project"), max_length=255)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name=_("Pembimbing"))
+    team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, verbose_name=_("Pembimbing"))
     description = models.TextField(_("Deskripsi Project"), max_length=2000)
     step_to_achieve = models.TextField(_("Langkah Mencapai Project"), max_length=2000)
     task_organizing = models.TextField(_("Pembagian Tugas Project"), max_length=2000)
@@ -66,7 +67,7 @@ class Project(models.Model):
 
 class DailyPlan(models.Model):
     date = models.DateField(_("Tanggal"), max_length=255)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name=_("Nama Proyek"))
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, verbose_name=_("Nama Proyek"))
     to_do_list = models.TextField(_("List Pekerjaan Hari Ini"), max_length=2000)
     target_today = models.TextField(_("Target Hari ini"), max_length=2000)
     problems = models.TextField(_("Kendala yang dihadapi"), max_length=2000)

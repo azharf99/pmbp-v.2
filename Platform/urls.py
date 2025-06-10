@@ -22,7 +22,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.sitemaps.views import sitemap
 from django.contrib.flatpages.views import flatpage
 from dashboard.views import HomeView
-from utils.views import CurrationListView
+from utils.views import CurrationListView, LPJPMBPView
 from .sitemaps import StaticViewSitemap
 
 def proker(request):
@@ -45,7 +45,7 @@ urlpatterns = [
     path('report/', include('laporan.urls')),
     path('kurasi/', CurrationListView.as_view(), {}, "curration-list"),
     path('logs/', include('userlog.urls')),
-    path('lpj/', lpj, name='lpj'),
+    path('lpj/', LPJPMBPView.as_view(), name='lpj'),
     path('nilai/', include('nilai.urls')),
     path('prestasi/', include('prestasi.urls')),
     path('proker/', proker, name='proker'),
