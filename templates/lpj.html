@@ -17,7 +17,7 @@
             </p>
 
             <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
-              8 Program
+              {{lpj|length}} Program
             </p>
           </div>
 
@@ -33,13 +33,13 @@
 
         <div class="mt-1 flex gap-1 text-green-600 items-center">
           <p class="flex gap-2 text-sm">
-            <span class="font-bold">8 (100%)</span>
+            <span class="font-bold">{{lpj_terlaksana|length}} ({% widthratio lpj_terlaksana|length lpj|length 100 %}%)</span>
             <span class="text-gray-500 dark:text-slate-200">Terlaksana</span>
           </p>
         </div>
         <div class="mt-1 flex gap-1 text-red-600">
           <p class="flex gap-2 text-sm">
-            <span class="font-bold">0 (0%)</span>
+            <span class="font-bold">{{lpj_tidak_terlaksana|length}} ({% widthratio lpj_tidak_terlaksana|length lpj|length 100 %}%)</span>
             <span class="text-gray-500 dark:text-slate-200">Tidak Terlaksana</span>
           </p>
         </div>
