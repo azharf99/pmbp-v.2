@@ -24,12 +24,7 @@ from django.contrib.flatpages.views import flatpage
 from dashboard.views import HomeView
 from utils.views import CurrationListView, LPJPMBPView
 from .sitemaps import StaticViewSitemap
-
-def proker(request):
-    return render(request, 'proker.html')
-
-def lpj(request):
-    return render(request, 'lpj.html')
+from raker.views import ProgramKerjaCreateView, ProgramKerjaDeleteView, ProgramKerjaUpdateView, proker
 
 sitemaps = {
     "static": StaticViewSitemap,
@@ -45,10 +40,13 @@ urlpatterns = [
     path('report/', include('laporan.urls')),
     path('kurasi/', CurrationListView.as_view(), {}, "curration-list"),
     path('logs/', include('userlog.urls')),
-    path('lpj/', LPJPMBPView.as_view(), name='lpj'),
+    path('lpj/', include('raker.urls')),
     path('nilai/', include('nilai.urls')),
     path('prestasi/', include('prestasi.urls')),
     path('proker/', proker, name='proker'),
+    path("proker/create/", ProgramKerjaCreateView.as_view(), name="proker-create"),
+    path("proker/update/<int:pk>/", ProgramKerjaUpdateView.as_view(), name="proker-update"),
+    path("proker/delete/<int:pk>/", ProgramKerjaDeleteView.as_view(), name="proker-delete"),
     path('olympiads/', include('olympiads.urls')),
     path("pages/", include("django.contrib.flatpages.urls")),
     path('projects/', include('projects.urls')),

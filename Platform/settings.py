@@ -61,9 +61,10 @@ INSTALLED_APPS = [
     'olympiads',
     'projects',
     'prestasi',
+    'students',
+    'raker',
     'userlog',
     'users',
-    'students',
     'easy_thumbnails',
     "corsheaders",
 ]

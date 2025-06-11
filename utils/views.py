@@ -9,6 +9,7 @@ from extracurriculars.models import Extracurricular
 from laporan.models import Report
 from olympiads.models import OlympiadReport
 from prestasi.models import Prestasi
+from raker.models import LaporanPertanggungJawaban
     
 
 class CurrationListView(TemplateView):
@@ -109,6 +110,9 @@ class LPJPMBPView(TemplateView):
     template_name = 'lpj.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        lpj = list(LaporanPertanggungJawaban.objects.filter(tahun_ajaran=settings.TAHUN_AJARAN))
+        lpj_terlaksana = [item for item in lpj if item.status == "Terlaksana"]
+        lpj_tidak_terlaksana = [item for item in lpj if item.status == "Tidak Terlaksana"]
         achievements_this_academic_year = Prestasi.objects.filter(year__gte=settings.TAHUN_AWAL_AJARAN, created_at__gte=settings.TANGGAL_TAHUN_AJARAN, created_at__lte=settings.TANGGAL_TAHUN_AJARAN_END)
         achievements_prev_academic_year = Prestasi.objects.filter(year__gte=settings.TAHUN_AWAL_AJARAN_LALU, year__lte=settings.TAHUN_AWAL_AJARAN, created_at__gte=settings.TANGGAL_TAHUN_AJARAN_LALU, created_at__lte=settings.TANGGAL_TAHUN_AJARAN)
         
@@ -180,5 +184,8 @@ class LPJPMBPView(TemplateView):
         context["achievements_prev_academic_year"] = achievements_prev_academic_year.count()
         context["filtered_category_achievements"] = filtered_category_achievements
         context["filtered_predicate_achievements"] = filtered_predicate_achievements
+        context["lpj"] = lpj
+        context["lpj_terlaksana"] = lpj_terlaksana
+        context["lpj_tidak_terlaksana"] = lpj_tidak_terlaksana
         
         return context

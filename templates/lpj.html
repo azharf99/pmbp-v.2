@@ -269,7 +269,7 @@
     </article>
     <article class="p-2 w-full">
       <p class="font-bold">B.   LATAR BELAKANG</p>
-      <p class="px-4">Pembinaan minat, bakat dan prestasi (PMBP) adalah bidang yang mengurus ekstrakurikuler dan study club, Dimana bidang ini menjadi wadah untuk membina minat dan bakat santri. Bidang PMBP juga focus dalam membimbing dan membina duta-duta prestasi dalam berbagai ajang perlombaan.</p>
+      <p class="px-4">Pembinaan minat, bakat dan prestasi (PMBP) adalah bidang yang mengurus ekstrakurikuler dan study club, Dimana bidang ini menjadi wadah untuk membina minat dan bakat santri. Bidang PMBP juga fokus dalam membimbing dan membina duta-duta prestasi dalam berbagai ajang perlombaan.</p>
     </article>
     <article class="p-2 w-full overflow-auto">
         <p class="font-bold">C.	TUJUAN</p>
@@ -298,103 +298,18 @@
                                 <th class="border dark:border-black p-1">Tujuan</th>
                                 <th class="border dark:border-black p-1">Indikator</th>
                                 <th class="border dark:border-black p-1">Waktu Pelaksanaan</th>
-                                <!-- <th class="border dark:border-black p-1">Penanggung Jawab</th> -->
-                                <!-- <th class="border dark:border-black p-1">Anggaran</th> -->
                             </tr>
                         </thead>
                         <tbody>
+                          {% for object in lpj %}
                             <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">1</td>
-                                <td class="border dark:border-black py-1 px-3">OSN</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                  Prestasi Santri Dalam Bidang Sains</td>
-                                <td class="border dark:border-black py-1 px-3">Juara di OSN-K, OSN-P dan OSN nasional</td>
-                                <td class="border dark:border-black py-1 px-3">Juli 2024 - September 2025</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Azhar Faturohman, S.Si</td> -->
-                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 35.000.000,-</td> -->
+                                <td class="border dark:border-black py-1 px-3 text-center">{{forloop.counter}}</td>
+                                <td class="border dark:border-black py-1 px-3">{{object.program}}</td>
+                                <td class="border dark:border-black py-1 px-3">{{object.tujuan}}</td>
+                                <td class="border dark:border-black py-1 px-3">{{object.indikator}}</td>
+                                <td class="border dark:border-black py-1 px-3">{{object.waktu_pelaksanaan}}</td>
                             </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">2</td>
-                                <td class="border dark:border-black py-1 px-3">MTQ</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                  Prestasi Santri Dalam Bidang Al Quran Dan Bahasa Arab</td>
-                                  <td class="border dark:border-black py-1 px-3">Mengirimkan peserta putra dan putri ke
-                                    cabang Fahmil Quran Putra dan Tafsir Bahasa Arab serta Lolos Tingkat Provinsi Cabang
-                                    Fahmil Quran Putra</td>
-                                <td class="border dark:border-black py-1 px-3">Kondisional</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Panji Asmara, S.Pd</td> -->
-                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 3.500.000</td> -->
-                            </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">3</td>
-                                <td class="border dark:border-black py-1 px-3">OBA</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                  Prestasi Santri Dalam Bidang Bahasa Arab</td>
-                                <td class="border dark:border-black py-1 px-3">Lolos tingkat Nasional</td>
-                                <td class="border dark:border-black py-1 px-3">Juni - November 2024</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Panji Asmara, S.Pd</td> -->
-                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 3.000.000,-</td> -->
-                            </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">4</td>
-                                <td class="border dark:border-black py-1 px-3">Kompetisi Sains Madrasah (KSM)</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                  Prestasi Santri Dalam Bidang Sains Terintergrasi Dengan Al Quran Dan As Sunnah</td>
-                                <td class="border dark:border-black py-1 px-3">Lolos Tingkat Provinsi dan Nasional</td>
-                                <td class="border dark:border-black py-1 px-3">Juli - September 2024</td>
-                                  <!-- <td class="border dark:border-black py-1 px-3">Hario Sadewo, S.Si</td> -->
-                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 8.000.000,-</td> -->
-                            </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">5</td>
-                                <td class="border dark:border-black py-1 px-3">Mengikuti lomba eksternal potensial dari
-                                    IYSA dan penyelenggara lain (akademik dan olahraga)</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                  Prestasi Santri Dalam Bidang Akademik, Penelitian Dan Karya Ilmiah, serta Olahraga
-                                </td>
-                                <td class="border dark:border-black py-1 px-3">Mengirimkan santri potensial dalam bidang
-                                  karya ilmiah dalam event IYSA dan Lembaga lainnya</td>
-                                <td class="border dark:border-black py-1 px-3">Sepanjang Tahun ajaran</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Azhar Faturohman, S.Si dan Alif Rezky, M.Pd</td> -->
-                                <!-- <td class="border dark:border-black py-1 px-3">Subsidi dari sekolah :Rp. 5.000.000,-</td> -->
-                            </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">6</td>
-                                <td class="border dark:border-black py-1 px-3">Robotic</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                    Prestasi Santri Dalam Bidang Teknologi Informasi dan Robotika</td>
-                                <td class="border dark:border-black py-1 px-3">Melahirkan santri juara kompetisi robotic
-                                    Tingkat regional hingga nasional</td>
-                                <td class="border dark:border-black py-1 px-3">Sepanjang tahun ajaran</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Agus Setiawan, S.T</td> -->
-                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 13.000.000,-</td> -->
-                            </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">7</td>
-                                <td class="border dark:border-black py-1 px-3">English Club</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                    Prestasi Santri Dalam Bidang Bahasa Inggris (Asing)</td>
-                                <td class="border dark:border-black py-1 px-3">Melahirkan santri juara lomba debat dan
-                                    pidato Bahasa inggris</td>
-                                <td class="border dark:border-black py-1 px-3">Sepanjang tahun ajaran</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Dany Wardiman, S.Pd</td> -->
-                                <!-- <td class="border dark:border-black py-1 px-3">Rutinitas tiap bulan</td> -->
-                            </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">8</td>
-                                <td class="border dark:border-black py-1 px-3">Ekskul Life Skill Khusus Aitam</td>
-                                <td class="border dark:border-black py-1 px-3">Santri mengikuti pelatihan AC Maintenance and Service (ACMS) dan Bakery Art (BA)</td>
-                                <td class="border dark:border-black py-1 px-3">Muncul santri yang memiliki skill dalam perawatan AC dan produksi roti/snack</td>
-                                <td class="border dark:border-black py-1 px-3">Maksimal 3 bulan/program</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Tim PMBP</td> -->
-                                <!-- <td class="border dark:border-black py-1 px-3">
-                                    <ol>
-                                        <li>ACMS: Rp. 3.000.000</li>
-                                        <li>BA: Rp. 1500.000</li>
-                                    </ol>
-                                    <p>Total: Rp. 4.500.000,-</p>
-                                </td> -->
-                            </tr>
+                          {% endfor %}
                         </tbody>
                     </table>
         </div>
@@ -416,90 +331,15 @@
               </tr>
             </thead>
             <tbody>
-              
+              {% for object in lpj %}
               <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">1</td>
-                <td class="border dark:border-black py-1 px-3">Olimpiade Sains Nasional (OSN)</td>
-                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">
-                  <ul class="list-disc list-inside">
-                    <li>11 santri juara OSN-K 2024</li>
-                    <li>2 santri juara OSN-P 2024</li>
-                    <li>45 santri mengikuti OSN-K 2025</li>
-                  </ul>
-                </td>
-                <td class="border dark:border-black py-1 px-3">-</td>
+                <td class="border dark:border-black py-1 px-3 text-center">{{forloop.counter}}</td>
+                <td class="border dark:border-black py-1 px-3">{{object.program}}</td>
+                <td class="border dark:border-black py-1 px-3">{{object.status}}</td>
+                <td class="border dark:border-black py-1 px-3">{{object.capaian}}</td>
+                <td class="border dark:border-black py-1 px-3">{{object.keterangan}}</td>
               </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">2</td>
-                <td class="border dark:border-black py-1 px-3">MTQ Kemenag RI</td>
-                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">
-                  <ul class="list-disc list-inside">
-                    <li>3 santri juara 2 MTQ Fahmil Quran Tk Kabupaten Bekasi dan Karawang 2024</li>
-                    <li>1 santri lolos ke provinsi dan juara 3 MTQ fahmil quran 2024</li>
-                  </ul>
-                </td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">3</td>
-                <td class="border dark:border-black py-1 px-3">Olimpiade Bahasa Arab (OBA)</td>
-                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">
-                  Tidak tercapai target lolos Nasional dengan rincian sebagai berikut:
-                  <ul class="list-disc list-inside">
-                    <li>Juara 1 dan 2 OBA-K</li>
-                    <li>Tidak juara Provinsi Jabar</li>
-                  </ul>
-                </td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">4</td>
-                <td class="border dark:border-black py-1 px-3">Kompetisi Sains Madrasah (KSM) </td>
-                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">
-                  Tidak tercapai target lolos Nasional dengan rincian sebagai berikut:
-                  <ul class="list-disc list-inside">
-                    <li>1 santri Juara 1 KSM-K Fisika</li>
-                    <li>1 santri Juara 1 KSM-K Geografi</li>
-                    <li>1 santri Juara 3 KSM-K Matematika</li>
-                    <li>1 santri juara 2 KSM-P Geografi</li>
-                  </ul>
-                </td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">5</td>
-                <td class="border dark:border-black py-1 px-3">Mengikuti Lomba Eksternal Event-Event Indonesian Young
-                  Scientits Association</td>
-                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">Berhasil mengikuti beberapa event seperti IIIEX, WSEEC,
-                  AISEEF, YISF, CASTIC, I3NEW, WICE</td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">6</td>
-                <td class="border dark:border-black py-1 px-3">Robotic</td>
-                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">Melahirkan santri juara kompetisi robotic Tingkat regional hingga nasional</td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">6</td>
-                <td class="border dark:border-black py-1 px-3">English Club</td>
-                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">Melahirkan santri juara lomba debat dan pidato Bahasa inggris</td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-              </tr>
-              <tr>
-                <td class="border dark:border-black py-1 px-3 text-center">6</td>
-                <td class="border dark:border-black py-1 px-3">Ekskul Life Skill Khusus Aitam</td>
-                <td class="border dark:border-black py-1 px-3">Terlaksana</td>
-                <td class="border dark:border-black py-1 px-3">Muncul santri yang memiliki skill dalam perawatan AC dan produksi roti/snack</td>
-                <td class="border dark:border-black py-1 px-3">-</td>
-              </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>
@@ -511,26 +351,27 @@
             <li>
               Kegiatan yang terlaksana:
               <ul class="list-disc list-inside px-4">
-                <li>OSN</li>
-                <li>OBA</li>
-                <li>MTQ</li>
-                <li>KSM</li>
-                <li>IYSA</li>
-                <li>Lomba Debat B. Inggris</li>
-                <li>Robotic</li>
-                <li>Ekskul Life Skill Khusus Aitam</li>
-              </ul>
+              {% for object in lpj_terlaksana %}
+                <li>{{object.progam}}</li>
+              {% empty %}
+                <li>-</li>
+              {% endfor %}
+            </ul>
             </li>
             <li>
               Kegiatan yang tidak terlaksana:
               <ul class="list-disc list-inside px-4">
-                <li>-</li>
+                {% for object in lpj_tidak_terlaksana %}
+                  <li>{{object.progam}}</li>
+                {% empty %}
+                  <li>-</li>
+                {% endfor %}
               </ul>
             </li>
             <li>
               Tingkat capaian target program:
               <ul class="list-disc list-inside px-4">
-                <li>100%</li>
+                <li>{% widthratio lpj_terlaksana|length lpj|length 100 %}%</li>
               </ul>
             </li>
         </ol>
@@ -538,15 +379,15 @@
 
       <article class="p-2 w-full overflow-auto">
         <p class="font-bold">G.	REKOMENDASI DAN TINDAK LANJUT</p>
-        <ol class="px-4 list-decimal list-inside">
-            <li>-</li>
-        </ol>
+        <p class="px-4">
+          Semua program yang direncanakan tahun ajaran 2024-2025 akan dilalnjutkan di tahun ajaran 2025-2026 dengan beberapa pembaharuan pembinaan seperti yang sedang dilakukan saat ini yaitu pembinaan internal dan eksternal yang lebih Panjang. Diharap para santri menjadi lebih siap menghadapi lomba dan meraih prestasi yang lebih baik.
+        </p>
       </article>
 
 
       <article class="p-2 w-full overflow-auto">
         <p class="font-bold">H.	PENUTUP</p>
-        <p class="px-4">Pembinaan minat, bakat dan prestasi (PMBP) adalah bidang yang mengurus ekstrakurikuler dan study club, Dimana bidang ini menjadi wadah untuk membina minat dan bakat santri. Bidang PMBP juga focus dalam membimbing dan membina duta-duta prestasi dalam berbagai ajang perlombaan.</p>
+        <p class="px-4">Kami ucapkan terimakasih kepada kepala sekolah SMA IT Al Binaa yang telah membimbing bidang PMBP agar terus berkembang, tak lupa kami ucapkan terima kasih atas support dan pengabdian pata asatidz yang telah mencurahkan waktunya dalam membina para santri selama tahun ajaran 2024-2025, semoga Allah azza wajalla membalas dengan kebaikan yang berlimpah, aamiin</p>
         
       </article>
 
