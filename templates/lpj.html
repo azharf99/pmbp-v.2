@@ -305,8 +305,8 @@
                             <tr>
                                 <td class="border dark:border-black py-1 px-3 text-center">{{forloop.counter}}</td>
                                 <td class="border dark:border-black py-1 px-3">{{object.program}}</td>
-                                <td class="border dark:border-black py-1 px-3">{{object.tujuan}}</td>
-                                <td class="border dark:border-black py-1 px-3">{{object.indikator}}</td>
+                                <td class="border dark:border-black py-1 px-3">{{object.tujuan|linebreaks}}</td>
+                                <td class="border dark:border-black py-1 px-3">{{object.indikator|linebreaks}}</td>
                                 <td class="border dark:border-black py-1 px-3">{{object.waktu_pelaksanaan}}</td>
                             </tr>
                           {% endfor %}
@@ -336,7 +336,7 @@
                 <td class="border dark:border-black py-1 px-3 text-center">{{forloop.counter}}</td>
                 <td class="border dark:border-black py-1 px-3">{{object.program}}</td>
                 <td class="border dark:border-black py-1 px-3">{{object.status}}</td>
-                <td class="border dark:border-black py-1 px-3">{{object.capaian}}</td>
+                <td class="border dark:border-black py-1 px-3">{{object.capaian|linebreaks}}</td>
                 <td class="border dark:border-black py-1 px-3">{{object.keterangan}}</td>
               </tr>
               {% endfor %}
