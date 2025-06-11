@@ -412,7 +412,7 @@
             </thead>
             <tbody>
               {% for object in extracurriculars_and_study_groups %}
-                {% if object.short_name == "KIR" %}
+                {% if object.short_name == "KIR" or object.short_name == "Koding" %}
               <tr class="bg-red-500">
                 {% else %}
               <tr>
@@ -423,7 +423,7 @@
                 <td class="border dark:border-black py-1 px-3">{{object.teacher.all|join:"<br>"}}</td>
                 <td class="border dark:border-black py-1 px-3 text-center">{{object.members.count}}</td>
                 <td class="border dark:border-black py-1 px-3">
-                  {% if object.short_name == "KIR" %}
+                  {% if object.short_name == "KIR" or object.short_name == "Koding" %}
                   Tidak dilanjutkan
                   {% else %}
                   Dilanjutkan
