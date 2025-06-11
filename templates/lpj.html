@@ -412,7 +412,11 @@
             </thead>
             <tbody>
               {% for object in extracurriculars_and_study_groups %}
+                {% if object.short_name == "KIR" %}
+              <tr class="bg-red-500">
+                {% else %}
               <tr>
+                {% endif %}
                 <td class="border dark:border-black py-1 px-3 text-center">{{forloop.counter}}</td>
                 <td class="border dark:border-black py-1 px-3">{{object.category}}</td>
                 <td class="border dark:border-black py-1 px-3">{{object.name}}</td>
