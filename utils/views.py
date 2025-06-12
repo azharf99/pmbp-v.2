@@ -1,10 +1,11 @@
 from django.conf import settings
+from django.forms import BooleanField
 import requests
 from typing import Any
 from django.views.generic import TemplateView
 from django.utils import timezone
 from django.utils.dates import MONTHS
-from django.db.models import Count
+from django.db.models import Count, Case, When, Value
 from extracurriculars.models import Extracurricular
 from laporan.models import Report
 from olympiads.models import OlympiadReport
@@ -113,8 +114,8 @@ class LPJPMBPView(TemplateView):
         lpj = list(LaporanPertanggungJawaban.objects.filter(tahun_ajaran=settings.TAHUN_AJARAN))
         lpj_terlaksana = [item for item in lpj if item.status == "Terlaksana"]
         lpj_tidak_terlaksana = [item for item in lpj if item.status == "Tidak Terlaksana"]
-        achievements_this_academic_year = Prestasi.objects.filter(year__gte=settings.TAHUN_AWAL_AJARAN, created_at__gte=settings.TANGGAL_TAHUN_AJARAN, created_at__lte=settings.TANGGAL_TAHUN_AJARAN_END)
-        achievements_prev_academic_year = Prestasi.objects.filter(year__gte=settings.TAHUN_AWAL_AJARAN_LALU, year__lte=settings.TAHUN_AWAL_AJARAN, created_at__gte=settings.TANGGAL_TAHUN_AJARAN_LALU, created_at__lte=settings.TANGGAL_TAHUN_AJARAN)
+        achievements_this_academic_year = Prestasi.objects.filter(created_at__gte=settings.TANGGAL_TAHUN_AJARAN, created_at__lte=settings.TANGGAL_TAHUN_AJARAN_END)
+        achievements_prev_academic_year = Prestasi.objects.filter(created_at__gte=settings.TANGGAL_TAHUN_AJARAN_LALU, created_at__lte=settings.TANGGAL_TAHUN_AJARAN)
         
         filtered_category_achievements = [
                                             [item for item in achievements_this_academic_year if item.level.lower() == "kabupaten" or item.level.lower() == "tingkat kabupaten"],
@@ -133,6 +134,12 @@ class LPJPMBPView(TemplateView):
                                                                     .annotate(count=Count('field_name'))\
                                                                     .order_by('report_date__year', 'report_date__month')\
                                                                     .distinct()
+        
+        olympiad_reports_recap = OlympiadReport.objects.filter(report_date__gte=settings.TANGGAL_TAHUN_AJARAN, report_date__lte=settings.TANGGAL_TAHUN_AJARAN_END)\
+                                                                    .values('field_name__field_name')\
+                                                                    .annotate(count=Count('field_name'))\
+                                                                    .order_by()\
+                                                                    .distinct()
                                                                     
         olympiad_reports = OlympiadReport.objects.filter(report_date__gte=settings.TANGGAL_TAHUN_AJARAN, report_date__lte=settings.TANGGAL_TAHUN_AJARAN_END)\
                                                                     .values('report_date')
@@ -145,9 +152,16 @@ class LPJPMBPView(TemplateView):
                                                                     
         reports_ekskul_this_academic_year = Report.objects.select_related('extracurricular', 'teacher')\
                                                             .filter(report_date__gte=settings.TANGGAL_TAHUN_AJARAN, report_date__lte=settings.TANGGAL_TAHUN_AJARAN_END)\
-                                                            .values('extracurricular__name', 'report_date__month', 'report_date__year')\
+                                                            .values('extracurricular__short_name', 'report_date__month', 'report_date__year')\
                                                             .annotate(count=Count('extracurricular'))\
                                                             .order_by('report_date__year', 'report_date__month')\
+                                                            .distinct()
+        
+        reports_ekskul_recap = Report.objects.select_related('extracurricular', 'teacher')\
+                                                            .filter(report_date__gte=settings.TANGGAL_TAHUN_AJARAN, report_date__lte=settings.TANGGAL_TAHUN_AJARAN_END)\
+                                                            .values('extracurricular__short_name')\
+                                                            .annotate(count=Count('extracurricular'))\
+                                                            .order_by()\
                                                             .distinct()
         
         reports_this_academic_year_by_month = Report.objects.select_related('extracurricular', 'teacher')\
@@ -187,5 +201,102 @@ class LPJPMBPView(TemplateView):
         context["lpj"] = lpj
         context["lpj_terlaksana"] = lpj_terlaksana
         context["lpj_tidak_terlaksana"] = lpj_tidak_terlaksana
+        context["reports_ekskul_recap"] = reports_ekskul_recap
+        context["olympiad_reports_recap"] = olympiad_reports_recap
+        context["tahun_ajaran"] = settings.TAHUN_AJARAN
         
         return context
+
+
+
+# class LPJPMBPView(TemplateView):
+#     template_name = 'lpj.html'
+
+#     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+#         context = super().get_context_data(**kwargs)
+
+#         # Common date ranges
+#         current_year_start = settings.TANGGAL_TAHUN_AJARAN
+#         current_year_end = settings.TANGGAL_TAHUN_AJARAN_END
+#         prev_year_start = settings.TANGGAL_TAHUN_AJARAN_LALU
+
+#         # Fetch LPJ data
+#         lpj_queryset = LaporanPertanggungJawaban.objects.filter(tahun_ajaran=settings.TAHUN_AJARAN)
+#         lpj = list(lpj_queryset)
+#         lpj_status = {item.status: [] for item in lpj}
+#         for item in lpj:
+#             lpj_status[item.status].append(item)
+
+#         # Fetch achievements
+#         achievements = Prestasi.objects.filter(
+#             created_at__range=(prev_year_start, current_year_end)
+#         ).annotate(
+#             is_current=Case(
+#                 When(created_at__gte=current_year_start, then=Value(True)),
+#                 default=Value(False),
+#             )
+#         )
+#         achievements_this_year = achievements.filter(is_current=True)
+#         achievements_last_year = achievements.filter(is_current=False)
+
+#         # Categorize achievements
+#         levels = {
+#             "kabupaten": ["kabupaten", "tingkat kabupaten"],
+#             "provinsi": ["provinsi jawa barat", "jabar dan dki jakarta"],
+#             "nasional": ["nasional"],
+#             "internasional": ["internasional"],
+#         }
+#         predicates = {
+#             "juara_1": ["juara 1", "medali emas"],
+#             "juara_2": ["juara 2", "medali perak"],
+#             "juara_3": ["juara 3", "medali perunggu"],
+#             "other": ["juara 4", "juara 5", "runner up", "pelantikan kenaikan tingkat", "juara dan lolos ke nasional"],
+#         }
+#         filtered_category_achievements = {
+#             key: achievements_this_year.filter(level__in=vals)
+#             for key, vals in levels.items()
+#         }
+#         filtered_predicate_achievements = {
+#             key: achievements_this_year.filter(predicate__in=vals)
+#             for key, vals in predicates.items()
+#         }
+
+#         # Fetch Olympiad and Report Data
+#         olympiad_reports = OlympiadReport.objects.filter(report_date__range=(current_year_start, current_year_end))
+#         reports = Report.objects.filter(report_date__range=(current_year_start, current_year_end))
+
+#         # Grouping and aggregating reports
+#         olympiad_by_month = olympiad_reports.values('report_date__month', 'report_date__year')\
+#             .annotate(count=Count('id')).order_by('report_date__year', 'report_date__month')
+#         reports_by_month = reports.values('report_date__month', 'report_date__year')\
+#             .annotate(count=Count('id')).order_by('report_date__year', 'report_date__month')
+
+#         # Extracurriculars and Study Groups
+#         extracurriculars_and_study_groups = Extracurricular.objects.prefetch_related("teacher", "members").all()
+#         extracurriculars = extracurriculars_and_study_groups.filter(type="Ekskul")
+#         study_clubs = extracurriculars_and_study_groups.filter(type="SC")
+
+#         # Active/Inactive extracurriculars
+#         active_extracurricular_ids = reports.values_list('extracurricular_id', flat=True).distinct()
+#         active_extracurricular = extracurriculars_and_study_groups.filter(id__in=active_extracurricular_ids)
+#         inactive_extracurricular = extracurriculars_and_study_groups.exclude(id__in=active_extracurricular_ids)
+
+#         # Update context
+#         context.update({
+#             "lpj": lpj,
+#             "lpj_terlaksana": lpj_status.get("Terlaksana", []),
+#             "lpj_tidak_terlaksana": lpj_status.get("Tidak Terlaksana", []),
+#             "achievements_this_academic_year": achievements_this_year.count(),
+#             "achievements_prev_academic_year": achievements_last_year.count(),
+#             "filtered_category_achievements": filtered_category_achievements,
+#             "filtered_predicate_achievements": filtered_predicate_achievements,
+#             "monthly_extracurricular_reports": reports_by_month,
+#             "monthly_olympiad_reports": olympiad_by_month,
+#             "extracurriculars_and_study_groups": extracurriculars_and_study_groups,
+#             "extracurriculars": extracurriculars,
+#             "study_clubs": study_clubs,
+#             "active_extracurricular": active_extracurricular,
+#             "inactive_extracurricular": inactive_extracurricular,
+#         })
+
+#         return context

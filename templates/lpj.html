@@ -6,7 +6,7 @@
       <h1>LAPORAN PERTANGGUNG JAWABAN PROGRAM KERJA</p>
         <h2>BIDANG PENGEMBANGAN MINAT, BAKAT, DAN PRESTASI (PMBP)</p>
           <h3>SMA ISLAM TERPADU AL BINAA</p>
-            <h3>TAHUN PELAJARAN 2024/2025</p>
+            <h3>TAHUN PELAJARAN {{tahun_ajaran}}</p>
     </section>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-2 border-0 sm:gap-4 gap-2 p-2">
       <article class="rounded-lg border border-gray-100 bg-white dark:bg-gray-800 p-4 shadow-lg">
@@ -118,7 +118,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-500 dark:text-slate-200">
-              Prestasi Santri T.A. 2024/2025
+              Prestasi Santri T.A. {{tahun_ajaran}}
             </p>
   
             <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
@@ -153,7 +153,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-500 dark:text-slate-200">
-              Kategori Prestasi Santri T.A. 2024/2025
+              Kategori Prestasi Santri T.A. {{tahun_ajaran}}
             </p>
   
             <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
@@ -200,7 +200,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-500 dark:text-slate-200">
-              Kategori Prestasi Santri T.A. 2024/2025
+              Kategori Prestasi Santri T.A. {{tahun_ajaran}}
             </p>
   
             <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
@@ -397,7 +397,7 @@
         <div class="overflow-auto shadow-lg">
           <table class="table-auto border-collapse rounded-lg bg-white dark:bg-gray-800 w-full dark:text-white">
             <caption class="font-bold">
-              LAMPIRAN 1. KONDISI UMUM EKSTRAKURIKULER DAN <em>STUDI CLUB</em> SMA IT AL BINAA 2023/2024
+              LAMPIRAN 1. KONDISI UMUM EKSTRAKURIKULER DAN <em>STUDI CLUB</em> SMA IT AL BINAA {{tahun_ajaran}}
             </caption>
 
             <thead>
@@ -412,7 +412,7 @@
             </thead>
             <tbody>
               {% for object in extracurriculars_and_study_groups %}
-                {% if object.short_name == "KIR" or object.short_name == "Koding" %}
+                {% if object.short_name == "Basket" or object.short_name == "Koding" or object.short_name == "Kodingplasma" or object.short_name == "D. Grafis" %}
               <tr class="bg-red-500">
                 {% else %}
               <tr>
@@ -423,7 +423,7 @@
                 <td class="border dark:border-black py-1 px-3">{{object.teacher.all|join:"<br>"}}</td>
                 <td class="border dark:border-black py-1 px-3 text-center">{{object.members.count}}</td>
                 <td class="border dark:border-black py-1 px-3">
-                  {% if object.short_name == "KIR" or object.short_name == "Koding" %}
+                  {% if object.short_name == "Basket" or object.short_name == "Koding" or object.short_name == "Kodingplasma" or object.short_name == "D. Grafis" %}
                   Tidak dilanjutkan
                   {% else %}
                   Dilanjutkan
@@ -438,8 +438,8 @@
 
     </div>
     
-    <div class="p-6 pb-16 mx-2 my-2 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
-      <p class="text-center font-bold">Rekap Pertemuan Ekskul & SC</p>
+    <div id="ekskul" class="p-6 pb-16 mx-2 my-2 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
+      <p class="text-center font-bold">Rekap Bulanan Pertemuan Ekskul & SC T.A. {{tahun_ajaran}}</p>
       <p class="text-center text-xs">Jumlah Pembinaan: {{reports_this_academic_year}} Pertemuan</p>
       <div class="flex justify-center">
         {% for object in reports_this_academic_year_by_month %}
@@ -447,22 +447,50 @@
           <p class="text-xs">{{object.count}}</p>
           <canvas height="{% widthratio object.count 10 400 %}px" class="bg-indigo-500 w-5">
           </canvas>
-          <p class="absolute translate-y-9 text-xs rotate-45">{{object.report_date__month}}/{{object.report_date__year}}</p>
+          <p class="absolute translate-y-9 text-xs rotate-45"><a href="#ekskul{{object.report_date__month}}{{object.report_date__year}}">{{object.report_date__month}}/{{object.report_date__year}}</a></p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <div class="p-6 pb-16 mx-2 my-2 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
+      <p class="text-center font-bold">Rekap Pertemuan Ekskul & SC T.A. {{tahun_ajaran}}</p>
+      <div class="flex mb-24">
+        {% for object in reports_ekskul_recap %}
+        <div class="px-4 border-b first:border-l border-gray-600 dark:border-white flex flex-col justify-end items-center relative">
+          <p class="text-xs">{{object.count}}</p>
+          <canvas height="{% widthratio object.count 10 400 %}px" class="bg-indigo-500 w-5">
+          </canvas>
+          <p class="absolute translate-y-16 text-xs rotate-45">{{object.extracurricular__short_name}}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div id="osn" class="p-6 pb-16 mx-2 my-2 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
+      <p class="text-center font-bold">Rekap Bulanan Pertemuan Olimpiade T.A. {{tahun_ajaran}}</p>
+      <p class="text-center text-xs">Jumlah Pembinaan: {{olympiad_reports}} Pertemuan</p>
+      <div class="flex">
+        {% for object in olympiad_reports_this_academic_year_by_month %}
+        <div class="px-4 border-b first:border-l border-gray-600 dark:border-white flex flex-col justify-end items-center relative">
+          <p class="text-xs">{{object.count}}</p>
+          <canvas height="{% widthratio object.count 5 400 %}px" class="bg-indigo-500 w-5">
+          </canvas>
+          <p class="absolute translate-y-9 text-xs rotate-45"><a href="#osn{{object.report_date__month}}{{object.report_date__year}}">{{object.report_date__month}}/{{object.report_date__year}}</a></p>
         </div>
         {% endfor %}
       </div>
     </div>
 
     <div class="p-6 pb-16 mx-2 my-2 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
-      <p class="text-center font-bold">Rekap Pertemuan Olimpiade</p>
-      <p class="text-center text-xs">Jumlah Pembinaan: {{olympiad_reports}} Pertemuan</p>
-      <div class="flex justify-center">
-        {% for object in olympiad_reports_this_academic_year_by_month %}
+      <p class="text-center font-bold">Rekap Pertemuan Olimpiade T.A. {{tahun_ajaran}}</p>
+      <div class="flex mb-24">
+        {% for object in olympiad_reports_recap %}
         <div class="px-4 border-b first:border-l border-gray-600 dark:border-white flex flex-col justify-end items-center relative">
           <p class="text-xs">{{object.count}}</p>
           <canvas height="{% widthratio object.count 5 400 %}px" class="bg-indigo-500 w-5">
           </canvas>
-          <p class="absolute translate-y-9 text-xs rotate-45">{{object.report_date__month}}/{{object.report_date__year}}</p>
+          <p class="absolute translate-y-16 text-xs rotate-45">{{object.field_name__field_name}}</p>
         </div>
         {% endfor %}
       </div>
@@ -470,15 +498,15 @@
 
 
     {% for report_group in monthly_extracurricular_reports %}
-    <div class="p-6 mx-2 my-2 pt-4 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
-      <p class="text-center font-bold">Pertemuan Ekskul dan SC {{report_group.0.date_display}}</p>
+    <div id="ekskul{{report_group.0.report_date__month}}{{report_group.0.report_date__year}}" class="p-6 mx-2 my-2 pt-4 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
+      <p class="text-center font-bold"><a href="#ekskul">Pertemuan Ekskul dan SC {{report_group.0.date_display}}</a></p>
       <p class="text-center text-xs">Jumlah Ekskul & SC Aktif: {{report_group|length}}</p>
       <div class="flex mb-24">
           {% for object in report_group %}
             <div class="px-4 border-b first:border-l border-gray-600 dark:border-white flex flex-col justify-end items-center relative">
               <p class="text-xs">{{object.count}}</p>
               <canvas height="{% widthratio object.count 1 400 %}px" class="bg-indigo-500 w-5"></canvas>
-              <p class="absolute translate-y-16 text-xs rotate-45">{{object.extracurricular__name}}</p>
+              <p class="absolute translate-y-16 text-xs rotate-45">{{object.extracurricular__short_name}}</p>
             </div>
           {% endfor %}
         </div>
@@ -486,8 +514,8 @@
       {% endfor %}
       
     {% for report_group in monthly_olympiad_reports %}
-    <div class="p-6 mx-2 my-2 pt-4 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
-      <p class="text-center font-bold">Pertemuan Bimbingan Olimpiade {{report_group.0.date_display}} </p>
+    <div id="osn{{report_group.0.report_date__month}}{{report_group.0.report_date__year}}" class="p-6 mx-2 my-2 pt-4 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
+      <p class="text-center font-bold"><a href="#osn">Pertemuan Bimbingan Olimpiade {{report_group.0.date_display}}</a></p>
       <p class="text-center text-xs">Jumlah Bidang Olimpiade Aktif: {{report_group|length}}</p>
       <div class="flex mb-24">
           {% for object in report_group %}
@@ -507,7 +535,7 @@
       <p class="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500">
         Pengembangan Minat, Bakat dan Pembinaan Prestasi (PMBP) SMAS IT Al
         BINAA <br />
-        &copy;2024 <br />
+        &copy;{{tahun_ajaran}} <br />
       </p>
     </div>
   </footer>
