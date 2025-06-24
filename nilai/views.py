@@ -301,34 +301,15 @@ class SyncronizeWithAIS(LoginRequiredMixin, CreateView):
         base_url = settings.URL_POST_NILAI
         file_path = f'progress--{datetime.date.today()}.txt'
         error_path = 'error.txt'
-        scores = Score.objects.select_related('extracurricular', 'student').filter(academic_year=settings.TAHUN_AJARAN)
-
-        id_set = set()
-        # Check if file exists
-        if not os.path.exists(file_path):
-            # Create the file if it does not exist
-            with open(file_path, 'w') as file:
-                pass
-
-        with open(file_path, 'r') as read_progress_file:
-            for id in read_progress_file:
-                id_set.add("".join(id.strip().split("--")[1:]))
+        scores = Score.objects.select_related('extracurricular', 'student').filter(academic_year=settings.TAHUN_AJARAN, semester="Genap")
 
         for score in scores:
-            search = f"{score.student.nis}{score.student.student_name}{score.extracurricular.name}{score.score}"
-            if search in id_set:
-                continue
-            with open(file_path, 'a') as score_progress_file:
-                score_progress_file.write(f"{timezone.now()}--{score.student.nis}--{score.student.student_name}--{score.extracurricular.name}--{score.score}\n")
             data = {
                 "nilai": score.score,
                 "nama_eskul_sc_k": score.extracurricular.name,
                 "nis_k": score.student.nis,
             }
-            res = session.post(base_url, data=data, timeout=5)
-            if res.status_code != 200:
-                with open(error_path, 'a') as error_file:
-                    error_file.write(f"{timezone.now()}--{score.student.nis}--{score.student.student_name}--{score.extracurricular.name}--{score.score}\n")
+            session.post(base_url, data=data)
         messages.success(request, "Sikronisasi Data Nilai Berhasil!")
         return redirect(reverse("nilai-syncronize"))
     
