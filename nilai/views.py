@@ -301,7 +301,7 @@ class SyncronizeWithAIS(LoginRequiredMixin, CreateView):
         base_url = settings.URL_POST_NILAI
         file_path = f'progress--{datetime.date.today()}.txt'
         error_path = 'error.txt'
-        scores = Score.objects.select_related('extracurricular', 'student').all()
+        scores = Score.objects.select_related('extracurricular', 'student').filter(academic_year=settings.TAHUN_AJARAN)
 
         id_set = set()
         # Check if file exists
