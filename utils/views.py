@@ -213,7 +213,7 @@ class ProkerPMBPView(TemplateView):
     template_name = 'proker.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        proker = list(ProgramKerja.objects.filter(tahun_ajaran=settings.TAHUN_AJARAN))
+        proker = list(ProgramKerja.objects.filter(tahun_ajaran=settings.TAHUN_AJARAN).order_by("created_at"))
         program_prestasi = list(ProgramPrestasi.objects.filter(tanggal__gte=settings.TANGGAL_TAHUN_AJARAN_END))
         extracurriculars_and_study_groups = list(Extracurricular.objects.prefetch_related("teacher", "members")\
                                                 .filter(status="Aktif")\
