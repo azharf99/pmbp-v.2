@@ -228,8 +228,8 @@ class ProkerPMBPView(TemplateView):
         context.update({"program_prestasi" : program_prestasi})
         context["proker"] = proker
         context["proker"] = proker
-        context["tahun_ajaran"] = settings.TAHUN_AJARAN
-        context["tahun_ajaran_lalu"] = settings.TAHUN_AJARAN_LALU
+        context["tahun_ajaran"] = "2025/2026"
+        context["tahun_ajaran_lalu"] = "2024/2025"
         
         return context
 
