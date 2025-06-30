@@ -67,6 +67,7 @@ class Extracurricular(models.Model):
     type = models.CharField(_("Type"), max_length=20, choices=jenis, blank=True)
     category = models.CharField(_("Kategori"), max_length=50, blank=True, null=True)
     slug = models.SlugField(_("Slug"), blank=True)
+    status = models.CharField(_("Status"), max_length=20, default="Aktif")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

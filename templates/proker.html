@@ -6,7 +6,7 @@
             <h1>RANCANGAN PROGRAM KERJA</p>
                 <h2>BIDANG PENGEMBANGAN MINAT, BAKAT, DAN PRESTASI (PMBP)</p>
                     <h3>SMA ISLAM TERPADU AL BINAA</p>
-                        <h3>TAHUN PELAJARAN 2024/2025</p>
+                        <h3>TAHUN PELAJARAN {{tahun_ajaran}}</p>
         </section>
 
         <!-- ANALYTICS CARDS -->
@@ -19,7 +19,7 @@
                         </p>
 
                         <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
-                            9 Program
+                            {{proker|length}} Program
                         </p>
                     </div>
 
@@ -32,14 +32,14 @@
 
                 <div class="mt-1 flex gap-1 text-green-600 items-center">
                     <p class="flex gap-2 text-sm">
-                        <span class="font-bold">9</span>
-                        <span class="text-gray-500 dark:text-slate-200">Program di TA 2024/2025</span>
+                        <span class="font-bold">{{proker|length}}</span>
+                        <span class="text-gray-500 dark:text-slate-200">Program di TA {{tahun_ajaran}}</span>
                     </p>
                 </div>
                 <div class="mt-1 flex gap-1 text-red-600">
                     <p class="flex gap-2 text-sm">
-                        <span class="font-bold">11</span>
-                        <span class="text-gray-500 dark:text-slate-200">Program di TA 2023/2024</span>
+                        <span class="font-bold">9</span>
+                        <span class="text-gray-500 dark:text-slate-200">Program di TA {{tahun_ajaran_lalu}}</span>
                     </p>
                 </div>
             </article>
@@ -51,7 +51,7 @@
                         </p>
 
                         <p class="text-2xl font-medium text-gray-900 dark:text-slate-200">
-                            27 Entitas
+                            {{extracurriculars_and_study_groups|length}} Entitas
                         </p>
                     </div>
 
@@ -65,13 +65,13 @@
 
                 <div class="mt-1 flex gap-1 text-green-600">
                     <p class="flex gap-2 text-sm">
-                        <span class="font-medium">20 (74,07%)</span>
+                        <span class="font-medium">{{extracurriculars|length}}</span>
                         <span class="text-gray-500 dark:text-slate-200">Ektrakurikuler</span>
                     </p>
                 </div>
-                <div class="mt-1 flex gap-1 text-red-600">
+                <div class="mt-1 flex gap-1 text-green-600">
                     <p class="flex gap-2 text-sm">
-                        <span class="font-medium">7 (25,93%)</span>
+                        <span class="font-medium">{{study_clubs|length}}</span>
                         <span class="text-gray-500 dark:text-slate-200"><em>Studi Club</em></span>
                     </p>
                 </div>
@@ -122,153 +122,64 @@
         <div class="grid grid-cols-1 sm:gap-4 gap-2">
             <!-- BAGIAN A -->
             <article class="p-2 w-full">
-                <p class="font-bold">I.   DESKRIPSI BIDANG</p>
-                <p class="px-4">Pembinaan minat, bakat dan prestasi (PMBP) adalah bidang yang mengurus ekstrakurikuler dan study club, Dimana bidang ini menjadi wadah untuk membina minat dan bakat santri. Bidang PMBP juga focus dalam membimbing dan membina duta-duta prestasi dalam berbagai ajang perlombaan.</p>
+                <p class="font-bold">A.   PROGRAM PRESTASI</p>
+                {% for data in program_prestasi %}
+                <p class="px-4">{{forloop.counter}}. {{data.program_prestasi}}</p>
+                {% endfor %}
             </article>
             <article class="p-2 w-full overflow-auto">
-                <p class="font-bold">II.	ORGANISASI</p>
-                <table class="w-full px-4">
-                    <tr>
-                        <td class="px-4">Kepala Sekolah</td>
-                        <td>: Agung Wahyu Adhy, Lc., M.Pd</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4">Bendahara Sekolah</td>
-                        <td>: Chevi Indrayadi, S.Si</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4">Waka Bidang PMBP</td>
-                        <td>: Panji Asmara, S.Pd</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4">Staff Khusus Bidang PMBP</td>
-                        <td>: Azhar Faturohman, S.Si</td>
-                    </tr>
-                </table>
-            </article>
-            <article class="p-2 w-full overflow-auto">
-                <p class="font-bold">III.	TARGET</p>
-                <ol class="px-4 list-decimal list-inside">
-                    <li>Meloloskan 15 santri ke OSN-P 2025</li>
-                    <li>Meloloskan 3 santri ke OSN-N 2025</li>
-                    <li>Meloloskan 1 santri ke Olimpiade Internasional 2025</li>
-                    <li>Meloloskan 1 santri ke KSM-N 2025</li>
-                    <li>Muncul santri yang memiliki life skill Service Ac dan Bakery Art di tahun 2025</li>
+                <p class="font-bold">B.	STRATEGI PELAKSANAAN</p>
+                <ol class="list-decimal list-inside px-4">
+                    <li>Bekerja sama dengan lembaga profesional dari luar Al Binaa dalam pembinaan/pelatihan</li>
+                    <li>Mengoptimalkan  SDM Al Binaa dalam pembinaan prestasi santri SMA IT Al Binaa</li>
                 </ol>
             </article>
+            <article class="p-2 w-full overflow-auto">
+                <p class="font-bold">C.	PEMBINAAN RUTIN</p>
+                <ol class="list-decimal list-inside px-4">
+                    <li>Pembinaan Ekstrakurikuler Pekanan</li>
+                    <li>Pembinaan Study Club Pekanan</li>
+                    <li>Pelatihan dengan Lembaga professional luar </li>
+                </ol>
+            </article>
+
+            <article class="p-2 w-full">
+                <p class="font-bold">PROGRAM STRATEGIS BARU</p>
+                    <ol class="list-decimal list-inside px-4">
+                        <li>SiP atau Surge in Participants</li>
+                        <li>I²AC atau Improvement in Achievement Curation</li>
+                        <li>Rumah Editor (R.E) </li>
+                    </ol>
+            </article>
+
             <article class="p-2 w-full">
                 <div class="overflow-auto shadow-lg">
                     <table
                         class="table-auto border-collapse rounded-lg bg-white dark:bg-gray-800 w-full dark:text-white">
                         <caption class="font-bold">
-                            IV. PROGRAM KERJA TA. 2024/2025
+                            D. PROGRAM KERJA TA. {{tahun_ajaran}}
                         </caption>
 
                         <thead>
                             <tr>
                                 <th class="border dark:border-black p-1">No</th>
                                 <th class="border dark:border-black p-1">Program</th>
-                                <th class="border dark:border-black p-1">Alokasi Waktu</th>
-                                <th class="border dark:border-black p-1">Tujuan</th>
                                 <th class="border dark:border-black p-1">Indikator</th>
+                                <th class="border dark:border-black p-1">Alokasi Waktu</th>
                                 <th class="border dark:border-black p-1">Penanggungjawab</th>
                                 <!-- <th class="border dark:border-black p-1 rounded-tr-lg">Anggaran</th> -->
                             </tr>
                         </thead>
                         <tbody>
+                            {% for data in proker %}
                             <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">1</td>
-                                <td class="border dark:border-black py-1 px-3">OSN</td>
-                                <td class="border dark:border-black py-1 px-3">Juli 2024 - September 2025</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                    Prestasi Santri Dalam Bidang Sains</td>
-                                <td class="border dark:border-black py-1 px-3">Juara di OSN-K, OSN-P dan OSN Nasional
-                                </td>
-                                <td class="border dark:border-black py-1 px-3">Azhar Fathurrohman, S.Si</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 35.000.000,-</td> -->
+                                <td class="border dark:border-black py-1 px-3 text-center">{{forloop.counter}}</td>
+                                <td class="border dark:border-black py-1 px-3">{{data.program}}</td>
+                                <td class="border dark:border-black py-1 px-3">{{data.indikator|linebreaks}}</td>
+                                <td class="border dark:border-black py-1 px-3">{{data.waktu_pelaksanaan|linebreaks}}</td>
+                                <td class="border dark:border-black py-1 px-3">{{data.penanggungjawab}}</td>
                             </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">2</td>
-                                <td class="border dark:border-black py-1 px-3">MTQ</td>
-                                <td class="border dark:border-black py-1 px-3">Kondisional</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                    Prestasi Santri Dalam Bidang Al Quran Dan Bahasa Arab</td>
-                                <td class="border dark:border-black py-1 px-3">Mengirimkan peserta putra dan putri ke
-                                    cabang Fahmil Quran Putra dan Tafsir Bahasa Arab serta Lolos Tingkat Provinsi Cabang
-                                    Fahmil Quran Putra</td>
-                                <td class="border dark:border-black py-1 px-3">Panji Asmara, S.Pd</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 3.500.000</td> -->
-                            </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">3</td>
-                                <td class="border dark:border-black py-1 px-3">OBA</td>
-                                <td class="border dark:border-black py-1 px-3">Juni - November 2024</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                    Prestasi Santri Dalam Bidang Bahasa Arab</td>
-                                <td class="border dark:border-black py-1 px-3">Lolos tingkat Nasional</td>
-                                <td class="border dark:border-black py-1 px-3">Panji Asmara, S.Pd</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 3.000.000,-</td> -->
-                            </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">4</td>
-                                <td class="border dark:border-black py-1 px-3">Kompetisi Sains Madrasah (KSM)</td>
-                                <td class="border dark:border-black py-1 px-3">Juli - September 2024</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                    Prestasi Santri Dalam Bidang Sains Terintergrasi Dengan Al Quran Dan As Sunnah</td>
-                                <td class="border dark:border-black py-1 px-3">Lolos Tingkat Provinsi dan Nasional</td>
-                                <td class="border dark:border-black py-1 px-3">Hario Sadewo, S.Si</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 8.000.000,-</td> -->
-                            </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">5</td>
-                                <td class="border dark:border-black py-1 px-3">Mengikuti lomba eksternal potensial dari
-                                    IYSA dan penyelenggara lain (akademik dan olahraga)</td>
-                                <td class="border dark:border-black py-1 px-3">Sepanjang Tahun ajaran</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                    Prestasi Santri Dalam Bidang Akademik, Penelitian Dan Karya Ilmiah, serta Olahraga
-                                </td>
-                                <td class="border dark:border-black py-1 px-3">Mengirimkan santri potensial dalam bidang
-                                    karya ilmiah dalam event IYSA dan Lembaga lainnya</td>
-                                <td class="border dark:border-black py-1 px-3">Azhar Faturohman, S.Si dan Alif Rezky, M.Pd</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Subsidi dari sekolah :Rp. 5.000.000,-</td> -->
-                            </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">6</td>
-                                <td class="border dark:border-black py-1 px-3">Robotic</td>
-                                <td class="border dark:border-black py-1 px-3">Sepanjang tahun ajaran</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                    Prestasi Santri Dalam Bidang Teknologi Informasi dan Robotika</td>
-                                <td class="border dark:border-black py-1 px-3">Melahirkan santri juara kompetisi robotic
-                                    Tingkat regional hingga nasional</td>
-                                <td class="border dark:border-black py-1 px-3">Agus Setiawan, S.T</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Rp. 13.000.000,-</td> -->
-                            </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">7</td>
-                                <td class="border dark:border-black py-1 px-3">English Club</td>
-                                <td class="border dark:border-black py-1 px-3">Sepanjang tahun ajaran</td>
-                                <td class="border dark:border-black py-1 px-3">Melatih dan Melakukan Pengembangan
-                                    Prestasi Santri Dalam Bidang Bahasa Inggris (Asing)</td>
-                                <td class="border dark:border-black py-1 px-3">Melahirkan santri juara lomba debat dan
-                                    pidato Bahasa inggris</td>
-                                <td class="border dark:border-black py-1 px-3">?</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">Rutinitas tiap bulan</td> -->
-                            </tr>
-                            <tr>
-                                <td class="border dark:border-black py-1 px-3 text-center">8</td>
-                                <td class="border dark:border-black py-1 px-3">Ekskul Life Skill Khusus Aitam</td>
-                                <td class="border dark:border-black py-1 px-3">Maksimal 3 bulan/program</td>
-                                <td class="border dark:border-black py-1 px-3">Santri mengikuti pelatihan AC Maintenance and Service (ACMS) dan Bakery Art (BA)</td>
-                                <td class="border dark:border-black py-1 px-3">Muncul santri yang memiliki skill dalam perawatan AC dan produksi roti/snack</td>
-                                <td class="border dark:border-black py-1 px-3">Tim PMBP</td>
-                                <!-- <td class="border dark:border-black py-1 px-3">
-                                    <ol>
-                                        <li>ACMS: Rp. 3.000.000</li>
-                                        <li>BA: Rp. 1500.000</li>
-                                    </ol>
-                                    <p>Total: Rp. 4.500.000,-</p>
-                                </td> -->
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -276,10 +187,11 @@
             <article class="p-2 w-full overflow-auto">
                 <table class="table-auto border-collapse rounded-lg bg-white dark:bg-gray-800 w-full dark:text-white">
                     <caption class="font-bold">
-                      V. EKSTRAKURIKULER DAN <em>STUDY CLUB</em> SMA IT AL BINAA 2024/2025
+                      V. EKSTRAKURIKULER DAN <em>STUDY CLUB</em> SMA IT AL BINAA {{tahun_ajaran}}
                     </caption>
         
                     <thead>
+
                       <tr>
                         <th class="border dark:border-black p-1">No</th>
                         <th class="border dark:border-black p-1">Jenis</th>
@@ -288,173 +200,19 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">1</td>
-                        <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                        <td class="border dark:border-black py-1 px-3">Badminton</td>
-                        <td class="border dark:border-black py-1 px-3">Akbar Sagiturrahman, S.Pd.I</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">2</td>
-                        <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                        <td class="border dark:border-black py-1 px-3">Basket</td>
-                        <td class="border dark:border-black py-1 px-3">Andri Rinaldi</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">3</td>
-                        <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                        <td class="border dark:border-black py-1 px-3">Bola Voli</td>
-                        <td class="border dark:border-black py-1 px-3">Helmi Sukma Zain</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">4</td>
-                        <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                        <td class="border dark:border-black py-1 px-3">Futsal</td>
-                        <td class="border dark:border-black py-1 px-3">Iqbaludin</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">5</td>
-                        <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                        <td class="border dark:border-black py-1 px-3">Sepakbola</td>
-                        <td class="border dark:border-black py-1 px-3">Zuhdi Muslim, S.Pd</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">6</td>
-                        <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                        <td class="border dark:border-black py-1 px-3">Sepak takraw</td>
-                        <td class="border dark:border-black py-1 px-3">Muhammad Ikhsan, S.Pd</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">7</td>
-                        <td class="border dark:border-black py-1 px-3">Olahraga</td>
-                        <td class="border dark:border-black py-1 px-3">Tenis Meja</td>
-                        <td class="border dark:border-black py-1 px-3">Akhmad Zaini</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">8</td>
-                        <td class="border dark:border-black py-1 px-3">Minat dan Bakat</td>
-                        <td class="border dark:border-black py-1 px-3">BSMR</td>
-                        <td class="border dark:border-black py-1 px-3">Anang Rachyudi, S.Kep</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">9</td>
-                        <td class="border dark:border-black py-1 px-3">Minat dan Bakat</td>
-                        <td class="border dark:border-black py-1 px-3">Hifzhul Hadits</td>
-                        <td class="border dark:border-black py-1 px-3">Hasanuddin, S.Pd.I</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">10</td>
-                        <td class="border dark:border-black py-1 px-3">Minat dan Bakat</td>
-                        <td class="border dark:border-black py-1 px-3">Kopling</td>
-                        <td class="border dark:border-black py-1 px-3">Priyo Widodo, S.Pi</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">11</td>
-                        <td class="border dark:border-black py-1 px-3">Minat dan Bakat</td>
-                        <td class="border dark:border-black py-1 px-3">Mustholahul Hadits</td>
-                        <td class="border dark:border-black py-1 px-3">Irpan Halim, Lc., M.Pd</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">12</td>
-                        <td class="border dark:border-black py-1 px-3">Minat dan Bakat</td>
-                        <td class="border dark:border-black py-1 px-3">Pramuka</td>
-                        <td class="border dark:border-black py-1 px-3">Afirul Firman Syadani, SH., Muh. Ikhsan, S.Pd. dan Aam
-                          Hamdani, S.Pd.</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">13</td>
-                        <td class="border dark:border-black py-1 px-3">Sains dan Teknologi</td>
-                        <td class="border dark:border-black py-1 px-3">Fisika</td>
-                        <td class="border dark:border-black py-1 px-3">Deden Anugrah, M.P.Fis</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">14</td>
-                        <td class="border dark:border-black py-1 px-3">Sains dan Teknologi</td>
-                        <td class="border dark:border-black py-1 px-3">Kimia</td>
-                        <td class="border dark:border-black py-1 px-3">Suharyadi, M.Pd., Gr</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">15</td>
-                        <td class="border dark:border-black py-1 px-3">Sains dan Teknologi</td>
-                        <td class="border dark:border-black py-1 px-3">Karya Ilmiah Remaja (KIR)</td>
-                        <td class="border dark:border-black py-1 px-3">Azhar Faturohman A., S.Si dan Alif Rezky, M.Pd</td>
-                      </tr>
-                      <tr class="bg-teal-500">
-                        <td class="border dark:border-black py-1 px-3 text-center">16</td>
-                        <td class="border dark:border-black py-1 px-3">Sains dan Teknologi</td>
-                        <td class="border dark:border-black py-1 px-3">Robotik</td>
-                        <td class="border dark:border-black py-1 px-3">Agus Setiawan, S.T</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">17</td>
-                        <td class="border dark:border-black py-1 px-3">Sains dan Teknologi</td>
-                        <td class="border dark:border-black py-1 px-3">Matematika</td>
-                        <td class="border dark:border-black py-1 px-3">Hario Sadewo, S.Si</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">18</td>
-                        <td class="border dark:border-black py-1 px-3">Bahasa</td>
-                        <td class="border dark:border-black py-1 px-3">Bahasa Arab</td>
-                        <td class="border dark:border-black py-1 px-3">Irpan Halim, Lc., M.H</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">19</td>
-                        <td class="border dark:border-black py-1 px-3">Bahasa</td>
-                        <td class="border dark:border-black py-1 px-3">Literasi</td>
-                        <td class="border dark:border-black py-1 px-3">Mustaani, M.Pd</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">20</td>
-                        <td class="border dark:border-black py-1 px-3">Beladiri</td>
-                        <td class="border dark:border-black py-1 px-3">Taekwondo</td>
-                        <td class="border dark:border-black py-1 px-3">Khairil Mahmudin</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">21</td>
-                        <td class="border dark:border-black py-1 px-3">Beladiri</td>
-                        <td class="border dark:border-black py-1 px-3">Thifan Po Khan</td>
-                        <td class="border dark:border-black py-1 px-3">Zaki Fauzan, S.Pd.I</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">22</td>
-                        <td class="border dark:border-black py-1 px-3">Seni</td>
-                        <td class="border dark:border-black py-1 px-3">Kaligrafi</td>
-                        <td class="border dark:border-black py-1 px-3">Subakti, S.Pd.I</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">23</td>
-                        <td class="border dark:border-black py-1 px-3">Life Skill</td>
-                        <td class="border dark:border-black py-1 px-3">Koding</td>
-                        <td class="border dark:border-black py-1 px-3">Azhar Faturohman A., S.Si</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">24</td>
-                        <td class="border dark:border-black py-1 px-3">Life Skill</td>
-                        <td class="border dark:border-black py-1 px-3">Macromedia Flash</td>
-                        <td class="border dark:border-black py-1 px-3">Alif Rezky, M.Pd</td>
-                      </tr>
-                      <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">25</td>
-                        <td class="border dark:border-black py-1 px-3">Life Skill</td>
-                        <td class="border dark:border-black py-1 px-3">Desain Grafis</td>
-                        <td class="border dark:border-black py-1 px-3">M.S. Haromain, S.Kom</td>
-                      </tr>
-                      <tr class="bg-teal-500">
-                        <td class="border dark:border-black py-1 px-3 text-center">26</td>
-                        <td class="border dark:border-black py-1 px-3">Life Skill</td>
-                        <td class="border dark:border-black py-1 px-3">AC Maintenance and Service (ACMS)</td>
-                        <td class="border dark:border-black py-1 px-3">Firmansyah</td>
-                      </tr>
-                      <tr class="bg-teal-500">
-                        <td class="border dark:border-black py-1 px-3 text-center">27</td>
-                        <td class="border dark:border-black py-1 px-3">Life Skill</td>
-                        <td class="border dark:border-black py-1 px-3">Bakery Art</td>
-                        <td class="border dark:border-black py-1 px-3">Syamsul Huda, S.H</td>
-                      </tr>
+                        {% for data in extracurriculars_and_study_groups %}
+                        <tr>
+                        <td class="border dark:border-black py-1 px-3 text-center">{{forloop.counter}}</td>
+                        <td class="border dark:border-black py-1 px-3">{{data.category}}</td>
+                        <td class="border dark:border-black py-1 px-3">{{data.name}}</td>
+                        <td class="border dark:border-black py-1 px-3">{{data.teacher.all|join:"<br>"}}</td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                   </table>
             </article>
-
+            
+            
 
         </div>
         <footer class="bg-gray-100 dark:bg-black sm:ml-64">
@@ -462,7 +220,7 @@
                 <p class="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500">
                     Pengembangan Minat, Bakat dan Pembinaan Prestasi (PMBP) SMAS IT Al
                     BINAA <br />
-                    &copy;2024 <br />
+                    &copy; {{tahun_ajaran}} <br />
                 </p>
             </div>
         </footer>

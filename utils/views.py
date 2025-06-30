@@ -9,8 +9,8 @@ from django.db.models import Count, Case, When, Value
 from extracurriculars.models import Extracurricular
 from laporan.models import Report
 from olympiads.models import OlympiadReport
-from prestasi.models import Prestasi
-from raker.models import LaporanPertanggungJawaban
+from prestasi.models import Prestasi, ProgramPrestasi
+from raker.models import LaporanPertanggungJawaban, ProgramKerja
     
 
 class CurrationListView(TemplateView):
@@ -176,7 +176,7 @@ class LPJPMBPView(TemplateView):
         
         monthly_extracurricular_reports = get_filtered_monthly_report(reports_ekskul_this_academic_year)
         monthly_olympiad_reports = get_filtered_monthly_report(olympiad_reports_this_academic_year)
-        extracurriculars_and_study_groups = list(Extracurricular.objects.prefetch_related("teacher", "members").all())
+        extracurriculars_and_study_groups = list(Extracurricular.objects.prefetch_related("teacher", "members").filter(status="Aktif"))
         extracurriculars = [item for item in extracurriculars_and_study_groups if item.type == "Ekskul"]
         study_clubs = [item for item in extracurriculars_and_study_groups if item.type == "SC"]
         active_extracurricular_reports = Report.objects.select_related('extracurricular', 'teacher').values_list('extracurricular', flat=True).distinct()
@@ -207,6 +207,31 @@ class LPJPMBPView(TemplateView):
         
         return context
 
+
+
+class ProkerPMBPView(TemplateView):
+    template_name = 'proker.html'
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        proker = list(ProgramKerja.objects.filter(tahun_ajaran=settings.TAHUN_AJARAN))
+        program_prestasi = list(ProgramPrestasi.objects.filter(tanggal__gte=settings.TANGGAL_TAHUN_AJARAN_END))
+        extracurriculars_and_study_groups = list(Extracurricular.objects.prefetch_related("teacher", "members")\
+                                                .filter(status="Aktif")\
+                                                .order_by("category", "name"))
+
+        extracurriculars = [item for item in extracurriculars_and_study_groups if item.type == "Ekskul"]
+        study_clubs = [item for item in extracurriculars_and_study_groups if item.type == "SC"]
+        context = super().get_context_data(**kwargs)
+        context.update({"extracurriculars_and_study_groups" : extracurriculars_and_study_groups})
+        context.update({"extracurriculars" : extracurriculars})
+        context.update({"study_clubs" : study_clubs})
+        context.update({"program_prestasi" : program_prestasi})
+        context["proker"] = proker
+        context["proker"] = proker
+        context["tahun_ajaran"] = settings.TAHUN_AJARAN
+        context["tahun_ajaran_lalu"] = settings.TAHUN_AJARAN_LALU
+        
+        return context
 
 
 # class LPJPMBPView(TemplateView):

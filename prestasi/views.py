@@ -395,12 +395,16 @@ class PrestasiSyncronizeWithAIS(LoginRequiredMixin, CreateView):
                 append_file.write(f"{timezone.now()}--{data.pk}--{data.awardee}--{data.predicate}--{data.name}\n")
             try:
                 student = Student.objects.get(student_name=data.awardee)
+                headers = {
+                    'Accept': '*/*',
+                    'User-Agent': f'Azhar{data.pk}'
+                }
                 data = { 
                     "prestasi1": data.predicate,
                     "keteranganprestasi1": data.name,
                     "nisk": student.nis,
                 }
-                res = session.post(base_url, data=data, timeout=5)
+                res = session.post(base_url, data=data, headers=headers)
                 if res.status_code != 200:
                     with open(error_path, 'a') as file:
                         file.write(f"{timezone.now()}--{data.awardee}--{data.predicate}--{data.name}\n")

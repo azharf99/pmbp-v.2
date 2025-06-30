@@ -22,7 +22,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.sitemaps.views import sitemap
 from django.contrib.flatpages.views import flatpage
 from dashboard.views import HomeView
-from utils.views import CurrationListView, LPJPMBPView
+from utils.views import CurrationListView, LPJPMBPView, ProkerPMBPView
 from .sitemaps import StaticViewSitemap
 from raker.views import ProgramKerjaCreateView, ProgramKerjaDeleteView, ProgramKerjaUpdateView, proker
 
@@ -43,7 +43,7 @@ urlpatterns = [
     path('lpj/', include('raker.urls')),
     path('nilai/', include('nilai.urls')),
     path('prestasi/', include('prestasi.urls')),
-    path('proker/', proker, name='proker'),
+    path('proker/', ProkerPMBPView.as_view(), name='proker'),
     path("proker/create/", ProgramKerjaCreateView.as_view(), name="proker-create"),
     path("proker/update/<int:pk>/", ProgramKerjaUpdateView.as_view(), name="proker-update"),
     path("proker/delete/<int:pk>/", ProgramKerjaDeleteView.as_view(), name="proker-delete"),

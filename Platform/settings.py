@@ -272,6 +272,7 @@ from django.utils import timezone
 year_now = timezone.now().year
 if timezone.now().month > 6:
     TAHUN_AJARAN = f"{year_now}/{year_now+1}"
+    TAHUN_AJARAN_LALU = f"{year_now-1}/{year_now}"
     TAHUN_AJARAN_STRIPPED = f"{year_now}-{year_now+1}"
     TANGGAL_TAHUN_AJARAN = timezone.make_aware(timezone.datetime(year_now, 6, 1, 1, 1, 1))
     TANGGAL_TAHUN_AJARAN_LALU = timezone.make_aware(timezone.datetime(year_now - 1, 6, 1, 1, 1, 1))
@@ -280,6 +281,7 @@ if timezone.now().month > 6:
     TAHUN_AWAL_AJARAN_LALU = f"{year_now}"
 else:
     TAHUN_AJARAN = f"{year_now-1}/{year_now}"
+    TAHUN_AJARAN_LALU = f"{year_now-2}/{year_now-1}"
     TAHUN_AJARAN_STRIPPED = f"{year_now-1}-{year_now}"
     TANGGAL_TAHUN_AJARAN = timezone.make_aware(timezone.datetime(year_now-1, 6, 1, 1, 1, 1))
     TANGGAL_TAHUN_AJARAN_LALU = timezone.make_aware(timezone.datetime(year_now-2, 6, 1, 1, 1, 1))
@@ -355,5 +357,6 @@ if not DEBUG:
 
 
 
-URL_POST_NILAI = "https://jurnal.albinaa.ponpes.id/pageAdminEskulAddMember2sWalikelas.php?a=2&kdx=B5BSULDYDW2U5D5"
+URL_POST_NILAI1 = "https://jurnal.albinaa.ponpes.id/pageAdminEskulAddMember2Walikelas.php?a=2&kdx=MQL3L7A11TFP8SP"
+URL_POST_NILAI = "https://jurnal.albinaa.ponpes.id/pageAdminEskulAddMember2sWalikelas.php?a=2&kdx=MQL3L7A11TFP8SP"
 URL_POST_PRESTASI = "https://jurnal.albinaa.ponpes.id/pageAdminEskulAddPrestasi2Walikelas2s.php?a=2&kdx=B5BSULDYDW2U5D5"

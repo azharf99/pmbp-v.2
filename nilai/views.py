@@ -1,4 +1,6 @@
 import datetime
+from queue import Queue
+import threading
 import requests
 import json
 import os
@@ -244,17 +246,20 @@ class PrintExcelView(LoginRequiredMixin, ListView):
     model = Score
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Score.objects.select_related("student", "extracurricular").order_by('student__student_class', 'student__student_name')
+        return Score.objects.select_related("student", "extracurricular")\
+                            .exclude(student__student_class__icontains="XII-")\
+                            .filter(academic_year=settings.TAHUN_AJARAN, semester="Genap")\
+                            .order_by('extracurricular__name','student__student_class', 'student__student_name')
     
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         buffer = BytesIO()
         workbook = xlsxwriter.Workbook(buffer)
         worksheet = workbook.add_worksheet()
-        worksheet.write_row(0, 0, ['No', 'Nama Santri', 'Kelas', 'Ekskul', 'Nilai'])
+        worksheet.write_row(0, 0, ['No', 'Nama Santri', 'NIS', 'Kelas', 'Ekskul', 'Nilai'])
         row = 1
         col = 0
         for data in self.get_queryset():
-            worksheet.write_row(row, col, [row, data.student.student_name, data.student.student_class, data.extracurricular.name, data.score])
+            worksheet.write_row(row, col, [row, data.student.student_name, data.student.nis, data.student.student_class, data.extracurricular.name, data.score])
             row += 1
         worksheet.autofit()
         workbook.close()
@@ -291,6 +296,29 @@ class SyncronizeWithAIS(LoginRequiredMixin, CreateView):
     fields = '__all__'
     template_name = "nilai/syncronize.html"
 
+    def worker(self, queue: Queue, base_url: str):
+        """Thread worker function to process data from the queue."""
+        session = requests.Session()
+        while not queue.empty():
+            score = queue.get()
+            try:
+                headers = {
+                    'Accept': '*/*',
+                    'User-Agent': f'Azhar{score.pk}'
+                }
+                data = {
+                    "nilai": score.score,
+                    "nama_eskul_sc_k": score.extracurricular.name,
+                    "nis_k": score.student.nis,
+                }
+                print("Upload data ekskul", score.student.student_name)
+                res = session.post(base_url, data=data, headers=headers)
+                print(res.status_code)
+            except Exception as e:
+                print(f"Error uploading score for {score.student.student_name}: {e}")
+            finally:
+                queue.task_done()
+
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated and not request.user.is_superuser:
             raise PermissionDenied
@@ -299,17 +327,48 @@ class SyncronizeWithAIS(LoginRequiredMixin, CreateView):
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         session = requests.Session()
         base_url = settings.URL_POST_NILAI
-        file_path = f'progress--{datetime.date.today()}.txt'
-        error_path = 'error.txt'
-        scores = Score.objects.select_related('extracurricular', 'student').filter(academic_year=settings.TAHUN_AJARAN, semester="Genap")
+        base_url1 = settings.URL_POST_NILAI1
 
-        for score in scores:
-            data = {
-                "nilai": score.score,
-                "nama_eskul_sc_k": score.extracurricular.name,
-                "nis_k": score.student.nis,
-            }
-            session.post(base_url, data=data)
+        file_path = f'nilai_progress--{datetime.date.today()}.txt'
+        error_path = 'nilai_error.txt'
+
+        nilai = Score.objects.filter(academic_year=settings.TAHUN_AJARAN, semester="Genap")\
+                            .exclude(student__student_class__icontains="XII-")
+        id_set = set()
+        # Check if file exists
+        if not os.path.exists(file_path):
+            # Create the file if it does not exist
+            with open(file_path, 'w') as file:
+                pass
+
+
+        with open(file_path, 'r') as read_progress_file:
+            for id in read_progress_file:
+                id_set.add(id.strip().split("--")[1])
+        
+        
+        for data in nilai:
+            if f"{data.pk}" in id_set:
+                continue
+            with open(file_path, 'a') as append_file:
+                append_file.write(f"{timezone.now()}--{data.pk}--{data.student.student_name}--{data.student.student_class}--{data.score}\n")
+            try:
+                headers = {
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'User-Agent': f'Azhar21313sadadwasdashuw{data.pk}'
+                }
+                payload = { 
+                    "nilai": data.score,
+                    "nama_eskul_sc_k": data.extracurricular.name,
+                    "nis_k": data.student.nis,
+                }
+                res = session.post(base_url, data=payload, headers=headers)
+                if res.status_code != 200:
+                    with open(error_path, 'a') as file:
+                        file.write(f"{timezone.now()}--{data.student.student_name}--{data.student.student_class}--{data.score}\n")
+            except:
+                with open(error_path, 'a') as file:
+                    file.write(f"{timezone.now()}--{data.student.student_name}--{data.student.student_class}--{data.score}\n")
         messages.success(request, "Sikronisasi Data Nilai Berhasil!")
         return redirect(reverse("nilai-syncronize"))
     
