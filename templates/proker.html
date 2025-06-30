@@ -202,10 +202,14 @@
                     <tbody>
                         {% for data in extracurriculars_and_study_groups %}
                         <tr>
-                        <td class="border dark:border-black py-1 px-3 text-center">{{forloop.counter}}</td>
-                        <td class="border dark:border-black py-1 px-3">{{data.category}}</td>
-                        <td class="border dark:border-black py-1 px-3">{{data.name}}</td>
-                        <td class="border dark:border-black py-1 px-3">{{data.teacher.all|join:"<br>"}}</td>
+                            <td class="border dark:border-black py-1 px-3 text-center">{{forloop.counter}}</td>
+                            <td class="border dark:border-black py-1 px-3">{{data.category}}</td>
+                            <td class="border dark:border-black py-1 px-3">{{data.name}}</td>
+                            {% if data.name == "Basket" or data.name == "Sepak Bola" %}
+                            <td class="border dark:border-black py-1 px-3 bg-red-500">-</td>
+                            {% else %}
+                            <td class="border dark:border-black py-1 px-3">{{data.teacher.all|join:"<br>"}}</td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
