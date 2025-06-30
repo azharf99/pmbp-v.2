@@ -54,7 +54,7 @@ class ProgramKerja(models.Model):
         return f"{self.program} {self.tahun_ajaran}"
     
     def get_absolute_url(self):
-        return reverse("lpj")
+        return reverse("proker")
 
     class Meta:
         ordering = ["program"]
