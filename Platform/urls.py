@@ -13,7 +13,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -98,14 +97,14 @@ urlpatterns = [
     name="django.contrib.sitemaps.views.sitemap",
     ),
     path('service-worker.js', TemplateView.as_view(template_name="service-worker.js", content_type='application/javascript')),
-    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 
 if not settings.TESTING:
     urlpatterns = [
         *urlpatterns,
-    ] + debug_toolbar_urls()
+        path("__debug__/", include("debug_toolbar.urls")),
+    ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
