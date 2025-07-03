@@ -100,7 +100,7 @@ urlpatterns = [
 ]
 
 
-if not settings.TESTING:
+if settings.DEBUG:
     urlpatterns = [
         *urlpatterns,
         path("__debug__/", include("debug_toolbar.urls")),
