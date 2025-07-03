@@ -114,7 +114,7 @@
                   const studentLabel = document.createElement("label");
                   studentLabel.className = "col-span-2 rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"
                   studentLabel.htmlFor = student.id
-                  studentLabel.innerText = `(${student.student_class}) ${student.student_name}`;
+                  studentLabel.innerText = `(${student.student_class.class_name}) ${student.student_name}`;
 
                   if(student.id !== null){
                     const studentScoreSelect = document.createElement("select");

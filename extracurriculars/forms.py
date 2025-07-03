@@ -5,7 +5,7 @@ from students.models import Student
 class ExtracurricularForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
-        self.fields['members'].queryset = Student.objects.filter(student_status="Aktif")
+        self.fields['members'].queryset = Student.objects.select_related('student_class').filter(student_status="Aktif")
         
     class Meta:
         model = Extracurricular
@@ -21,4 +21,5 @@ class ExtracurricularForm(forms.ModelForm):
             'members': forms.SelectMultiple(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             'description': forms.Textarea(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             'type': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'status': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
         }

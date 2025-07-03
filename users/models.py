@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext as _
 from uuid import uuid4
+from random import randint
 # Create your models here.
 
 @deconstructible
@@ -16,8 +17,8 @@ class PathAndRename(object):
     def __call__(self, instance, filename):
         ext = filename.split('.')[-1]
         # set filename as random string
-        if instance.pk:
-            filename = '{}.{}'.format(instance.user, ext)
+        if instance.user.username:
+            filename = '{}_{}.{}'.format(instance.user.username, randint(1, 1000000), ext)
         else:
             # set filename as random string
             filename = '{}.{}'.format(uuid4().hex, ext)

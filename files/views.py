@@ -13,5 +13,4 @@ def RenderJsonToView(request):
         data = json.load(file)
 
     # Process JSON data
-    # print(data['users'].keys())
     return render(request, 'json.html', context={'object_list': data['users']})

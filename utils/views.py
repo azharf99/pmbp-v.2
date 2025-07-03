@@ -111,7 +111,7 @@ class LPJPMBPView(TemplateView):
     template_name = 'lpj.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        lpj = list(LaporanPertanggungJawaban.objects.filter(tahun_ajaran=settings.TAHUN_AJARAN))
+        lpj = list(LaporanPertanggungJawaban.objects.filter(tahun_ajaran=settings.TAHUN_AJARAN_LALU))
         lpj_terlaksana = [item for item in lpj if item.status == "Terlaksana"]
         lpj_tidak_terlaksana = [item for item in lpj if item.status == "Tidak Terlaksana"]
         achievements_this_academic_year = Prestasi.objects.filter(created_at__gte=settings.TANGGAL_TAHUN_AJARAN, created_at__lte=settings.TANGGAL_TAHUN_AJARAN_END)
@@ -214,7 +214,7 @@ class ProkerPMBPView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         proker = list(ProgramKerja.objects.filter(tahun_ajaran=settings.TAHUN_AJARAN).order_by("created_at"))
-        program_prestasi = list(ProgramPrestasi.objects.filter(tanggal__gte=settings.TANGGAL_TAHUN_AJARAN_END))
+        program_prestasi = list(ProgramPrestasi.objects.filter(tanggal__gte=settings.TANGGAL_TAHUN_AJARAN, tanggal__lte=settings.TANGGAL_TAHUN_AJARAN_END))
         extracurriculars_and_study_groups = list(Extracurricular.objects.prefetch_related("teacher", "members")\
                                                 .filter(status="Aktif")\
                                                 .order_by("category", "name"))
@@ -228,8 +228,8 @@ class ProkerPMBPView(TemplateView):
         context.update({"program_prestasi" : program_prestasi})
         context["proker"] = proker
         context["proker"] = proker
-        context["tahun_ajaran"] = "2025/2026"
-        context["tahun_ajaran_lalu"] = "2024/2025"
+        context["tahun_ajaran"] = settings.TAHUN_AJARAN
+        context["tahun_ajaran_lalu"] = settings.TAHUN_AJARAN_LALU
         
         return context
 

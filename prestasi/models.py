@@ -1,5 +1,6 @@
 import os
 from uuid import uuid4
+from django.conf import settings
 from django.db import models
 from students.models import Student
 from django.urls import reverse
@@ -42,6 +43,8 @@ class Prestasi(models.Model):
     predicate = models.CharField(_("Predikat"), max_length=100)
     certificate = models.FileField(_("Serfifikat"), upload_to=path_and_rename2, null=True, blank=True)
     photo = models.ImageField(_("Foto"), upload_to=path_and_rename, null=True, blank=True)
+    semester = models.CharField(max_length=7, null=True)
+    academic_year = models.CharField(max_length=20, default=settings.TAHUN_AJARAN_LALU, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -67,6 +70,8 @@ class ProgramPrestasi(models.Model):
     nama_peserta = models.ManyToManyField(Student, verbose_name=_("Santri"), help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
     pencapaian = models.CharField(_("Pencapaian"), max_length=200)
     catatan = models.CharField(_("Catatan"), max_length=200, blank=True, null=True)
+    semester = models.CharField(max_length=7, default=settings.SEMESTER, null=True)
+    academic_year = models.CharField(max_length=20, default=settings.TAHUN_AJARAN, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -24,7 +24,7 @@ class PrestasiForm(forms.ModelForm):
 class ProgramPrestasiForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
-        self.fields['nama_peserta'].queryset = Student.objects.filter(student_status="Aktif")
+        self.fields['nama_peserta'].queryset = Student.objects.select_related('student_class').filter(student_status="Aktif")
         
     class Meta:
         model = ProgramPrestasi

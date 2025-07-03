@@ -109,7 +109,6 @@ class MyLogoutView(LogoutView):
 class UserListView(LoginRequiredMixin, ListView):
     model = User
 
-
 class UserCreateView(LoginRequiredMixin, CreateView):
     model = User
     form_class = UserCreateForm

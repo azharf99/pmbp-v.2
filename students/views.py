@@ -25,7 +25,7 @@ from django.utils import timezone
 
 class StudentIndexView(ListView):
     model = Student
-    queryset = Student.objects.filter(student_status="Aktif")
+    queryset = Student.objects.select_related('student_class').filter(student_status="Aktif")
 
 class StudentCreateView(LoginRequiredMixin, CreateView):
     model = Student
@@ -228,19 +228,19 @@ class ActiveStudentListView(ListView):
         extracurricular = self.request.GET.get("extracurricular")
 
         if extracurricular:
-            members = Extracurricular.objects.filter(slug=extracurricular)[0].members.all()
-            data = Report.objects.filter(extracurricular__slug=extracurricular, report_date__month=timezone.now().month)
+            members = Extracurricular.objects.prefetch_related('members', 'teacher').filter(slug=extracurricular)[0].members.all()
+            data = Report.objects.select_related('extracurricular', 'teacher').prefetch_related('students').filter(extracurricular__slug=extracurricular, report_date__month=timezone.now().month)
             for i in data:
                 datum = members.difference(i.students.all())
         if query:
-            data = Student.objects.filter(Q(student_status="Aktif") & Q(student_name__icontains=query)).prefetch_related('extracurricular_set', 'report_set__extracurricular', 'report_set__students').all()
+            data = Student.objects.select_related('student_class').prefetch_related('extracurricular_set', 'report_set__extracurricular', 'report_set__students').filter(Q(student_status="Aktif") & Q(student_name__icontains=query)).all()
             if data.exists():
                 messages.success(self.request, f"{len(data)} Data Berhasil Ditemukan!")
             else:
                 messages.error(self.request, "Data Tidak Ditemukan!")
             return data
         
-        return Student.objects.filter(student_status="Aktif").prefetch_related('extracurricular_set', 'report_set__extracurricular', 'report_set__students').all()
+        return Student.objects.select_related('student_class').filter(student_status="Aktif").prefetch_related('extracurricular_set', 'report_set__extracurricular', 'report_set__students').all()
 
 
 class NonActiveStudentListView(ListView):
@@ -248,8 +248,8 @@ class NonActiveStudentListView(ListView):
     template_name = "students/student_nonactive_list.html"
 
     def get_queryset(self) -> QuerySet[Any]:
-        active_students = Extracurricular.objects.select_related('members').values_list('members', flat=True).filter(members__isnull=False).distinct()
-        return Student.objects.filter(student_status="Aktif").exclude(id__in=active_students).order_by("student_class", "student_name")
+        active_students = Extracurricular.objects.select_related('members', 'teacher').values_list('members', flat=True).filter(members__isnull=False).distinct()
+        return Student.objects.select_related('student_class').filter(student_status="Aktif").exclude(id__in=active_students).order_by("student_class__class_name", "student_name")
     
 
 class DownloadExcelActiveStudent(LoginRequiredMixin, ListView):
@@ -258,7 +258,6 @@ class DownloadExcelActiveStudent(LoginRequiredMixin, ListView):
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         active_students = Extracurricular.objects.select_related('members').values('name', 'members__student_name', 'members__student_class').filter(members__isnull=False).distinct()
-        print(active_students)
         
         buffer = BytesIO()
         workbook = xlsxwriter.Workbook(buffer)
@@ -297,7 +296,7 @@ class DownloadExcelInactiveStudent(LoginRequiredMixin, ListView):
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         active_students = Extracurricular.objects.select_related('members').values_list('members', flat=True).filter(members__isnull=False).distinct()
-        inactive_students = Student.objects.filter(student_status="Aktif").exclude(id__in=active_students).order_by("student_class", "student_name")
+        inactive_students = Student.objects.select_related('student_class').filter(student_status="Aktif").exclude(id__in=active_students).order_by("student_class__class_name", "student_name")
         
         buffer = BytesIO()
         workbook = xlsxwriter.Workbook(buffer)
@@ -313,7 +312,7 @@ class DownloadExcelInactiveStudent(LoginRequiredMixin, ListView):
         row = 2
         col = 0
         for data in inactive_students:
-            worksheet.write_row(row, col, [row-1, data.student_name, data.student_class])
+            worksheet.write_row(row, col, [row-1, data.student_name, data.student_class.class_name])
             row += 1
         worksheet.autofit()
         workbook.close()

@@ -87,7 +87,7 @@
         <tr>
           <td class="py-1 px-2 border border-gray-400 text-center">{{ forloop.counter }}</td>
           <td class="py-1 px-2 border border-gray-400">{{ object.student_name }}</td>
-          <td class="py-1 px-2 border border-gray-400 text-center">{{ object.get_student_class_display }}</td>
+          <td class="py-1 px-2 border border-gray-400 text-center">{{ object.student_class.class_name }}</td>
 
           {% for report in object_list %}
             <td class="py-1 px-2 border border-gray-400 text-center">

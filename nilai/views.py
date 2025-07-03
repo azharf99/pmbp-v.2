@@ -35,19 +35,17 @@ class NilaiIndexView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get("query")
-        semester = "Ganjil" if timezone.now().month >= 7 else "Genap"
-        academic_year = f"{timezone.now().year}/{timezone.now().year + 1}" if timezone.now().month >= 7 else f"{timezone.now().year - 1}/{timezone.now().year}"
 
         if query:
             return Score.objects.select_related("student", "extracurricular")\
-                    .filter(semester=semester, academic_year=academic_year)\
+                    .filter(semester=settings.SEMESTER, academic_year=settings.TAHUN_AJARAN)\
                     .filter(Q(student__student_name__icontains=query) | 
-                            Q(student__student_class__icontains=query) | 
+                            Q(student__student_class__class_name__icontains=query) | 
                             Q(extracurricular__name__icontains=query))
         if self.request.user.is_authenticated:
             if not self.request.user.is_superuser:
-                return Score.objects.select_related("student", "extracurricular").filter(extracurricular__teacher=self.request.user.teacher, semester=semester, academic_year=academic_year)
-        return Score.objects.select_related("student", "extracurricular").filter(semester=semester, academic_year=academic_year)
+                return Score.objects.select_related("student", "extracurricular").filter(extracurricular__teacher=self.request.user.teacher, semester=settings.SEMESTER, academic_year=settings.TAHUN_AJARAN)
+        return Score.objects.select_related("student", "extracurricular").filter(semester=settings.SEMESTER, academic_year=settings.TAHUN_AJARAN)
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
@@ -90,7 +88,7 @@ class NilaiCreateView(LoginRequiredMixin, CreateView):
         score_id = request.POST.get('score')
         if Score.objects.filter(student_id=student_id, extracurricular_id=extracurricular_id).exists():
             ext = Extracurricular.objects.get(id=extracurricular_id)
-            stud = Student.objects.get(id=student_id)
+            stud = Student.objects.select_related('student_class').get(id=student_id)
             Score.objects.update_or_create(
                 student=stud,
                 extracurricular=ext,
@@ -179,7 +177,7 @@ class NilaiQuickCreateView(LoginRequiredMixin, CreateView):
             context["students"] = None
         else:
             context["extracurricular"] = Extracurricular.objects.prefetch_related("teacher", "members").filter(teacher=self.request.user.teacher)
-            context["students"] = Student.objects.filter(pk__in=context["extracurricular"].values_list("members", flat=True).distinct())
+            context["students"] = Student.objects.select_related('student_class').filter(pk__in=context["extracurricular"].values_list("members", flat=True).distinct())
         return context
 
 
@@ -247,8 +245,8 @@ class PrintExcelView(LoginRequiredMixin, ListView):
 
     def get_queryset(self) -> QuerySet[Any]:
         return Score.objects.select_related("student", "extracurricular")\
-                            .exclude(student__student_class__icontains="XII-")\
-                            .filter(academic_year=settings.TAHUN_AJARAN, semester="Genap")\
+                            .exclude(student__student_class__class_name__icontains="XII-")\
+                            .filter(academic_year=settings.TAHUN_AJARAN, semester=settings.SEMESTER)\
                             .order_by('extracurricular__name','student__student_class', 'student__student_name')
     
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -259,7 +257,7 @@ class PrintExcelView(LoginRequiredMixin, ListView):
         row = 1
         col = 0
         for data in self.get_queryset():
-            worksheet.write_row(row, col, [row, data.student.student_name, data.student.nis, data.student.student_class, data.extracurricular.name, data.score])
+            worksheet.write_row(row, col, [row, data.student.student_name, data.student.nis, data.student.student_class.class_name, data.extracurricular.name, data.score])
             row += 1
         worksheet.autofit()
         workbook.close()
@@ -281,7 +279,7 @@ class ExtracurricularScore(ListView):
     template_name = "nilai/score_inactive_list.html"
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Score.objects.select_related("student", "extracurricular").values_list("extracurricular", flat=True).distinct().order_by()
+        return Score.objects.select_related("student", "extracurricular").filter(academic_year=settings.TAHUN_AJARAN, semester=settings.SEMESTER).values_list("extracurricular", flat=True).distinct().order_by()
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         qs = self.get_queryset()
@@ -332,8 +330,8 @@ class SyncronizeWithAIS(LoginRequiredMixin, CreateView):
         file_path = f'nilai_progress--{datetime.date.today()}.txt'
         error_path = 'nilai_error.txt'
 
-        nilai = Score.objects.filter(academic_year=settings.TAHUN_AJARAN, semester="Genap")\
-                            .exclude(student__student_class__icontains="XII-")
+        nilai = Score.objects.filter(academic_year=settings.TAHUN_AJARAN, semester=settings.SEMESTER)\
+                            .exclude(student__student_class__class_name__icontains="XII-")
         id_set = set()
         # Check if file exists
         if not os.path.exists(file_path):
@@ -351,7 +349,7 @@ class SyncronizeWithAIS(LoginRequiredMixin, CreateView):
             if f"{data.pk}" in id_set:
                 continue
             with open(file_path, 'a') as append_file:
-                append_file.write(f"{timezone.now()}--{data.pk}--{data.student.student_name}--{data.student.student_class}--{data.score}\n")
+                append_file.write(f"{timezone.now()}--{data.pk}--{data.student.student_name}--{data.student.student_class.class_name}--{data.score}\n")
             try:
                 headers = {
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -365,10 +363,10 @@ class SyncronizeWithAIS(LoginRequiredMixin, CreateView):
                 res = session.post(base_url, data=payload, headers=headers)
                 if res.status_code != 200:
                     with open(error_path, 'a') as file:
-                        file.write(f"{timezone.now()}--{data.student.student_name}--{data.student.student_class}--{data.score}\n")
+                        file.write(f"{timezone.now()}--{data.student.student_name}--{data.student.student_class.class_name}--{data.score}\n")
             except:
                 with open(error_path, 'a') as file:
-                    file.write(f"{timezone.now()}--{data.student.student_name}--{data.student.student_class}--{data.score}\n")
+                    file.write(f"{timezone.now()}--{data.student.student_name}--{data.student.student_class.class_name}--{data.score}\n")
         messages.success(request, "Sikronisasi Data Nilai Berhasil!")
         return redirect(reverse("nilai-syncronize"))
     

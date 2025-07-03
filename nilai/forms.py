@@ -11,7 +11,7 @@ class ScoreForm(forms.ModelForm):
         data = Extracurricular.objects.prefetch_related("teacher", "members").filter(teacher=user.teacher)
         if user.teacher.id in data.values_list('teacher', flat=True).distinct():
             data_list = data.values_list("members", flat=True).distinct()
-            self.fields['student'].queryset = Student.objects.filter(pk__in=data_list)
+            self.fields['student'].queryset = Student.objects.select_related('student_class').filter(pk__in=data_list)
             self.fields['extracurricular'].queryset = data
         
     class Meta:

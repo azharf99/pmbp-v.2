@@ -38,7 +38,7 @@ class ExtracurricularGetMembersView(ListView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         query = request.GET.get("query")
         if query:
-            data = list(get_object_or_404(Extracurricular, pk=query).members.values("id", "student_name", "student_class"))
+            data = list(get_object_or_404(Extracurricular, pk=query).members.values("id", "student_name", "student_class__class_name"))
             if not len(data):
                 data = list(
                     [{

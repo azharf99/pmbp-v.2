@@ -1,0 +1,36 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<article>
+  <h1>{{ post.title }}</h1>
+  <p><small>By {{ post.author }} on {{ post.created_at }}</small></p>
+  <div>{{ post.content|safe }}</div>
+
+  <a href="{% url 'post_update' post.slug %}" class="btn btn-primary mt-3">Edit</a>
+  <a href="{% url 'post_delete' post.slug %}" class="btn btn-danger mt-3">Delete</a>
+  {# Update comment section to use view context #}
+<section class="comments">
+    <h3>Comments ({{ comments.count }})</h3>
+    {% for comment in comments %}
+        <div class="comment">
+            <p class="meta">
+                By {{ comment.author }} | {{ comment.created_at|date:"F d, Y" }}
+            </p>
+            <div class="comment-body">
+                {{ comment.body|linebreaks }}
+            </div>
+        </div>
+    {% empty %}
+        <p>No approved comments yet.</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+        <h4>Add Comment</h4>
+        <form method="post">
+            {% csrf_token %}
+            {{ comment_form|crispy }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    {% endif %}
+</section>
+</article>
+{% endblock %}

@@ -92,7 +92,7 @@
           <tr>
             <td class="p-2 border border-gray-400 text-center">{{forloop.counter}}</td>
             <td class="p-2 border border-gray-400">{{object.student_name|default:"Belum ada anggota"}}</td>            
-            <td class="p-2 border border-gray-400 text-center">{{object.get_student_class_display|default:"-"}}</td>
+            <td class="p-2 border border-gray-400 text-center">{{object.student_class.class_name|default:"-"}}</td>
             <td class="p-2 border border-gray-400">
               <ol class="list-decimal list-inside">
               {% for obj in object.extracurricular_set.all %}

@@ -344,7 +344,7 @@ class ProgramPrestasiPrintExcelThisYearView(ListView):
         col = 0
         for data in self.queryset:
             for peserta in data.nama_peserta.all():
-                worksheet.write_row(row, col, [num, data.program_prestasi, f"{data.tanggal}", peserta.student_name, peserta.student_class, data.pencapaian, data.catatan])
+                worksheet.write_row(row, col, [num, data.program_prestasi, f"{data.tanggal}", peserta.student_name, peserta.student_class.class_name, data.pencapaian, data.catatan])
                 num += 1
                 row += 1
 

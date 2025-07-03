@@ -5,7 +5,7 @@ from students.models import Student
 class OlympiadFieldForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
-        self.fields['members'].queryset = Student.objects.filter(student_status="Aktif")
+        self.fields['members'].queryset = Student.objects.select_related('student_class').filter(student_status="Aktif")
         
     class Meta:
         model = OlympiadField
@@ -27,7 +27,7 @@ class OlympiadReportForm(forms.ModelForm):
         data = OlympiadField.objects.select_related("teacher").prefetch_related("members").filter(teacher=user.teacher)
         if user.teacher.id in data.values_list('teacher', flat=True).distinct():
             data_list = data.values_list("members", flat=True).distinct()
-            self.fields['students'].queryset = Student.objects.filter(pk__in=data_list)
+            self.fields['students'].queryset = Student.objects.select_related('student_class').filter(pk__in=data_list)
             self.fields['field_name'].queryset = data
 
     class Meta:

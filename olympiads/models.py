@@ -1,5 +1,6 @@
 import os
 from uuid import uuid4
+from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
@@ -66,6 +67,8 @@ class OlympiadReport(models.Model):
     students = models.ManyToManyField(Student, blank=True, verbose_name=_("Student's Students"), help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
     report_photo = models.ImageField(_("Report Photo"), upload_to=path_and_rename, default='no-image.png', help_text="Format foto harus .jpg atau .jpeg")
     notes = models.TextField(_("Olympiad Notes"), max_length=200, blank=True)
+    semester = models.CharField(max_length=7, default=settings.SEMESTER, null=True)
+    academic_year = models.CharField(max_length=20, default=settings.TAHUN_AJARAN, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -28,7 +28,8 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
+MAINTENANCE_MODE = True  # Set to True to enable maintenance mode
 
 if not DEBUG:
     ALLOWED_HOSTS = ['pmbp.pythonanywhere.com', 'smaitalbinaa.pythonanywhere.com', 'pmbp.albinaa.sch.id']
@@ -53,21 +54,39 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
+    'alumni',
+    'blog',
+    'classes',
+    'courses',
     'dashboard',
     'extracurriculars',
     'files',
+    'galleries',
     'laporan',
     'nilai',
     'olympiads',
-    'projects',
     'prestasi',
-    'students',
+    'private',
+    'projects',
     'raker',
+    'reports',
+    'schedules',
+    'students',
+    # 'students_humas',
+    'taggit',
+    'tahfidz',
     'userlog',
     'users',
+    # 'users_humas',
+    # 'users_piket',
     'easy_thumbnails',
     "corsheaders",
+    # "crispy_forms",
+    # "crispy_bulma",
+    # "crispy_tailwind",
+    # "crispy_bootstrap4",
 ]
+
 
 
 MIDDLEWARE = [
@@ -77,6 +96,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'utils.maintenance_middleware.MaintenanceModeMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
@@ -271,6 +291,7 @@ THUMBNAIL_ALIASES = {
 from django.utils import timezone
 year_now = timezone.now().year
 if timezone.now().month > 6:
+    SEMESTER = "Ganjil"
     TAHUN_AJARAN = f"{year_now}/{year_now+1}"
     TAHUN_AJARAN_LALU = f"{year_now-1}/{year_now}"
     TAHUN_AJARAN_STRIPPED = f"{year_now}-{year_now+1}"
@@ -280,6 +301,7 @@ if timezone.now().month > 6:
     TAHUN_AWAL_AJARAN = f"{year_now}"
     TAHUN_AWAL_AJARAN_LALU = f"{year_now}"
 else:
+    SEMESTER = "Genap"
     TAHUN_AJARAN = f"{year_now-1}/{year_now}"
     TAHUN_AJARAN_LALU = f"{year_now-2}/{year_now-1}"
     TAHUN_AJARAN_STRIPPED = f"{year_now-1}-{year_now}"
@@ -289,6 +311,12 @@ else:
     TAHUN_AWAL_AJARAN = f"{year_now - 1}"
     TAHUN_AWAL_AJARAN_LALU = f"{year_now - 2}"
 
+
+# CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+# CRISPY_TEMPLATE_PACK = "tailwind"
+# CRISPY_ALLOWED_TEMPLATE_PACKS = ("bulma",)
+# CRISPY_TEMPLATE_PACK = "bulma"
+# CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 
 if not DEBUG:

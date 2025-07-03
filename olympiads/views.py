@@ -149,7 +149,6 @@ class OlympiadReportIndexView(ListView):
         mode = self.request.GET.get("mode")
         month = self.request.GET.get("month")
         year = self.request.GET.get("year")
-        print(mode, month, year)
         if mode:
             c["mode"] = mode
             c["month"] = timezone.now().month

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
@@ -11,6 +12,7 @@ class Team(models.Model):
     team_leader = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True, verbose_name=_("Ketua Tim"), related_name='team_leaders')
     members = models.ManyToManyField(Student, verbose_name=_("Anggota Tim"), related_name='teams', help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
     prev_members = models.TextField(_("Anggota Sebelumnya"), blank=True, null=True)
+    status = models.CharField(_("Status Tim"), max_length=50, choices=(("Aktif", _("Aktif")), ("Tidak Aktif", _("Tidak Aktif"))), default="Aktif")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -40,6 +42,8 @@ class Project(models.Model):
     step_to_achieve = models.TextField(_("Langkah Mencapai Project"), max_length=2000)
     task_organizing = models.TextField(_("Pembagian Tugas Project"), max_length=2000)
     slug = models.SlugField(max_length=255)
+    semester = models.CharField(max_length=7, null=True)
+    academic_year = models.CharField(max_length=20, default=settings.TAHUN_AJARAN_LALU, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -71,6 +75,8 @@ class DailyPlan(models.Model):
     to_do_list = models.TextField(_("List Pekerjaan Hari Ini"), max_length=2000)
     target_today = models.TextField(_("Target Hari ini"), max_length=2000)
     problems = models.TextField(_("Kendala yang dihadapi"), max_length=2000)
+    semester = models.CharField(max_length=7, default=settings.SEMESTER, null=True)
+    academic_year = models.CharField(max_length=20, default=settings.TAHUN_AJARAN, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
