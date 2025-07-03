@@ -1,6 +1,7 @@
 asgiref==3.8.1
 certifi==2025.6.15
 charset-normalizer==3.4.2
+crispy-bootstrap4==2025.6
 crispy-tailwind==1.0.3
 cssselect2==0.8.0
 Django==5.2.3
