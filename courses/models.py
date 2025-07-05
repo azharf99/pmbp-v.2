@@ -12,6 +12,7 @@ class Course(models.Model):
     course_code = models.CharField(_("Kode Pelajaran"), max_length=20, blank=True)
     category = models.CharField(_("Kategori"), max_length=20, choices=COURSE_CATEGORY_CHOICES, default=COURSE_CATEGORY_CHOICES[1][0])
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, verbose_name=_("Guru"))
+    type = models.CharField(_("Tipe"), max_length=20, choices=[("putra", "Putra"), ("putri", "Putri")], default="putra")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

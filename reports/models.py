@@ -22,6 +22,7 @@ class Report(models.Model):
     is_complete = models.BooleanField("Sudah complete", default=False)
     semester = models.CharField(max_length=7, default=settings.SEMESTER, null=True)
     academic_year = models.CharField(max_length=20, default=settings.TAHUN_AJARAN, blank=True, null=True)
+    type = models.CharField(_("Tipe"), max_length=20, choices=[("putra", "Putra"), ("putri", "Putri")], default="putra")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

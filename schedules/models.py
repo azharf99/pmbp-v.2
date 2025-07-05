@@ -19,6 +19,7 @@ class Schedule(models.Model):
     time_end = models.TimeField(_("Waktu Akhir"), default=time(7, 0, 0, 0))
     semester = models.CharField(max_length=7, null=True)
     academic_year = models.CharField(max_length=20, default=settings.TAHUN_AJARAN_LALU, blank=True, null=True)
+    type = models.CharField(_("Tipe"), max_length=20, choices=[("putra", "Putra"), ("putri", "Putri")], default="putra")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -50,6 +51,7 @@ class ReporterSchedule(models.Model):
     time_end = models.TimeField(_("Waktu Akhir"), default=time(7, 0, 0, 0))
     semester = models.CharField(max_length=7, default=settings.SEMESTER, null=True)
     academic_year = models.CharField(max_length=20, default=settings.TAHUN_AJARAN, blank=True, null=True)
+    type = models.CharField(_("Tipe"), max_length=20, choices=[("putra", "Putra"), ("putri", "Putri")], default="putra")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
