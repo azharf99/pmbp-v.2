@@ -85,11 +85,8 @@ class MyProfileView(LoginRequiredMixin, TemplateView):
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['object'] = self.request.user
-        first_name, last_name = context['object'].first_name, context['object'].last_name
-        if first_name or last_name:
-            data = "".join([first_name.split(" ")[0][0],last_name.split(" ")[0][0]])
-            context['name'] = data
+        context['object'] = self.request.user.teacher
+        context['name'] = context['object'].teacher_name
         context.update(export_menu_link("profile"))
         return context
 

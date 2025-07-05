@@ -120,7 +120,7 @@
                     </p>
                   </button>
               {% endif %}
-              <p class="text-xs text-center">{{report_data.schedule__schedule_course__teacher__last_name}}</p>
+              <p class="text-xs text-center">{{report_data.schedule__schedule_course__teacher__short_name}}</p>
               <p class="text-xs text-center">{{report_data.schedule__schedule_course__course_short_name}}</p>
             </td>
             {% endfor %}
@@ -136,7 +136,7 @@
                     </svg></span>
                 </p>
               </button>
-              <p class="text-xs m-1">{{reports.first.reporter__last_name|default:"Tidak ada"}}</p>
+              <p class="text-xs m-1">{{reports.first.reporter__short_name|default:"Tidak ada"}}</p>
               <form action="{% url 'report-submit' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="date_string" id="id_date_string" value="{{query_date}}">
@@ -177,7 +177,10 @@
         class="rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"
         id="id_subtitute_teacher">
         <option value="" selected>-----Belum ada yg dipilih----</option>
-        <option value="30">Aam Hamdani, S.Pd.</option>
+        {% for teacher in teachers %}
+        <option value="{{teacher.id}}">{{teacher.teacher_name}}</option>
+        {% endfor %}
+        <!-- <option value="30">Aam Hamdani, S.Pd.</option>
         <option value="2">Abdul Rachman, S.Si.</option>
         <option value="38">Abdus Shomad, Lc., M.A.</option>
         <option value="36">Agung Wahyu Adhy, Lc.</option>
@@ -225,7 +228,7 @@
         <option value="4">Uus Rusytandi, M.Pd.</option>
         <option value="19">Wawanto, S. Si.</option>
         <option value="37">Zainal Abidin, Lc.</option>
-        <option value="15">Zainal Arifin, Lc.</option>
+        <option value="15">Zainal Arifin, Lc.</option> -->
       </select>
     </div>
 
@@ -271,7 +274,10 @@
         class="rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"
         id="id_reporter">
         <option value="" selected>-----Belum ada yg dipilih----</option>
-        <option value="30">Aam Hamdani, S.Pd.</option>
+        {% for teacher in teachers %}
+        <option value="{{teacher.id}}">{{teacher.teacher_name}}</option>
+        {% endfor %}
+        <!-- <option value="30">Aam Hamdani, S.Pd.</option>
         <option value="2">Abdul Rachman, S.Si.</option>
         <option value="38">Abdus Shomad, Lc., M.A.</option>
         <option value="36">Agung Wahyu Adhy, Lc.</option>
@@ -319,7 +325,7 @@
         <option value="4">Uus Rusytandi, M.Pd.</option>
         <option value="19">Wawanto, S. Si.</option>
         <option value="37">Zainal Abidin, Lc.</option>
-        <option value="15">Zainal Arifin, Lc.</option>
+        <option value="15">Zainal Arifin, Lc.</option> -->
       </select>
     </div>
 

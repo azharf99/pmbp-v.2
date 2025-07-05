@@ -1,7 +1,9 @@
 import json
 
 start_humas_user_id = 44
+start_humas_teacher_id = 39
 start_piket_user_id = 65
+start_piket_teacher_id = 61
 add_humas_teacher_user_id = 43
 start_humas_teacher_id = 39
 start_humas_userlog_id = 1987

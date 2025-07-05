@@ -30,7 +30,7 @@ class ScheduleView(BaseAuthorizedModelView, ListView):
         for i in range(1, 10):
             qs = self.queryset.filter(schedule_day=query_day, schedule_time=i)\
                         .values('schedule_class__short_class_name', 
-                                'schedule_course__teacher__last_name',
+                                'schedule_course__teacher__teacher_name',
                                 'schedule_course__course_code',
                                 'schedule_course__course_short_name')\
                         .order_by('schedule_class__short_class_name')
@@ -38,7 +38,7 @@ class ScheduleView(BaseAuthorizedModelView, ListView):
                 groupped_qs.append(qs)
             else:
                 groupped_qs.append([{"schedule_class__short_class_name": "Kosong", 
-                                     "schedule_course__teacher__last_name": "Kosong",
+                                     "schedule_course__teacher__teacher_name": "Kosong",
                                      "schedule_course__course_code": "Kosong",
                                      "schedule_course__course_short_name": "Kosong"
                                      } for j in range(15)])

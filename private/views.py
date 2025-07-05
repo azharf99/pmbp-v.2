@@ -9,6 +9,7 @@ from django.urls import reverse, reverse_lazy
 from pandas import read_excel
 from files.forms import FileForm
 from files.models import File
+from users.models import Teacher
 from utils_humas.mixins import GeneralAuthPermissionMixin, GeneralContextMixin, GeneralFormDeleteMixin, GeneralFormValidateMixin
 from private.models import Private, Subject, Group
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
@@ -17,6 +18,7 @@ from private.forms import PrivateCreateForm, PrivateUpdateForm, SubjectForm, Gro
 from students.models import Student
 from userlog.models import UserLog
 from utils.whatsapp_albinaa import send_WA_create_update_delete
+from utils.remove_duplicate import teacher_pmbp_for_humas_id_map
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.db.models import Count

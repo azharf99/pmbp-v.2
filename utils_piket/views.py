@@ -97,7 +97,7 @@ class TeacherRecapListView(BaseAuthorizedModelView, BaseModelQueryListView):
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
                                 .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
                                 .filter(report_date__gte=date_start, report_date__lte=date_end)\
-                                .values('schedule__schedule_course__teacher','schedule__schedule_course__teacher__first_name')\
+                                .values('schedule__schedule_course__teacher','schedule__schedule_course__teacher__teacher_name')\
                                 .annotate(
                                     hadir_count=Count('status',  filter=Q(status="Hadir")),
                                     izin_count=Count('status',  filter=Q(status="Izin")),
@@ -110,7 +110,7 @@ class TeacherRecapListView(BaseAuthorizedModelView, BaseModelQueryListView):
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
                                 .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
                                 .filter(report_date__month=datetime.now().month, report_date__year=datetime.now().year)\
-                                .values('schedule__schedule_course__teacher','schedule__schedule_course__teacher__first_name')\
+                                .values('schedule__schedule_course__teacher','schedule__schedule_course__teacher__teacher_name')\
                                 .annotate(
                                     hadir_count=Count('status',  filter=Q(status="Hadir")),
                                     izin_count=Count('status',  filter=Q(status="Izin")),
@@ -155,14 +155,14 @@ class TeacherAbsenceListView(BaseAuthorizedModelView, BaseModelQueryListView):
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher", "schedule__schedule_class", "subtitute_teacher")\
                              .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
                              .filter(report_date__gte=date_start, report_date__lte=date_end, status__in=["Izin", "Sakit", "Tanpa Keterangan"])\
-                             .values('report_date','schedule__schedule_course__teacher__first_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
+                             .values('report_date','schedule__schedule_course__teacher__teacher_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
                              .distinct().order_by("-report_date", "schedule__schedule_class__short_class_name", "schedule__schedule_time")
         
         else:
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher", "schedule__schedule_class", "subtitute_teacher")\
                              .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
                              .filter(report_date__month=datetime.now().month, report_date__year=datetime.now().year, status__in=["Izin", "Sakit", "Tanpa Keterangan"])\
-                             .values('report_date','schedule__schedule_course__teacher__first_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
+                             .values('report_date','schedule__schedule_course__teacher__teacher_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
                              .distinct().order_by("-report_date", "schedule__schedule_class__short_class_name", "schedule__schedule_time")
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -200,14 +200,14 @@ class TeacherRecapDetailView(BaseAuthorizedModelView, BaseModelQueryListView):
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher", "schedule__schedule_class", "subtitute_teacher")\
                              .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
                              .filter(report_date__gte=date_start, report_date__lte=date_end, schedule__schedule_course__teacher_id=teacher_id, status__in=["Izin", "Sakit", "Tanpa Keterangan"])\
-                             .values('report_date','schedule__schedule_course__teacher__first_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
+                             .values('report_date','schedule__schedule_course__teacher__teacher_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
                              .distinct().order_by("-report_date", "schedule__schedule_class__short_class_name", "schedule__schedule_time")
         
         else:
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher", "schedule__schedule_class", "subtitute_teacher")\
                              .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
                              .filter(report_date__month=datetime.now().month, report_date__year=datetime.now().year, schedule__schedule_course__teacher_id=teacher_id, status__in=["Izin", "Sakit", "Tanpa Keterangan"])\
-                             .values('report_date','schedule__schedule_course__teacher__first_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
+                             .values('report_date','schedule__schedule_course__teacher__teacher_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
                              .distinct().order_by("-report_date", "schedule__schedule_class__short_class_name", "schedule__schedule_time")
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -243,7 +243,7 @@ class TeacherRecapDownloadExcelView(BaseAuthorizedModelView, BaseModelQueryListV
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
                              .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
                              .filter(report_date__gte=date_start, report_date__lte=date_end)\
-                             .values('schedule__schedule_course__teacher__first_name')\
+                             .values('schedule__schedule_course__teacher__teacher_name')\
                              .annotate(
                                  hadir_count=Count('status',  filter=Q(status="Hadir")),
                                  izin_count=Count('status',  filter=Q(status="Izin")),
@@ -256,7 +256,7 @@ class TeacherRecapDownloadExcelView(BaseAuthorizedModelView, BaseModelQueryListV
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
                              .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
                              .filter(report_date__month=datetime.now().month, report_date__year=datetime.now().year)\
-                             .values('schedule__schedule_course__teacher__first_name')\
+                             .values('schedule__schedule_course__teacher__teacher_name')\
                              .annotate(
                                  hadir_count=Count('status',  filter=Q(status="Hadir")),
                                  izin_count=Count('status',  filter=Q(status="Izin")),
@@ -275,7 +275,7 @@ class TeacherRecapDownloadExcelView(BaseAuthorizedModelView, BaseModelQueryListV
         
         for data in self.get_queryset():
             percentage = "{:.2f}".format(data.get("hadir_count")/data.get("all_count")*100)
-            worksheet.write_row(row, 0, [row, data.get("schedule__schedule_course__teacher__first_name"), data.get("hadir_count"), data.get("izin_count"), data.get("sakit_count"), data.get("alpha_count"), f"{percentage}%"])
+            worksheet.write_row(row, 0, [row, data.get("schedule__schedule_course__teacher__teacher_name"), data.get("hadir_count"), data.get("izin_count"), data.get("sakit_count"), data.get("alpha_count"), f"{percentage}%"])
             row += 1
         worksheet.autofit()
         workbook.close()
@@ -296,14 +296,14 @@ class TeacherAbsenceDownloadExcelView(BaseAuthorizedModelView, BaseModelQueryLis
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher", "schedule__schedule_class", "subtitute_teacher")\
                              .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
                              .filter(report_date__gte=date_start, report_date__lte=date_end, status__in=["Izin", "Sakit", "Tanpa Keterangan"])\
-                             .values('report_date','schedule__schedule_course__teacher__first_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
+                             .values('report_date','schedule__schedule_course__teacher__teacher_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
                              .distinct().order_by("-report_date", "schedule__schedule_class__short_class_name", "schedule__schedule_time")
 
         else: 
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher", "schedule__schedule_class", "subtitute_teacher")\
                              .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
                              .filter(report_date__month=datetime.now().month, report_date__year=datetime.now().year, status__in=["Izin", "Sakit", "Tanpa Keterangan"])\
-                             .values('report_date','schedule__schedule_course__teacher__first_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
+                             .values('report_date','schedule__schedule_course__teacher__teacher_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
                              .distinct().order_by("-report_date", "schedule__schedule_class__short_class_name", "schedule__schedule_time")
     
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -314,7 +314,7 @@ class TeacherAbsenceDownloadExcelView(BaseAuthorizedModelView, BaseModelQueryLis
         row = 1
         
         for data in self.get_queryset():
-            worksheet.write_row(row, 0, [row, str(data.get("report_date")), data.get("schedule__schedule_course__teacher__first_name"), data.get("schedule__schedule_class__short_class_name"), data.get("schedule__schedule_time"), data.get("status")])
+            worksheet.write_row(row, 0, [row, str(data.get("report_date")), data.get("schedule__schedule_course__teacher__teacher_name"), data.get("schedule__schedule_class__short_class_name"), data.get("schedule__schedule_time"), data.get("status")])
             row += 1
         worksheet.autofit()
         workbook.close()
@@ -337,14 +337,14 @@ class TeacherAbsenceDetailDownloadExcelView(BaseAuthorizedModelView, BaseModelQu
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher", "schedule__schedule_class", "subtitute_teacher")\
                              .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
                              .filter(report_date__month=date_start, report_date__year=date_end, schedule__schedule_course__teacher_id=teacher_id, status__in=["Izin", "Sakit", "Tanpa Keterangan"])\
-                             .values('report_date','schedule__schedule_course__teacher__first_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
+                             .values('report_date','schedule__schedule_course__teacher__teacher_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
                              .distinct().order_by("-report_date", "schedule__schedule_class__short_class_name", "schedule__schedule_time")
         
         else:
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher", "schedule__schedule_class", "subtitute_teacher")\
                              .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
                              .filter(report_date__month=datetime.now().month, report_date__year=datetime.now().year, schedule__schedule_course__teacher_id=teacher_id, status__in=["Izin", "Sakit", "Tanpa Keterangan"])\
-                             .values('report_date','schedule__schedule_course__teacher__first_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
+                             .values('report_date','schedule__schedule_course__teacher__teacher_name', "schedule__schedule_class__short_class_name", "schedule__schedule_time", "status")\
                              .distinct().order_by("-report_date", "schedule__schedule_class__short_class_name", "schedule__schedule_time")
     
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -355,7 +355,7 @@ class TeacherAbsenceDetailDownloadExcelView(BaseAuthorizedModelView, BaseModelQu
         row = 1
         
         for data in self.get_queryset():
-            worksheet.write_row(row, 0, [row, str(data.get("report_date")), data.get("schedule__schedule_course__teacher__first_name"), data.get("schedule__schedule_class__short_class_name"), data.get("schedule__schedule_time"), data.get("status")])
+            worksheet.write_row(row, 0, [row, str(data.get("report_date")), data.get("schedule__schedule_course__teacher__teacher_name"), data.get("schedule__schedule_class__short_class_name"), data.get("schedule__schedule_time"), data.get("status")])
             row += 1
         worksheet.autofit()
         workbook.close()
@@ -397,27 +397,27 @@ class TeacherAbsenceDetailDownloadExcelView(BaseAuthorizedModelView, BaseModelQu
 
 #         for day_key, value_day_count in day_count_in_month.items():
 #             data = ReporterSchedule.objects.filter(schedule_day=day_key).exclude(reporter__isnull=True)\
-#                                             .values("schedule_day", "reporter__first_name")\
-#                                             .annotate(rcount=Count("reporter__first_name")*value_day_count)\
-#                                             .distinct().order_by("reporter__first_name")
+#                                             .values("schedule_day", "reporter__teacher_name")\
+#                                             .annotate(rcount=Count("reporter__teacher_name")*value_day_count)\
+#                                             .distinct().order_by("reporter__teacher_name")
 #             # print(data)
 #             for obj in data:
 #                 reporters_counts_data.append(obj)
         
-#         # Sort list_of_dict by reporter__first_name
-#         sorted_reporters_counts_data = sorted(reporters_counts_data, key=lambda x: x['reporter__first_name'])
+#         # Sort list_of_dict by reporter__teacher_name
+#         sorted_reporters_counts_data = sorted(reporters_counts_data, key=lambda x: x['reporter__teacher_name'])
 
 #         # Dictionary to store aggregated counts
 #         aggregated_counts = defaultdict(int)
 
-#         # Sum the rcount for each reporter__first_name
+#         # Sum the rcount for each reporter__teacher_name
 #         for item in sorted_reporters_counts_data:
-#             aggregated_counts[item['reporter__first_name']] += item['rcount']
+#             aggregated_counts[item['reporter__teacher_name']] += item['rcount']
         
         
         
 #         # Convert back to a list of dicts if needed
-#         result = [{'reporter__first_name': name, 'total_rcount': count} for name, count in aggregated_counts.items()]
+#         result = [{'reporter__teacher_name': name, 'total_rcount': count} for name, count in aggregated_counts.items()]
 
 #         print(len(result))
 
@@ -439,7 +439,7 @@ class TeacherAbsenceDetailDownloadExcelView(BaseAuthorizedModelView, BaseModelQu
 
 #         for obj in null_reporter:
 #             data = ReporterSchedule.objects.filter(schedule_day=obj.get("schedule__schedule_day"), schedule_time=obj.get("schedule__schedule_time"))\
-#                                             .values("reporter__first_name").annotate(absen_count=Count("reporter__first_name")).order_by()
+#                                             .values("reporter__teacher_name").annotate(absen_count=Count("reporter__teacher_name")).order_by()
 #             for obj in data:
 #                 absen_group_data.append(obj)
 #             # <QuerySet [<ReporterSchedule: Selasa | Jam ke-1 | radivan_tiravi>]>
@@ -447,16 +447,16 @@ class TeacherAbsenceDetailDownloadExcelView(BaseAuthorizedModelView, BaseModelQu
 #             data = super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
 #                              .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
 #                              .filter(report_date__gte=date_start, report_date__lte=date_end, reporter__isnull=False)\
-#                              .values('reporter__first_name')\
-#                              .annotate(hadir_count=Count('reporter__first_name')/15)\
-#                              .order_by('reporter__first_name')
+#                              .values('reporter__teacher_name')\
+#                              .annotate(hadir_count=Count('reporter__teacher_name')/15)\
+#                              .order_by('reporter__teacher_name')
 #         else:
 #             data = super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
 #                              .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
 #                              .filter(report_date__month=this_month, report_date__year=this_year, reporter__isnull=False)\
-#                              .values('reporter__first_name')\
-#                              .annotate(hadir_count=Count('reporter__first_name')/15)\
-#                              .order_by('reporter__first_name')
+#                              .values('reporter__teacher_name')\
+#                              .annotate(hadir_count=Count('reporter__teacher_name')/15)\
+#                              .order_by('reporter__teacher_name')
         
 #         print(len(data))
 #         for i in data:
@@ -464,7 +464,7 @@ class TeacherAbsenceDetailDownloadExcelView(BaseAuthorizedModelView, BaseModelQu
 #         for index in range(len(data)):
 #             data[index].update(result[index])
 #             for i in range(len(absen_group_data)):
-#                 if len(absen_group_data) > 0 and data[index].get("reporter__first_name") == absen_group_data[i].get("reporter__first_name"):
+#                 if len(absen_group_data) > 0 and data[index].get("reporter__teacher_name") == absen_group_data[i].get("reporter__teacher_name"):
 #                     data[index].update(absen_group_data[i])
         
 #         return data
@@ -502,31 +502,31 @@ class ReporterRecapListView(BaseAuthorizedModelView, BaseModelQueryListView):
 
         for day_key, value_day_count in day_count_in_month.items():
             data = ReporterSchedule.objects.filter(schedule_day=day_key).exclude(reporter__isnull=True)\
-                                            .values("reporter__first_name")\
-                                            .annotate(expected_count=Count("reporter__first_name")*value_day_count)\
-                                            .distinct().order_by("reporter__first_name")
+                                            .values("reporter__teacher_name")\
+                                            .annotate(expected_count=Count("reporter__teacher_name")*value_day_count)\
+                                            .distinct().order_by("reporter__teacher_name")
             # print(data)
             for obj in data:
                 reporters_counts_data.append(obj)
         
-        # Sort list_of_dict by reporter__first_name
-        sorted_reporters_counts_data = sorted(reporters_counts_data, key=lambda x: x['reporter__first_name'])
+        # Sort list_of_dict by reporter__teacher_name
+        sorted_reporters_counts_data = sorted(reporters_counts_data, key=lambda x: x['reporter__teacher_name'])
 
         # Dictionary to store aggregated counts
         aggregated_counts = defaultdict(int)
 
-        # Sum the rcount for each reporter__first_name
+        # Sum the rcount for each reporter__teacher_name
         for item in sorted_reporters_counts_data:
-            aggregated_counts[item['reporter__first_name']] += item['expected_count']
+            aggregated_counts[item['reporter__teacher_name']] += item['expected_count']
 
         # Convert back to a list of dicts if needed
-        result = [{'reporter__first_name': name, 'expected_count': count} for name, count in aggregated_counts.items()]
+        result = [{'reporter__teacher_name': name, 'expected_count': count} for name, count in aggregated_counts.items()]
                 
         if date_start and date_end:
             reports_data = list(Report.objects.filter(report_date__gte=date_start, report_date__lte=date_end)\
-                                    .exclude(reporter__isnull=True).values("reporter__first_name")\
-                                    .annotate(real_count=Count("reporter__first_name")/15)\
-                                    .order_by("reporter__first_name"))
+                                    .exclude(reporter__isnull=True).values("reporter__teacher_name")\
+                                    .annotate(real_count=Count("reporter__teacher_name")/15)\
+                                    .order_by("reporter__teacher_name"))
         
             null_reporter = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
                                       .filter(report_date__gte=date_start, report_date__lte=date_end, reporter__isnull=True)\
@@ -535,9 +535,9 @@ class ReporterRecapListView(BaseAuthorizedModelView, BaseModelQueryListView):
                                       .distinct().order_by()
         else:
             reports_data = list(Report.objects.filter(report_date__month=this_month, report_date__year=this_year)\
-                                    .exclude(reporter__isnull=True).values("reporter__first_name")\
-                                    .annotate(real_count=Count("reporter__first_name")/15)\
-                                    .order_by("reporter__first_name"))
+                                    .exclude(reporter__isnull=True).values("reporter__teacher_name")\
+                                    .annotate(real_count=Count("reporter__teacher_name")/15)\
+                                    .order_by("reporter__teacher_name"))
             
             null_reporter = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
                                       .filter(report_date__month=this_month, report_date__year=this_year, reporter__isnull=True)\
@@ -549,15 +549,15 @@ class ReporterRecapListView(BaseAuthorizedModelView, BaseModelQueryListView):
 
         for obj in null_reporter:
             data = ReporterSchedule.objects.filter(schedule_day=obj.get("schedule__schedule_day"), schedule_time=obj.get("schedule__schedule_time"))\
-                                            .values("reporter__first_name").annotate(absen_count=Count("reporter__first_name")).order_by()
+                                            .values("reporter__teacher_name").annotate(absen_count=Count("reporter__teacher_name")).order_by()
             for obj in data:
                 absen_group_data.append(obj)
         
-        lookup = {d['reporter__first_name']: d for d in reports_data}
+        lookup = {d['reporter__teacher_name']: d for d in reports_data}
     
         # Merge data from dict_one into dict_two
         for entry in result:
-            key = entry['reporter__first_name']
+            key = entry['reporter__teacher_name']
             if key in lookup:
                 # Update existing entry in dict_two
                 lookup[key].update(entry)
@@ -567,7 +567,7 @@ class ReporterRecapListView(BaseAuthorizedModelView, BaseModelQueryListView):
 
         # Merge data from dict_one into dict_two
         for entry in absen_group_data:
-            key = entry['reporter__first_name']
+            key = entry['reporter__teacher_name']
             if key in lookup:
                 # Update existing entry in dict_two
                 lookup[key].update(entry)
@@ -632,31 +632,31 @@ class ReporterRecapDownloadExcelView(BaseAuthorizedModelView, BaseModelQueryList
 
         for day_key, value_day_count in day_count_in_month.items():
             data = ReporterSchedule.objects.filter(schedule_day=day_key).exclude(reporter__isnull=True)\
-                                            .values("reporter__first_name")\
-                                            .annotate(expected_count=Count("reporter__first_name")*value_day_count)\
-                                            .distinct().order_by("reporter__first_name")
+                                            .values("reporter__teacher_name")\
+                                            .annotate(expected_count=Count("reporter__teacher_name")*value_day_count)\
+                                            .distinct().order_by("reporter__teacher_name")
             # print(data)
             for obj in data:
                 reporters_counts_data.append(obj)
         
-        # Sort list_of_dict by reporter__first_name
-        sorted_reporters_counts_data = sorted(reporters_counts_data, key=lambda x: x['reporter__first_name'])
+        # Sort list_of_dict by reporter__teacher_name
+        sorted_reporters_counts_data = sorted(reporters_counts_data, key=lambda x: x['reporter__teacher_name'])
 
         # Dictionary to store aggregated counts
         aggregated_counts = defaultdict(int)
 
-        # Sum the rcount for each reporter__first_name
+        # Sum the rcount for each reporter__teacher_name
         for item in sorted_reporters_counts_data:
-            aggregated_counts[item['reporter__first_name']] += item['expected_count']
+            aggregated_counts[item['reporter__teacher_name']] += item['expected_count']
 
         # Convert back to a list of dicts if needed
-        result = [{'reporter__first_name': name, 'expected_count': count} for name, count in aggregated_counts.items()]
+        result = [{'reporter__teacher_name': name, 'expected_count': count} for name, count in aggregated_counts.items()]
                 
         if date_start and date_end:
             reports_data = list(Report.objects.filter(report_date__gte=date_start, report_date__lte=date_end)\
-                                    .exclude(reporter__isnull=True).values("reporter__first_name")\
-                                    .annotate(real_count=Count("reporter__first_name")/15)\
-                                    .order_by("reporter__first_name"))
+                                    .exclude(reporter__isnull=True).values("reporter__teacher_name")\
+                                    .annotate(real_count=Count("reporter__teacher_name")/15)\
+                                    .order_by("reporter__teacher_name"))
         
             null_reporter = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
                                       .filter(report_date__gte=date_start, report_date__lte=date_end, reporter__isnull=True)\
@@ -665,9 +665,9 @@ class ReporterRecapDownloadExcelView(BaseAuthorizedModelView, BaseModelQueryList
                                       .distinct().order_by()
         else:
             reports_data = list(Report.objects.filter(report_date__month=this_month, report_date__year=this_year)\
-                                    .exclude(reporter__isnull=True).values("reporter__first_name")\
-                                    .annotate(real_count=Count("reporter__first_name")/15)\
-                                    .order_by("reporter__first_name"))
+                                    .exclude(reporter__isnull=True).values("reporter__teacher_name")\
+                                    .annotate(real_count=Count("reporter__teacher_name")/15)\
+                                    .order_by("reporter__teacher_name"))
             
             null_reporter = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
                                       .filter(report_date__month=this_month, report_date__year=this_year, reporter__isnull=True)\
@@ -679,15 +679,15 @@ class ReporterRecapDownloadExcelView(BaseAuthorizedModelView, BaseModelQueryList
 
         for obj in null_reporter:
             data = ReporterSchedule.objects.filter(schedule_day=obj.get("schedule__schedule_day"), schedule_time=obj.get("schedule__schedule_time"))\
-                                            .values("reporter__first_name").annotate(absen_count=Count("reporter__first_name")).order_by()
+                                            .values("reporter__teacher_name").annotate(absen_count=Count("reporter__teacher_name")).order_by()
             for obj in data:
                 absen_group_data.append(obj)
         
-        lookup = {d['reporter__first_name']: d for d in reports_data}
+        lookup = {d['reporter__teacher_name']: d for d in reports_data}
     
         # Merge data from dict_one into dict_two
         for entry in result:
-            key = entry['reporter__first_name']
+            key = entry['reporter__teacher_name']
             if key in lookup:
                 # Update existing entry in dict_two
                 lookup[key].update(entry)
@@ -697,7 +697,7 @@ class ReporterRecapDownloadExcelView(BaseAuthorizedModelView, BaseModelQueryList
 
         # Merge data from dict_one into dict_two
         for entry in absen_group_data:
-            key = entry['reporter__first_name']
+            key = entry['reporter__teacher_name']
             if key in lookup:
                 # Update existing entry in dict_two
                 lookup[key].update(entry)
@@ -716,7 +716,7 @@ class ReporterRecapDownloadExcelView(BaseAuthorizedModelView, BaseModelQueryList
         
         for data in self.get_queryset():
             percentage = "{:.2f}".format(data.get("real_count", 0)/data.get("expected_count", data.get("real_count", 0))*100)
-            worksheet.write_row(row, 0, [row, data.get("reporter__first_name"), data.get("real_count"), data.get("absen_count"), data.get("expected_count", data.get("real_count", 0)), f"{percentage}%"])
+            worksheet.write_row(row, 0, [row, data.get("reporter__teacher_name"), data.get("real_count"), data.get("absen_count"), data.get("expected_count", data.get("real_count", 0)), f"{percentage}%"])
             row += 1
         worksheet.autofit()
         workbook.close()

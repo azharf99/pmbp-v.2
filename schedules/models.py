@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from users.models import Teacher
 from utils.constants import SCHEDULE_WEEKDAYS, SCHEDULE_TIME
 from datetime import time
 # Create your models here.
@@ -44,7 +45,7 @@ class Schedule(models.Model):
 class ReporterSchedule(models.Model):
     schedule_day = models.CharField(_("Hari"), max_length=10, blank=True, choices=SCHEDULE_WEEKDAYS)
     schedule_time = models.CharField(_("Jam Ke-"), max_length=20, choices=SCHEDULE_TIME)
-    reporter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name=_("Tim Piket"))
+    reporter = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, verbose_name=_("Tim Piket"))
     time_start = models.TimeField(_("Waktu Mulai"), default=time(7, 0, 0, 0))
     time_end = models.TimeField(_("Waktu Akhir"), default=time(7, 0, 0, 0))
     semester = models.CharField(max_length=7, default=settings.SEMESTER, null=True)

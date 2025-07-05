@@ -116,7 +116,7 @@
               <span
                 class="bg-red-500 py-1 px-2 rounded-md text-sm text-white font-semibold hover:bg-fuchsia-400 dark:hover:bg-gray-700 w-32">Kosong</span>
               {% endif %}
-              <p class="text-xs">{{object.schedule.schedule_course.teacher.last_name}}</p>
+              <p class="text-xs">{{object.schedule.schedule_course.teacher.teacher_name}}</p>
               <p class="text-xs">{{object.schedule.schedule_course.course_short_name}}</p>
             </td>
             {% endfor %}
@@ -132,7 +132,7 @@
                     </svg></span>
                 </p>
               </button>
-              <p class="text-xs">{{data.first.reporter__last_name|default:"Belum input"}}</p>
+              <p class="text-xs">{{data.first.reporter__teacher_name|default:"Belum input"}}</p>
             </td>
           </tr>
           {% endfor %}

@@ -108,7 +108,7 @@ Pukul: {datetime.now().time().strftime("%H:%M:%S")} WIB
 KELAS {grouped_data[index_outer][inner_index].schedule.schedule_class}
 {grouped_data[index_outer][inner_index].schedule.schedule_course}
 Keterangan : {grouped_data[index_outer][inner_index].status}
-Pengganti : {grouped_data[index_outer][inner_index].subtitute_teacher.first_name if grouped_data[index_outer][inner_index].subtitute_teacher else "-"}
+Pengganti : {grouped_data[index_outer][inner_index].subtitute_teacher.teacher_name if grouped_data[index_outer][inner_index].subtitute_teacher else "-"}
 Catatan : {grouped_data[index_outer][inner_index].notes or "-"}
 '''
                         
@@ -117,11 +117,11 @@ Catatan : {grouped_data[index_outer][inner_index].notes or "-"}
 KELAS {grouped_data[index_outer][inner_index].schedule.schedule_class}
 {grouped_data[index_outer][inner_index].schedule.schedule_course}
 Keterangan : {grouped_data[index_outer][inner_index].status}
-Pengganti : {grouped_data[index_outer][inner_index].subtitute_teacher.first_name if grouped_data[index_outer][inner_index].subtitute_teacher else "-"}
+Pengganti : {grouped_data[index_outer][inner_index].subtitute_teacher.teacher_name if grouped_data[index_outer][inner_index].subtitute_teacher else "-"}
 Catatan : {grouped_data[index_outer][inner_index].notes or "-"}
 '''
                     if inner_index == inner_data_length-1:
-                        messages += f'\nPetugas Piket: {grouped_data[index_outer][inner_index].reporter.first_name if grouped_data[index_outer][inner_index].reporter else "-"}\n'
+                        messages += f'\nPetugas Piket: {grouped_data[index_outer][inner_index].reporter.teacher_name if grouped_data[index_outer][inner_index].reporter else "-"}\n'
                         messages += '--------------------------\n\n'
             else:
                 messages += f"Jam ke {index_outer+1}\n"
@@ -138,7 +138,7 @@ Catatan : {grouped_data[index_outer][inner_index].notes or "-"}
 10-D {"✅        " if reports[3].subtitute_teacher or reports[3].status == "Hadir" else "⚠️ (" + reports[3].status + ")"}11-D {"✅        " if reports[8].subtitute_teacher or reports[8].status == "Hadir" else "⚠️ (" + reports[8].status + ")"}
 10-E  {"✅        " if reports[4].subtitute_teacher or reports[4].status == "Hadir" else "⚠️ (" + reports[4].status + ")"}11-E  {"✅        " if reports[9].subtitute_teacher or reports[9].status == "Hadir" else "⚠️ (" + reports[9].status + ")"}
 
-Petugas: *{reports[0].reporter.last_name}*
+Petugas: *{reports[0].reporter.teacher_name}*
 🎦🎦🎦🎦🎦🎦🎦🎦🎦🎦'''
         send_whatsapp_group(simplified_message)
         msg.success(request=self.request, message="Submit Data Berhasil!")

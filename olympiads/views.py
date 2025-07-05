@@ -17,6 +17,7 @@ from django.urls import reverse, reverse_lazy
 from olympiads.forms import OlympiadFieldForm, OlympiadReportForm
 from olympiads.models import OlympiadField, OlympiadReport
 from userlog.models import UserLog
+from users.models import Teacher
 from utils.whatsapp_albinaa import send_WA_create_update_delete, send_WA_general
 from django.utils import timezone
 

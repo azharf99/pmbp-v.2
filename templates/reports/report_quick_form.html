@@ -56,7 +56,7 @@
                       <select name="subtitute_teacher{{object.id}}" id="id_subtitute_teacher{{object.id}}" class="w-full rounded-md text-black px-2 py-1 dark:border-none shadow-lg">
                         <option value>--</option>
                         {% for teacher in subtitute_teachers %}
-                        <option value="{{teacher.id}}">{{teacher.first_name}}</option>
+                        <option value="{{teacher.id}}">{{teacher.teacher_name}}</option>
                         {% endfor %}
                       </select>                    
                     </div>
@@ -84,7 +84,7 @@
                       <select name="subtitute_teacher{{object.id}}" id="id_subtitute_teacher{{object.id}}" class="w-full rounded-md text-black px-2 py-1 dark:border-none shadow-lg">
                         <option value>--</option>
                         {% for teacher in subtitute_teachers %}
-                        <option value="{{teacher.id}}" {% if object.subtitute_teacher == teacher %} selected {% endif %}>{{teacher.first_name}}</option>
+                        <option value="{{teacher.id}}" {% if object.subtitute_teacher == teacher %} selected {% endif %}>{{teacher.teacher_name}}</option>
                         {% endfor %}
                       </select>                    
                     </div>

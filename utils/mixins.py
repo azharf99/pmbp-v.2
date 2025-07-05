@@ -77,7 +77,7 @@
 #                     queryset = self.model.objects.filter(Q(class_name__icontains=query) | Q(short_class_name__icontains=query))
 #                     return queryset
 #                 case "Course":
-#                     queryset = self.model.objects.select_related("teacher").filter(Q(course_name__icontains=query) | Q(course_code__icontains=query) | Q(category__icontains=query) | Q(teacher__first_name__icontains=query))
+#                     queryset = self.model.objects.select_related("teacher").filter(Q(course_name__icontains=query) | Q(course_code__icontains=query) | Q(category__icontains=query) | Q(teacher__teacher_name__icontains=query))
 #                     return queryset
 #                 case "User":
 #                     queryset = self.model.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(email__icontains=query))
@@ -253,15 +253,15 @@
 #             if self.menu_name == 'class':
 #                 worksheet.write_row(row, 0, [row, f"{data.class_name}", f"{data.short_class_name}"])
 #             elif self.menu_name == 'course':
-#                 worksheet.write_row(row, 0, [row, f"{data.course_name}", f"{data.course_code}", f"{data.teacher.first_name} {data.teacher.last_name}"])
+#                 worksheet.write_row(row, 0, [row, f"{data.course_name}", f"{data.course_code}", f"{data.teacher.teacher_name} {data.teacher.teacher_name}"])
 #             elif self.menu_name == 'report':
-#                 subtitute_teacher = f"{data.subtitute_teacher.first_name}" if data.subtitute_teacher else ""
-#                 reporter = f"{data.reporter.first_name}" if data.reporter else ""
+#                 subtitute_teacher = f"{data.subtitute_teacher.teacher_name}" if data.subtitute_teacher else ""
+#                 reporter = f"{data.reporter.teacher_name}" if data.reporter else ""
 #                 worksheet.write_row(row, 0, [row, f"{data.report_date}", f"{data.report_day}", data.status, data.schedule.schedule_time, f"{data.schedule.schedule_class}", f"{data.schedule.schedule_course.course_name}",
-#                                          f"{data.schedule.schedule_course.teacher.first_name}", subtitute_teacher, reporter])
+#                                          f"{data.schedule.schedule_course.teacher.teacher_name}", subtitute_teacher, reporter])
 #             elif self.menu_name == 'schedule':
 #                 worksheet.write_row(row, 0, [row, f"{data.schedule_day}", f"{data.schedule_time}", data.schedule_class.class_name, data.schedule_course.course_name, 
-#                                          f"{data.schedule_course.teacher.first_name} {data.schedule_course.teacher.last_name}"])
+#                                          f"{data.schedule_course.teacher.teacher_name} {data.schedule_course.teacher.teacher_name}"])
 #             elif self.menu_name == 'user':
 #                 worksheet.write_row(row, 0, [row, data.username, 'Albinaa2004', data.password, data.email, f"{data.is_staff}", f"{data.is_active}",
 #                                          f'{data.is_superuser}', f"{data.date_joined}", f"{data.last_login}"])

@@ -9,6 +9,10 @@ from utils.constants import SCHEDULE_TIME
 from utils.validate_datetime import validate_date, validate_time, get_day
 
 class ReportForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Optimize related queries
+        self.fields['schedule'].queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher","schedule_class")
         
     class Meta:
         model = Report
@@ -22,24 +26,10 @@ class ReportForm(forms.ModelForm):
             'reporter': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Optimize related queries
-        self.fields['schedule'].queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher","schedule_class")
 
 
-class UserModelChoiceField(ModelChoiceField):
-    def label_from_instance(self, obj):
-        return obj.first_name if obj.first_name else obj.username
     
 class ReportFormV2(forms.ModelForm):
-    subtitute_teacher = UserModelChoiceField(
-        label="Guru Pengganti",
-        required=False,
-        queryset=User.objects.all().order_by('first_name'),
-        widget=forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"})
-        )
-        
     class Meta:
         model = Report
         fields = ['status', 'subtitute_teacher', 'duty', 'notes']
@@ -66,12 +56,6 @@ class ReportUpdatePetugasForm(forms.ModelForm):
         else:
             raise Http404("No report found!")
 
-    reporter = UserModelChoiceField(
-        required=False,
-        queryset=User.objects.all().order_by('first_name'),
-        label="Petugas Piket",
-        widget=forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"})
-        )
         
     class Meta:
         model = Report

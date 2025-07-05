@@ -20,6 +20,7 @@ from reports.forms import ReportFormV2, ReportUpdatePetugasForm
 from reports.models import Report
 from schedules.models import ReporterSchedule, Schedule
 from userlog.models import UserLog
+from users.models import Teacher
 from utils.forms import UploadModelForm
 from utils.menu_link import export_menu_link
 from xlsxwriter import Workbook
@@ -81,7 +82,7 @@ class BaseModelQueryListView(ListView):
                     queryset = self.model.objects.filter(Q(class_name__icontains=query) | Q(short_class_name__icontains=query))
                     return queryset
                 case "Course":
-                    queryset = self.model.objects.select_related("teacher").filter(Q(course_name__icontains=query) | Q(course_code__icontains=query) | Q(category__icontains=query) | Q(teacher__first_name__icontains=query))
+                    queryset = self.model.objects.select_related("teacher").filter(Q(course_name__icontains=query) | Q(course_code__icontains=query) | Q(category__icontains=query) | Q(teacher__teacher_name__icontains=query))
                     return queryset
                 case "User":
                     queryset = self.model.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(email__icontains=query))
@@ -268,17 +269,17 @@ class ModelDownloadExcelView(BaseAuthorizedModelView):
             if self.menu_name == 'class':
                 worksheet.write_row(row, 0, [row, f"{data.class_name}", f"{data.short_class_name}"])
             elif self.menu_name == 'course':
-                worksheet.write_row(row, 0, [row, f"{data.course_name}", f"{data.course_code}", f"{data.teacher.first_name} {data.teacher.last_name}"])
+                worksheet.write_row(row, 0, [row, f"{data.course_name}", f"{data.course_code}", f"{data.teacher.teacher_name} {data.teacher.teacher_name}"])
             elif self.menu_name == 'report':
-                subtitute_teacher = f"{data.subtitute_teacher.first_name}" if data.subtitute_teacher else ""
-                reporter = f"{data.reporter.first_name}" if data.reporter else ""
+                subtitute_teacher = f"{data.subtitute_teacher.teacher_name}" if data.subtitute_teacher else ""
+                reporter = f"{data.reporter.teacher_name}" if data.reporter else ""
                 worksheet.write_row(row, 0, [row, f"{data.report_date}", f"{data.report_day}", data.status, data.schedule.schedule_time, f"{data.schedule.schedule_class}", f"{data.schedule.schedule_course.course_name}",
-                                         f"{data.schedule.schedule_course.teacher.first_name}", subtitute_teacher, reporter])
+                                         f"{data.schedule.schedule_course.teacher.teacher_name}", subtitute_teacher, reporter])
             elif self.menu_name == 'schedule':
                 worksheet.write_row(row, 0, [row, f"{data.schedule_day}", f"{data.schedule_time}", data.schedule_class.class_name, data.schedule_course.course_name, 
-                                         f"{data.schedule_course.teacher.first_name} {data.schedule_course.teacher.last_name}"])
+                                         f"{data.schedule_course.teacher.teacher_name} {data.schedule_course.teacher.teacher_name}"])
             elif self.menu_name == 'reporter-schedule':
-                reporter = data.reporter.first_name if data.reporter else data.reporter
+                reporter = data.reporter.teacher_name if data.reporter else data.reporter
                 worksheet.write_row(row, 0, [row, f"{data.schedule_day}", f"{data.schedule_time}", 
                                          f"{reporter}", f"{data.time_start}", f"{data.time_end}"])
             elif self.menu_name == 'user':
@@ -297,8 +298,8 @@ class QuickReportMixin(BaseAuthorizedModelView, ListView):
     def find_and_create_reports(self, valid_date_query: Any, time: Any) -> QuerySet[Any]:
         data = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher", "reporter")\
                                     .filter(report_date=valid_date_query, schedule__schedule_time=time)\
-                                    .values("id", "status", "reporter__last_name", "schedule__schedule_class", "schedule__time_start", "schedule__time_end",
-                                            "schedule__schedule_course__teacher__last_name",
+                                    .values("id", "status", "reporter__short_name", "schedule__schedule_class", "schedule__time_start", "schedule__time_end",
+                                            "schedule__schedule_course__teacher__short_name",
                                             "schedule__schedule_course__course_short_name").order_by('schedule__schedule_class')
         if len(data) == 15:
             self.grouped_report_data.append(data)
@@ -349,6 +350,7 @@ class QuickReportMixin(BaseAuthorizedModelView, ListView):
         context = super().get_context_data(**kwargs)
         context["grouped_report_data"] = self.grouped_report_data
         context["class"] = self.class_name
+        context["teachers"] = Teacher.objects.select_related('user').all()
         query_date = self.request.GET.get('query_date', str(datetime.now().date()))
         context["query_date"] = query_date
         return context
@@ -409,11 +411,11 @@ class ReportUpdateQuickViewMixin(BaseAuthorizedFormView, UpdateView):
         status = form.cleaned_data["status"]
         reporter = ''
         if object.reporter:
-            reporter = object.reporter.first_name
+            reporter = object.reporter.teacher_name
 
         message = f"laporan piket {object.report_day} {object.report_date} Jam ke-{object.schedule.schedule_time} {object.schedule.schedule_course} dengan status {status}"
         UserLog.objects.create(
-            user = reporter or  self.request.user.first_name,
+            user = reporter or  self.request.user.teacher_name,
             action_flag = "mengubah",
             app = self.app_name,
             message = message,

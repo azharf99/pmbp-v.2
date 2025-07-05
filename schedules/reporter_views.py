@@ -23,7 +23,7 @@ class ReporterScheduleView(BaseAuthorizedModelView, ListView):
         groupped_qs = []
         for i in range(1, 10):
             qs = ReporterSchedule.objects.select_related("reporter").filter(schedule_time=i)\
-                        .values('schedule_day', 'schedule_time', 'reporter__first_name', 'time_start', 'time_end')\
+                        .values('schedule_day', 'schedule_time', 'reporter__teacher_name', 'time_start', 'time_end')\
                         .order_by()
             if len(qs) > 0:
                 groupped_qs.append(qs)
