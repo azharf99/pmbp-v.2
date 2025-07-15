@@ -1,6 +1,3 @@
-
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>School Dashboard</title>
     <!-- Tailwind CSS CDN -->
-    <link rel="stylesheet" href="{% static 'css/build-fix.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons CDN -->
-    <script src="{% static 'js/lucide.min.js' %}"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Chart.js CDN -->
-    <script src="{% static 'js/chart.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Custom scrollbar for sidebar - cannot be fully converted to Tailwind */
         .sidebar-scroll::-webkit-scrollbar {
@@ -34,7 +31,7 @@
 
         /* General sidebar transition */
         .sidebar-transition {
-            transition: width 0.6s ease-in-out, transform 0.6s ease-in-out;
+            transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
         }
 
         /* Desktop specific sidebar styles */
@@ -131,9 +128,8 @@
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
             <!-- Desktop collapse/expand button -->
-            <button id="desktop-sidebar-toggle-btn" class="hidden md:block p-2 text-white hover:bg-blue-600 rounded-full absolute right-4">
-                <i data-lucide="chevron-left" class="w-6 h-6" id="desktop-sidebar-toggle-icon-left"></i>
-                <i data-lucide="chevron-right" class="w-6 h-6" id="desktop-sidebar-toggle-icon-right"></i>
+            <button id="desktop-sidebar-toggle-btn" class="hidden md:block p-2 text-white hover:bg-blue-600 rounded-full absolute -end-4">
+                <i data-lucide="chevron-left" class="w-6 h-6" id="desktop-sidebar-toggle-icon"></i>
             </button>
         </div>
         <nav class="mt-8 flex-grow sidebar-scroll overflow-y-auto pr-2">
@@ -270,7 +266,7 @@
                     <span class="font-medium text-gray-700 dark:text-gray-200 hidden md:block">Admin User</span>
 
                     <!-- User Dropdown Menu -->
-                    <div id="user-dropdown" class="absolute top-full mt-2 right-0 w-48 bg-white dark:bg-gray-700 rounded-xl shadow-lg z-50 hidden origin-top-right animate-fadeInScale p-2">
+                    <div id="user-dropdown" class="dropdown-menu absolute top-full mt-2 right-0 w-48 bg-white dark:bg-gray-700 rounded-xl shadow-lg z-50 hidden origin-top-right animate-fadeInScale p-2">
                         <ul>
                             <li>
                                 <a href="#" class="flex items-center p-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200">
@@ -289,7 +285,7 @@
                 </div>
 
                 <!-- Notifications Dropdown -->
-                <div id="notifications-dropdown" class="absolute top-full mt-2 right-0 w-80 bg-white dark:bg-gray-700 rounded-xl shadow-lg z-50 hidden origin-top-right animate-fadeInScale p-4 max-h-96 overflow-y-auto">
+                <div id="notifications-dropdown" class="dropdown-menu absolute top-full mt-2 right-0 w-80 bg-white dark:bg-gray-700 rounded-xl shadow-lg z-50 hidden origin-top-right animate-fadeInScale p-4 max-h-96 overflow-y-auto">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-3">Notifications</h3>
                     <div class="space-y-3">
                         <div class="flex items-start p-2 bg-blue-50 dark:bg-blue-900 rounded-lg border border-blue-200 dark:border-blue-700">
@@ -460,29 +456,6 @@
             <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Student Grades Overview</h3>
             <div class="h-64">
                 <canvas id="gradesChart"></canvas>
-            </div>
-        </section>
-
-        <!-- AI-Powered Tools Section -->
-        <section class="mt-6 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">AI-Powered Tools ✨</h3>
-            <div class="space-y-4">
-                <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
-                    <h4 class="text-lg font-medium text-gray-800 dark:text-gray-100 mb-3">Announcement Draft Generator</h4>
-                    <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">Describe the announcement you want to draft, and our AI will help you get started!</p>
-                    <textarea id="announcement-prompt" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-100 mb-4" rows="4" placeholder="e.g., 'Annual Sports Day on Oct 26, mention fun activities and encourage participation.'"></textarea>
-                    <button id="generate-announcement-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center">
-                        <span id="generate-spinner" class="hidden animate-spin h-5 w-5 mr-3 border-b-2 border-white rounded-full"></span>
-                        ✨ Generate Draft
-                    </button>
-                    <div id="announcement-output-container" class="mt-6 hidden">
-                        <h5 class="text-md font-semibold text-gray-800 dark:text-gray-100 mb-2">Generated Draft:</h5>
-                        <textarea id="announcement-output" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 dark:text-gray-100" rows="8" readonly></textarea>
-                        <button id="copy-announcement-btn" class="mt-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-100 font-bold py-2 px-4 rounded-lg transition-colors duration-200">
-                            Copy to Clipboard
-                        </button>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -693,8 +666,7 @@
             const sidebarOverlay = document.getElementById('sidebar-overlay');
             const mainContent = document.getElementById('main-content');
             const desktopSidebarToggleBtn = document.getElementById('desktop-sidebar-toggle-btn'); // Desktop toggle
-            const desktopSidebarToggleIconLeft = document.getElementById('desktop-sidebar-toggle-icon-left'); // Icon for desktop toggle
-            const desktopSidebarToggleIconRight = document.getElementById('desktop-sidebar-toggle-icon-right'); // Icon for desktop toggle
+            const desktopSidebarToggleIcon = document.getElementById('desktop-sidebar-toggle-icon'); // Icon for desktop toggle
             const notificationsBellBtn = document.getElementById('notifications-bell-btn');
             const notificationsDropdown = document.getElementById('notifications-dropdown');
             const userAvatarContainer = document.getElementById('user-avatar-container');
@@ -702,31 +674,21 @@
             const darkModeToggle = document.getElementById('dark-mode-toggle');
             const darkModeIcon = document.getElementById('dark-mode-icon');
 
-            // LLM Feature Elements
-            const announcementPrompt = document.getElementById('announcement-prompt');
-            const generateAnnouncementBtn = document.getElementById('generate-announcement-btn');
-            const generateSpinner = document.getElementById('generate-spinner');
-            const announcementOutputContainer = document.getElementById('announcement-output-container');
-            const announcementOutput = document.getElementById('announcement-output');
-            const copyAnnouncementBtn = document.getElementById('copy-announcement-btn');
-            
-
-
             desktopSidebarToggleBtn.addEventListener("click", ()=>{
                 const savedState = localStorage.getItem('sidebarCollapsed');
                 if (savedState === 'true'){
-                    document.getElementById('desktop-sidebar-toggle-icon-right').classList.remove("hidden");
-                    document.getElementById('desktop-sidebar-toggle-icon-left').classList.add("hidden");
-                } else {
-                    document.getElementById('desktop-sidebar-toggle-icon-right').classList.add("hidden");
-                    document.getElementById('desktop-sidebar-toggle-icon-left').classList.remove("hidden");
-                    
+                    desktopSidebarToggleBtn.textContent = "<"
+                    desktopSidebarToggleBtn.classList.add("px-4", "mx-2")
+                } else{
+                    desktopSidebarToggleBtn.textContent = ">"
+                    desktopSidebarToggleBtn.classList.add("px-4", "mx-2")   
                 }
+
             })
 
             // Function to save sidebar state to local storage
             function saveSidebarState(isCollapsed) {
-                localStorage.setItem('sidebarCollapsed', isCollapsed ? true : false);
+                localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
             }
 
             // Function to load sidebar state from local storage
@@ -739,10 +701,12 @@
             function applySidebarState(collapsedState) {
                 if (collapsedState) {
                     sidebar.classList.add('collapsed'); // Use 'collapsed' class for desktop
-                    desktopSidebarToggleIconRight.classList.toggle("hidden");
+                    mainContent.classList.add('sidebar-collapsed-margin');
+                    desktopSidebarToggleIcon.setAttribute('data-lucide', 'chevron-right');
                 } else {
                     sidebar.classList.remove('collapsed'); // Remove 'collapsed' class
-                    desktopSidebarToggleIconLeft.classList.toggle("hidden");
+                    mainContent.classList.remove('sidebar-collapsed-margin');
+                    desktopSidebarToggleIcon.setAttribute('data-lucide', 'chevron-left');
                 }
                 lucide.createIcons(); // Re-render icon after state change
             }
@@ -755,7 +719,7 @@
                     sidebarOverlay.classList.toggle('active');
                 } else {
                     // Desktop behavior: collapse/expand
-                    const savedState = localStorage.getItem('sidebarCollapsed');
+                    const isCurrentlyCollapsed = sidebar.classList.contains('collapsed');
                     applySidebarState(!isCurrentlyCollapsed); // Toggle and apply
                     saveSidebarState(!isCurrentlyCollapsed); // Save the new state
                 }
@@ -795,6 +759,7 @@
                     // On mobile:
                     // Ensure desktop-specific classes are removed
                     sidebar.classList.remove('collapsed', 'sidebar-desktop');
+                    mainContent.classList.remove('main-content-desktop', 'sidebar-collapsed-margin');
 
                     // Ensure mobile-specific classes are applied for initial hidden state
                     sidebar.classList.add('sidebar-mobile');
@@ -867,71 +832,6 @@
                     const isDark = htmlElement.classList.contains('dark');
                     applyDarkMode(!isDark);
                     localStorage.setItem('darkMode', !isDark);
-                });
-            }
-
-            // LLM Feature: Generate Announcement Draft
-            if (generateAnnouncementBtn) {
-                generateAnnouncementBtn.addEventListener('click', async () => {
-                    const promptText = announcementPrompt.value.trim();
-                    if (!promptText) {
-                        alert('Please enter a description for the announcement.');
-                        return;
-                    }
-
-                    generateSpinner.classList.remove('hidden');
-                    generateAnnouncementBtn.disabled = true;
-                    announcementOutputContainer.classList.add('hidden');
-                    announcementOutput.value = '';
-
-                    try {
-                        let chatHistory = [];
-                        chatHistory.push({ role: "user", parts: [{ text: `Draft a school announcement based on the following details: "${promptText}". Make it professional, engaging, and suitable for a school audience. Include a clear call to action if appropriate.` }] });
-                        const payload = { contents: chatHistory };
-                        const apiKey = ""; // Leave as empty string for Canvas to provide
-                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                        const response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload),
-                        });
-
-                        const result = await response.json();
-
-                        if (result.candidates && result.candidates.length > 0 &&
-                            result.candidates[0].content && result.candidates[0].content.parts &&
-                            result.candidates[0].content.parts.length > 0) {
-                            const text = result.candidates[0].content.parts[0].text;
-                            announcementOutput.value = text;
-                            announcementOutputContainer.classList.remove('hidden');
-                        } else {
-                            announcementOutput.value = 'Error: Could not generate announcement. Please try again.';
-                            announcementOutputContainer.classList.remove('hidden');
-                            console.error('Gemini API response structure unexpected:', result);
-                        }
-                    } catch (error) {
-                        announcementOutput.value = 'Error generating announcement: ' + error.message;
-                        announcementOutputContainer.classList.remove('hidden');
-                        console.error('Error calling Gemini API:', error);
-                    } finally {
-                        generateSpinner.classList.add('hidden');
-                        generateAnnouncementBtn.disabled = false;
-                    }
-                });
-            }
-
-            // Copy to Clipboard Logic
-            if (copyAnnouncementBtn) {
-                copyAnnouncementBtn.addEventListener('click', () => {
-                    announcementOutput.select();
-                    document.execCommand('copy');
-                    // Provide visual feedback
-                    const originalText = copyAnnouncementBtn.textContent;
-                    copyAnnouncementBtn.textContent = 'Copied!';
-                    setTimeout(() => {
-                        copyAnnouncementBtn.textContent = originalText;
-                    }, 2000);
                 });
             }
 

@@ -1,6 +1,4 @@
 
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>School Dashboard</title>
     <!-- Tailwind CSS CDN -->
-    <link rel="stylesheet" href="{% static 'css/build-fix.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons CDN -->
-    <script src="{% static 'js/lucide.min.js' %}"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Chart.js CDN -->
-    <script src="{% static 'js/chart.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Custom scrollbar for sidebar - cannot be fully converted to Tailwind */
         .sidebar-scroll::-webkit-scrollbar {
@@ -693,8 +691,7 @@
             const sidebarOverlay = document.getElementById('sidebar-overlay');
             const mainContent = document.getElementById('main-content');
             const desktopSidebarToggleBtn = document.getElementById('desktop-sidebar-toggle-btn'); // Desktop toggle
-            const desktopSidebarToggleIconLeft = document.getElementById('desktop-sidebar-toggle-icon-left'); // Icon for desktop toggle
-            const desktopSidebarToggleIconRight = document.getElementById('desktop-sidebar-toggle-icon-right'); // Icon for desktop toggle
+            const desktopSidebarToggleIcon = document.getElementById('desktop-sidebar-toggle-icon'); // Icon for desktop toggle
             const notificationsBellBtn = document.getElementById('notifications-bell-btn');
             const notificationsDropdown = document.getElementById('notifications-dropdown');
             const userAvatarContainer = document.getElementById('user-avatar-container');
@@ -709,24 +706,11 @@
             const announcementOutputContainer = document.getElementById('announcement-output-container');
             const announcementOutput = document.getElementById('announcement-output');
             const copyAnnouncementBtn = document.getElementById('copy-announcement-btn');
-            
 
-
-            desktopSidebarToggleBtn.addEventListener("click", ()=>{
-                const savedState = localStorage.getItem('sidebarCollapsed');
-                if (savedState === 'true'){
-                    document.getElementById('desktop-sidebar-toggle-icon-right').classList.remove("hidden");
-                    document.getElementById('desktop-sidebar-toggle-icon-left').classList.add("hidden");
-                } else {
-                    document.getElementById('desktop-sidebar-toggle-icon-right').classList.add("hidden");
-                    document.getElementById('desktop-sidebar-toggle-icon-left').classList.remove("hidden");
-                    
-                }
-            })
 
             // Function to save sidebar state to local storage
             function saveSidebarState(isCollapsed) {
-                localStorage.setItem('sidebarCollapsed', isCollapsed ? true : false);
+                localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
             }
 
             // Function to load sidebar state from local storage
@@ -739,10 +723,10 @@
             function applySidebarState(collapsedState) {
                 if (collapsedState) {
                     sidebar.classList.add('collapsed'); // Use 'collapsed' class for desktop
-                    desktopSidebarToggleIconRight.classList.toggle("hidden");
+                    desktopSidebarToggleIcon.setAttribute('data-lucide', 'chevron-right');
                 } else {
                     sidebar.classList.remove('collapsed'); // Remove 'collapsed' class
-                    desktopSidebarToggleIconLeft.classList.toggle("hidden");
+                    desktopSidebarToggleIcon.setAttribute('data-lucide', 'chevron-left');
                 }
                 lucide.createIcons(); // Re-render icon after state change
             }
@@ -755,7 +739,7 @@
                     sidebarOverlay.classList.toggle('active');
                 } else {
                     // Desktop behavior: collapse/expand
-                    const savedState = localStorage.getItem('sidebarCollapsed');
+                    const isCurrentlyCollapsed = sidebar.classList.contains('collapsed');
                     applySidebarState(!isCurrentlyCollapsed); // Toggle and apply
                     saveSidebarState(!isCurrentlyCollapsed); // Save the new state
                 }

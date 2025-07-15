@@ -38,7 +38,7 @@ class IndexView(ListView):
     model = Gallery
 
 urlpatterns = [
-    path('', HomeView.as_view(), name='app-index'),
+    path('', TemplateView.as_view(template_name="home.html"), name='app-index'),
     path('accounts/', include('users.urls')),
     path('admin/', admin.site.urls),
     path('class/', include('classes.urls')),
@@ -83,6 +83,7 @@ urlpatterns = [
     path('pmbp/olympiads/', include('olympiads.urls')),
     path('pmbp/projects/', include('projects.urls')),
 
+    path('dashboard/', TemplateView.as_view(template_name='dashboard.html'), name='dashboard'),
     path('message/', message_webhook, name='message-status'),
     path('tracking/', tracking_webhook, name='tracking-status'),
     path("pages/", include("django.contrib.flatpages.urls")),
