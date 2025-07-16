@@ -13,12 +13,12 @@ from xlsxwriter import Workbook
 from pandas import read_csv, read_excel
 from files.forms import FileForm
 from files.models import File
-from utils.mixins import GeneralAuthPermissionMixin, GeneralContextMixin, GeneralFormDeleteMixin, GeneralFormValidateMixin
+from utils_humas.mixins import GeneralAuthPermissionMixin, GeneralContextMixin, GeneralFormDeleteMixin, GeneralFormValidateMixin
 from private.models import Private
 from students.models import Student, Class
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from students.forms import ClassUpdateForm, StudentUpdateForm
+from students_humas.forms import ClassUpdateForm, StudentUpdateForm
 from userlog.models import UserLog
 from utils.whatsapp_albinaa import send_WA_create_update_delete
 from numpy import int8
@@ -208,7 +208,7 @@ class StudentPrivateView(ListView):
     
 class DownloadPrivateListView(ListView):
     model = Student
-    queryset = Student.objects.select_related('student_class').filter(status="Aktif")
+    queryset = Student.objects.select_related('student_class').filter(student_status="Aktif")
 
     
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:

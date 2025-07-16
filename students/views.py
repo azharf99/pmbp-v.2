@@ -1,3 +1,5 @@
+from django.conf import settings
+from xlsxwriter import Workbook
 from extracurriculars.models import Extracurricular
 from django.core.exceptions import PermissionDenied
 from files.forms import FileForm
@@ -326,3 +328,110 @@ class DownloadExcelInactiveStudent(LoginRequiredMixin, ListView):
         )
         send_WA_general(request.user.teacher.phone, 'download', 'data santri tidak aktif ekskul')
         return FileResponse(buffer, as_attachment=True, filename='Santri Nonaktif Ekskul SMA IT Al Binaa.xlsx')
+
+
+class StudentPrivateView(ListView):
+    model = Student
+    template_name = "students/student_private_list.html"
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return Student.objects.prefetch_related("student_class")
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        month_now, year_now = timezone.now().month, timezone.now().year
+        month_query = self.request.GET.get("month", default=f'{month_now}')
+        year_query = self.request.GET.get("year", default=f'{year_now}')
+        try:
+            month = int(month_query) if 0 < int(month_query) <= 12 else month_now
+            year = int((year_query)) if 0 < int(month_query) <= 9999 else year_now
+        except:
+            month = month_now
+            year = year_now
+        
+        object_list = self.get_queryset()
+        for obj in object_list:
+            obj.filtered_private_set = obj.private_set.filter(
+                    tanggal_bimbingan__month=month,
+                    tanggal_bimbingan__year=year
+            )
+        c["filtered_object_list"] = object_list
+        c["month"] = str(month)
+        c["year"] = str(year)
+        return c
+    
+class DownloadPrivateListView(ListView):
+    model = Student
+    queryset = Student.objects.filter(student_status="Aktif")
+
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if request.user.is_superuser:
+
+            month_now, year_now = timezone.now().month, timezone.now().year
+            month_query = self.request.GET.get("month", default=f'{month_now}')
+            year_query = self.request.GET.get("year", default=f'{year_now}')
+            try:
+                month = int(month_query) if 0 < int(month_query) <= 12 else month_now
+                year = int((year_query)) if 0 < int(month_query) <= 9999 else year_now
+            except:
+                month = month_now
+                year = year_now
+            object_list = self.get_queryset()
+            for obj in object_list:
+                obj.filtered_private_set = obj.private_set.filter(
+                        tanggal_bimbingan__month=month,
+                        tanggal_bimbingan__year=year
+                )
+
+            buffer = BytesIO()
+            workbook = Workbook(buffer)
+            worksheet = workbook.add_worksheet()
+            merge_format = workbook.add_format({
+                "bold": 1,
+                "border": 1,
+                "align": "center",
+                "valign": "vcenter",
+            })
+            title_format = workbook.add_format({
+                "bold": 1,
+                "border": 1,
+                "align": "center",
+                "valign": "vcenter",
+                "fg_color": "yellow",
+            })
+            worksheet.merge_range("A1:F1", "Daftar Kehadiran Privat Santri SMAS IT AL BINAA", merge_format)
+            worksheet.merge_range("A2:F2", f"Tahun Ajaran {settings.TAHUN_AJARAN}", merge_format)
+
+            worksheet.write_row(3, 0, ['No', 'Nama Santri', 'Kelas', 'Mata Pelajaran', 'Pengajar', 'Tanggal Kehadiran'], title_format)
+            row = 4
+            num = 1
+            col = 0
+            for data in object_list:
+                for private in data.filtered_private_set.all():
+                    worksheet.write_row(row, col, [num, data.student_name, data.student_class.class_name, f"{private.pelajaran}", f"{private.pembimbing}", f"{private.tanggal_bimbingan}"])
+                    num += 1
+                    row += 1
+
+            # Autofit the worksheet.
+            worksheet.autofit()
+            worksheet.set_column("A:A", 5)
+            workbook.close()
+            buffer.seek(0)
+
+            monthName = {0: "Bulan", 1:"Januari", 2:"Februari", 3:"Maret", 4:"April", 5:"Mei", 6:"Juni", 7:"Juli", 8:"Agustus", 9:"September", 10:"Oktober", 11:"November", 12:"Desember"}
+            try:
+                monthData = monthName.get(int(month))
+            except:
+                monthData = "Error"
+
+            UserLog.objects.create(
+                user=request.user.teacher,
+                action_flag="DOWNLOAD",
+                app="PRIVATE",
+                message="Berhasil download data privat santri dalam format Excel"
+            )
+
+            return FileResponse(buffer, as_attachment=True, filename=f'Privat Santri {monthData} {year} SMA IT Al Binaa T.A. {settings.TAHUN_AJARAN_STRIPPED}.xlsx')
+        
+        raise PermissionDenied
