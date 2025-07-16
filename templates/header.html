@@ -36,7 +36,7 @@
             <img class="rounded-full" src="{{ request.user.teacher.photo|thumbnail_url:'avatar' }}" alt="Profile" height="25px" width="25px" />
           </div>
         </button>
-        <div class="absolute grid my-2 z-10 left-0 p-2 bg-white dark:bg-gray-800 rounded-md hidden w-full" id="user_menu">
+        <div class="absolute grid my-2 z-10 left-0 p-2 bg-white dark:bg-gray-800 rounded-md w-full" id="user_menu">
           <a href="{% url 'profile' %}" class="p-1 my-2 text-xs font-semibold hover:text-blue-700">Profile</a>
           <form action="{% url 'logout' %}" method="post" class="hover:bg-indigo-200 dark:hover:bg-gray-700 rounded-lg">
             {% csrf_token %}
@@ -94,7 +94,7 @@
             <img class="rounded-full" src="{{ request.user.teacher.photo|thumbnail_url:'avatar' }}" alt="Profile" height="25px" width="25px" />
           </div>
         </button>
-        <div class="absolute grid my-2 z-10 left-0 p-2 bg-white dark:bg-gray-800 rounded-md hidden w-full" id="user_menu2">
+        <div class="absolute grid my-2 z-10 left-0 p-2 bg-white dark:bg-gray-800 rounded-md w-full" id="user_menu2">
           <a href="{% url 'profile' %}" class="p-1 my-2 text-xs font-semibold hover:text-blue-700">Profile</a>
           <form action="{% url 'logout' %}" method="post" class="hover:bg-indigo-200 dark:hover:bg-gray-700 rounded-lg">
             {% csrf_token %}
