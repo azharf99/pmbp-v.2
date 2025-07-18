@@ -3,36 +3,15 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{site_title|default:"SMAS IT AL BINAA"}}</title>
-  <meta content="Pengembangan Minat, Bakat dan Pembinaan Prestasi SMAS IT Al Binaa" name="description" />
-  <meta
-  content="SMA IT Al Binaa, SMAS IT Al Binaa, SMAIT AL Binaa, SMAS IT AL BINAA, AL BINAA, albinaa"
-  name="keywords" />
-  <meta name="theme-color" content="#89c4ec" />
-  <link rel="canonical" href="https://smait.albinaa.sch.id/" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="SMAS IT AL BINAA" />
-  <meta property="og:url" content="https://smait.albinaa.sch.id/" />
-  <meta property="og:site_name" content="SMAS IT AL BINAA IBS" />
-  <link rel="icon" type="image/png" href="{% static '/icon/favicon-96x96.png' %}" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="{% static '/icon/favicon.svg' %}" />
-  <link rel="shortcut icon" href="{% static '/icon/favicon.ico' %}" />
-  <link rel="apple-touch-icon" sizes="180x180" href="{% static '/icon/apple-touch-icon.png' %}" />
-  <meta name="apple-mobile-web-app-title" content="SMA IT AL BINAA" />
-  <link rel="manifest" href="{% static 'manifest.json' %}" />
-  <link rel="stylesheet" href="{% static 'css/build.css' %}">
-  
+  {% include 'head.html' %}
 </head>
 
 <body class="bg-gray-100 dark:bg-black dark:text-gray-200">
   <header class="bg-blue-500 dark:bg-gradient-to-r dark:from-slate-900 dark:via-purple-800 dark:to-black w-full sticky top-0">
-    <nav class="backdrop-blur-sm mx-auto flex w-full items-center justify-between p-6 lg:px-8" aria-label="Global">
+    <nav class="backdrop-blur-sm mx-auto flex w-full items-center justify-between p-4 lg:px-8" aria-label="Global">
       <div class="flex lg:flex-1">
-        <a href="{% url 'app-index' %}" class="-m-1.5 p-1.5">
-          <span class="sr-only">PMBP - SMAS IT AL BINAA</span>
+        <a href="{% url 'home' %}" class="-m-1.5 p-1.5">
+          <span class="sr-only">PIKET - SMAS IT AL BINAA</span>
           <img class="h-8 w-auto" src="{% static 'images/Binaaul-Mustaqbal.png' %}" alt="Logo" />
         </a>
       </div>
@@ -58,10 +37,10 @@
         <div class="px-4 relative">
           <button class="mr-4 rounded-full border-2 border-white dark:border-fuchsia-400" id="avatar">
             <div>
-              <img class="rounded-full" src="{{ request.user.teacher.photo|thumbnail_url:'avatar' }}" alt="Profile" height="25px" width="25px" />
+              <img class="rounded-full" src="{% static 'images/blank-profile.png' %}" alt="Profile" height="25px" width="25px" />
             </div>
           </button>
-          <div class="absolute grid my-2 z-10 left-0 p-2 bg-white dark:bg-gray-800 rounded-md w-full" id="user_menu">
+          <div class="absolute my-2 z-10 left-0 p-2 bg-white dark:bg-gray-800 rounded-md hidden w-full" id="user_menu">
             <a href="{% url 'profile' %}" class="p-1 my-2 text-xs font-semibold hover:text-blue-700">Profile</a>
             <form action="{% url 'logout' %}" method="post" class="hover:bg-indigo-200 dark:hover:bg-gray-700 rounded-lg">
               {% csrf_token %}
@@ -80,11 +59,12 @@
         </button>
       </div>
       <div class="hidden lg:flex lg:gap-x-12">
-        <a href="{% url 'app-index' %}" class="text-sm font-semibold leading-6 text-gray-100">Beranda</a>
-        <a href="#ekskul" class="text-sm font-semibold leading-6 text-gray-100">Ekstrakurikuler</a>
-        <a href="#prestasi" class="text-sm font-semibold leading-6 text-gray-100">Prestasi</a>
-        <a href="#galeri" class="text-sm font-semibold leading-6 text-gray-100">Galeri Kegiatan</a>
-        <a href="#profil" class="text-sm font-semibold leading-6 text-gray-100">Profil PMBP</a>
+        <a href="{% url 'home' %}" class="text-sm font-semibold leading-6 text-gray-100">Beranda</a>
+        <a href="{% url 'report-quick-create-v3' %}" class="text-sm font-semibold leading-6 text-gray-100">Laporan</a>
+        <a href="{% url 'class-list' %}" class="text-sm font-semibold leading-6 text-gray-100">Kelas</a>
+        <a href="{% url 'course-list' %}" class="text-sm font-semibold leading-6 text-gray-100">Pelajaran</a>
+        <a href="{% url 'schedule-list' %}" class="text-sm font-semibold leading-6 text-gray-100">Jadwal</a>
+        <a href="{% url 'user-list' %}" class="text-sm font-semibold leading-6 text-gray-100">Guru</a>
       </div>
       
       <div class="hidden lg:flex lg:flex-1 lg:justify-end items-center">
@@ -109,10 +89,10 @@
         <div class="px-4 relative">
           <button class="rounded-full mr-4 border-2 border-white  dark:border-fuchsia-400" id="avatar2">
             <div>
-              <img class="rounded-full" src="{{ request.user.teacher.photo|thumbnail_url:'avatar' }}" alt="Profile" height="25px" width="25px" />
+              <img class="rounded-full" src="{% static 'images/blank-profile.png' %}" alt="Profile" height="25px" width="25px" />
             </div>
           </button>
-          <div class="absolute grid my-2 z-10 left-0 p-2 bg-white dark:bg-gray-800 rounded-md w-full" id="user_menu2">
+          <div class="absolute my-2 z-10 left-0 p-2 bg-white dark:bg-gray-800 rounded-md hidden w-full" id="user_menu2">
             <a href="{% url 'profile' %}" class="p-1 my-2 text-xs font-semibold hover:text-blue-700">Profile</a>
             <form action="{% url 'logout' %}" method="post" class="hover:bg-indigo-200 dark:hover:bg-gray-700 rounded-lg">
               {% csrf_token %}
@@ -145,18 +125,14 @@
         <div class="mt-6 flow-root">
           <div class="-my-6 divide-y divide-gray-500/10 dark:divide-white">
             <div class="space-y-2 py-6">
-              <a href="{% url 'app-index' %}"
+              <a href="{% url 'home' %}"
                 class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Beranda</a>
-              <a href="#ekskul"
-                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Ekstrakurikuler</a>
-              <a href="#prestasi"
-                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Prestasi</a>
-              <a href="#galeri"
-                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Galeri
-                Kegiatan</a>
-              <a href="#profil"
-                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Profil
-                PMBP</a>
+              <a href="{% url 'report-quick-create-v3' %}"
+                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Laporan</a>
+                <a href="{% url 'class-list' %}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Kelas</a>
+                <a href="{% url 'course-list' %}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Pelajaran</a>
+                <a href="{% url 'schedule-view' %}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Jadwal</a>
+                <a href="{% url 'user-list' %}" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Guru</a>
             </div>
             <div class="py-6">
               {% if request.user.is_authenticated %}
@@ -184,16 +160,15 @@
       <div class="py-4 px-4 md:text-left text-center lg:py-16 md:w-3/4">
         <h1
           class="mb-4 text-4xl lg:px-10 font-extrabold tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-b from-white to-teal-200 md:text-5xl lg:text-6xl dark:via-fuchsia-400 dark:to-white">
-          Pengembangan Minat, Bakat dan Pembinaan Prestasi
+          APLIKASI PIKET
         </h1>
         <p class="mb-4 text-lg font-semibold text-white lg:text-xl sm:px-16 lg:px-10 dark:text-gray-300">
           SMAS IT AL BINAA ISLAMIC BOARDING SCHOOL BEKASI
         </p>
         <p class="mb-8 text-lg font-semibold text-white lg:text-xl sm:px-16 lg:px-10 dark:text-gray-300">
-          Kami adalah wadah dalam mengeksresikan minat, mengeksplorasi bakat
-          dan potensi serta menjadi mesin pencetak prestasi.
+          Sebuah aplikasi berbasis web untuk mengelola sistem petugas piket.
         </p>
-        <div class="lg:px-10 flex gap-4">
+        <div class="lg:px-10 gap-4 flex justify-center">
           <a href="{% url 'dashboard' %}"
             class="py-3 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-black dark:hover:bg-gray-70">
             Dashboard &rarr;
@@ -206,124 +181,12 @@
           {% endif %}
         </div>
       </div>
-      <div class="py-4 px-4 lg:py-16">
-        <img src="{% static 'images/hero.png' %}" alt="Hero" loading="eager">
+      <div class="py-4 px-4 lg:py-16 w-1/2 mx-auto">
+        <img src="{% static 'images/hero.svg' %}" alt="Hero">
       </div>
     </section>
 
-    <section class="p-4 md:p-8 bg-yellow-300 dark:bg-black" id="ekskul">
-      <div class="text-center">
-        <p class="p-4 text-3xl font-bold">Ekstrakurikuler & Kelompok Belajar</p>
-        <p class="my-4">
-          Kami memiliki total {{ekskul.count}} Ekstrakurikuler dan Kelompok Belajar <em>(Studi Club)</em> yang terdiri dari:
-        </p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {% for object in ekskul %}
-        <div class="flex items-start gap-4 p-2">
-          <img
-            src="{{object.logo|thumbnail_url:'small'}}"
-            alt="{{object.name|title}} {{forloop.counter}}" class="size-20 rounded-lg object-cover" />
-
-          <div>
-            <h3 class="text-lg/tight font-medium">
-              {{object.name|title}}
-            </h3>
-            {% for pembina in object.teacher.all %}
-            <p class="mt-0.5">
-              {{pembina.teacher_name|title}}
-            </p>
-            {% endfor %}
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </section>
-
-    <section class="p-4 md:p-8 bg-lime-500 text-white dark:bg-black" id="prestasi">
-      <div class="text-center">
-        <p class="p-4 text-3xl font-bold">Prestasi</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {% for object in object_list %}
-        <div class="flex items-start gap-4 p-2">
-          <img
-            src="{{object.photo|thumbnail_url:'medium'}}"
-            alt="{{object.awardee|title}} {{forloop.counter}}" class="size-20 rounded-lg object-cover" />
-
-          <div>
-            <h3 class="text-lg/tight font-medium">
-              {{object.awardee|title}}
-            </h3>
-            
-            <p class="mt-0.5">
-              {{object.predicate|title}}
-            </p>
-            <p class="mt-0.5">
-              {{object.name|title}} {{object.year}}
-            </p>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </section>
-
-    <section class="p-4 md:p-8 bg-rose-500 dark:bg-black" id="galeri">
-      <div class="p-4 text-center">
-        <p class="text-3xl font-bold">Galeri Kegiatan</p>
-      </div>
-
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {% for object in kegiatan %}
-        <div>
-          <img class="h-auto max-w-full rounded-lg"
-            src="{{object.photo|thumbnail_url:'medium'}}" alt="{{object.nama_ekskul}} {{forloop.counter}}" />
-        </div>
-        {% endfor %}
-        
-      </div>
-    </section>
-
-    <section class="bg-purple-300 dark:bg-black" id="profil">
-      <div class="text-center py-4">
-        <p class="text-3xl font-bold">Profil PMBP</p>
-      </div>
-      <div class="space-y-4 py-5 px-4">
-        <details class="group [&_summary::-webkit-details-marker]:hidden" open>
-          <summary
-            class="flex cursor-pointer items-center justify-between gap-1.5 rounded-lg bg-gray-50 dark:bg-gray-900 dark:text-gray-50 p-4 text-gray-900">
-            <h2 class="font-medium">Apa itu PMBP?</h2>
-
-            <svg class="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </summary>
-
-          <p class="mt-4 px-4 leading-relaxed ">
-            PMBP singkatan dari Pengembangan Minat, Bakat dan Pembinaan Prestasi. Hal ini merupakan salah satu bidang wakil kepala sekolah di SMAS IT Al Binaa.
-          </p>
-        </details>
-
-        <details class="group [&_summary::-webkit-details-marker]:hidden">
-          <summary
-            class="flex cursor-pointer items-center justify-between gap-1.5 rounded-lg bg-gray-50 dark:bg-gray-900 dark:text-gray-50 p-4 text-gray-900">
-            <h2 class="font-medium">Apa saja tugas dan tanggung jawab bidang PMBP?</h2>
-
-            <svg class="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </summary>
-
-          <ol class="mt-4 px-4 list-outside mx-4 list-decimal">
-            <li>Menyaring dan menggembangkan minat dan bakat peserta didik</li>
-            <li>Berpartisipasi aktif dalam program pendidikan nasional dalam pengembangan diri peserta didik</li>
-            <li>Mempersiapkan peserta didik siap bersaing dalam ajang perlombaan non akademik</li>
-          </ol>
-        </details>
-      </div>
-    </section>
+    
   </main>
 
   <footer class="bg-indigo-500 text-white dark:bg-black">
@@ -333,30 +196,29 @@
       </div>
 
       <p class="mx-auto mt-6 max-w-md text-center leading-relaxed">
-        Pengembangan Minat, Bakat dan Pembinaan Prestasi (PMBP) SMAS IT Al BINAA <br>
+        PIKET SMAS IT Al BINAA <br>
         Jl. Raya Pebayuran, Desa Kertasari, Kec. Pebayuran Kab. Bekasi, Jawa Barat, Indonesia <br>
-        <a href="mailto:smaitalbinaa.ekskul@outlook.com">smaitalbinaa.ekskul@outlook.com</a> | +6285701570100
+        <a href="mailto:smaitalbinaa.ekskul@outlook.com">putra@albinaa.sch.id</a> | <a href="tel:+6285701570100">+6285701570100</a>
       </p>
 
       <ul class="my-4 flex flex-wrap justify-center gap-2 md:gap-6">
         <li>
-          <a class="transition hover:text-gray-700/75" href="#"> Beranda </a>
+          <a href="{% url 'home' %}" class="transition hover:text-gray-700/75">Beranda</a>
         </li>
-
         <li>
-          <a class="transition hover:text-gray-700/75" href="#"> Profil PMBP </a>
+          <a href="{% url 'report-quick-create-v3' %}" class="transition hover:text-gray-700/75">Laporan</a>
         </li>
-
         <li>
-          <a class="transition hover:text-gray-700/75" href="#"> Ekstrakurikuler </a>
+          <a href="{% url 'class-list' %}" class="transition hover:text-gray-700/75">Kelas</a>
         </li>
-
         <li>
-          <a class="transition hover:text-gray-700/75" href="#"> Prestasi </a>
+          <a href="{% url 'course-list' %}" class="transition hover:text-gray-700/75">Pelajaran</a>
         </li>
-
         <li>
-          <a class="transition hover:text-gray-700/75" href="#"> Galeri </a>
+          <a href="{% url 'schedule-view' %}" class="transition hover:text-gray-700/75">Jadwal</a>
+        </li>
+        <li>
+          <a href="{% url 'user-list' %}" class="transition hover:text-gray-700/75">Guru</a>
         </li>
       </ul>
 
@@ -387,27 +249,19 @@
   </footer>
 
   <script src="{% static 'js/dashboard.js' %}"></script>
-  <script>
-    const avatar = document.getElementById("avatar");
-    const user_menu = document.getElementById("user_menu");
-    if (avatar){
-      avatar.addEventListener("click", ()=>{
-          user_menu.classList.toggle("hidden")
-          console.log("Haii")
-      })
+  <script src="{% static 'js/avatar.js' %}"></script>
+  
 
-    }
-    const avatar2 = document.getElementById("avatar2");
-    const user_menu2 = document.getElementById("user_menu2");
-    if(avatar2){
-      avatar2.addEventListener("click", ()=>{
-          user_menu2.classList.toggle("hidden")
-          console.log("Haii")
-      })
-    }
-  </script>
-
-
+  <div class="lg:hidden sticky bottom-0 left-0 text-center p-2" id="bottom-menu">
+    <div class="flex justify-center p-2 px-6 dark:bg-gray-800 bg-blue-600 rounded-lg">
+      <a href="{% url 'home' %}"><p class="px-4 py-2 mx-2 text-sm {{home}} rounded-lg flex flex-col">&#127968;<span class="text-xs text-black font-semibold">Home</span></p></a>
+      <a href="{% url 'report-quick-create-v3' %}"><p class="px-4 py-2 mx-2 text-sm {{report}} rounded-lg flex flex-col">&#128221;<span class="text-xs text-black font-semibold">Report</span></p></a>
+      <a href="{% url 'menu' %}"><p class="px-4 py-2 mx-2 text-sm bg-gray-300 rounded-lg {{menu}} flex flex-col">&#128241;<span class="text-xs text-black font-semibold">Menu</span></p></a>
+      {% if request.user.is_authenticated %}
+      <a href="{% url 'profile' %}"><p class="px-4 py-2 mx-2 text-sm bg-gray-300 {{profile}} rounded-lg flex flex-col">&#128100;<span class="text-xs text-black font-semibold">Profile</span></p></a>
+      {% endif %}
+    </div>
+  </div>
     
 </body>
 

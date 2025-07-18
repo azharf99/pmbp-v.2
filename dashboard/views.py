@@ -14,7 +14,7 @@ from userlog.models import UserLog
 # Create your views here.
 class HomeView(ListView):
     model = Prestasi
-    template_name = 'index.html'
+    template_name = 'pmbp.html'
 
     def get_queryset(self) -> QuerySet[Any]:
         return Prestasi.objects.exclude(Q(photo='no-image.png') | Q(photo__isnull=True))[:12]

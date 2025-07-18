@@ -47,14 +47,14 @@ urlpatterns = [
     path('galleries/', include("galleries.urls")),
     path('files/', include('files.urls')),
 
-    path('humas/', IndexView.as_view(template_name="index.html"), name='humas-index'),
+    path('humas/', IndexView.as_view(template_name="humas.html"), name='humas-index'),
     path('humas/alumni/', include("alumni.urls")),
     path('humas/dashboard/', HumasDashboardView.as_view(), name="dashboard"),
     path('humas/private/', include("private.urls")),
     path('humas/students/', include("students.urls")),
 
 
-    path('piket/', TemplateView.as_view(template_name='home.html'), export_home_kwargs("home", "PIKET"), "home"),
+    path('piket/', TemplateView.as_view(template_name='piket.html'), export_home_kwargs("home", "PIKET"), "home"),
     path('piket/menu/', TemplateView.as_view(template_name='menu.html'), export_home_kwargs("menu", "MENU PIKET"), "menu"),
     path('piket/dashboard/', DashboardListView.as_view(), export_home_kwargs("dashboard", "DASHBOARD PIKET"), "dashboard"),
     path('piket/dashboard/teachers/', TeacherRecapListView.as_view(), export_home_kwargs("dashboard", "DATA KEHADIRAN GURU"), "dashboard-teachers"),
