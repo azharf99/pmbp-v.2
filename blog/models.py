@@ -5,6 +5,8 @@ from django.utils.translation import gettext as _
 from ckeditor_uploader.fields import RichTextUploadingField
 from taggit.managers import TaggableManager
 
+from utils.models import CleanableFileModel
+
 # Create your models here.
 
 class Category(models.Model):
@@ -29,7 +31,7 @@ class Category(models.Model):
         return reverse('blog:category-list')
 
 
-class Post(models.Model):
+class Post(CleanableFileModel):
     STATUS_CHOICES = (
         ('draft', _('Draft')),
         ('published', _('Published')),
@@ -59,6 +61,8 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+    
+    file_field_names = ['featured_image']
 
     def get_absolute_url(self):
         return reverse('blog:post-detail', args=[self.slug])

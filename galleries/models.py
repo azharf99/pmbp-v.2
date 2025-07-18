@@ -2,8 +2,10 @@ from django.db import models
 from django.utils.translation import gettext as _
 from django.urls import reverse
 
+from utils.models import CleanableFileModel
+
 # Create your models here.
-class Gallery(models.Model):
+class Gallery(CleanableFileModel):
     title = models.CharField(_("Judul Galeri"), max_length=255, blank=True)
     image = models.FileField(upload_to='gallery/activity', help_text="Format .jpg/.png", verbose_name=_("Gambar"))
     caption = models.CharField(_("Caption Gambar"), max_length=255, blank=True)
@@ -12,6 +14,8 @@ class Gallery(models.Model):
 
     def __str__(self) -> str:
         return f"Galeri {self.title if self.title else self.id}"
+    
+    file_field_names = ['image']
     
 
     def get_absolute_url(self):

@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 from django.utils.text import slugify
 from students.models import Student
 from users.models import Teacher
+from utils.models import CleanableFileModel
 
 days = (
         (None, _("Choose training Day")),
@@ -55,7 +56,7 @@ class PathAndRename(object):
 
 path_and_rename = PathAndRename('ekskul/logo')
 
-class Extracurricular(models.Model):
+class Extracurricular(CleanableFileModel):
     name = models.CharField(_("Extracurricular/SC Name"), max_length=50)
     short_name = models.CharField(_("Short Name"), max_length=20, blank=True, null=True)
     teacher = models.ManyToManyField(Teacher, verbose_name=_("Teachers"), help_text=_("Ketik nama yang ingin dicari dan pilih pembimbing. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
@@ -73,6 +74,8 @@ class Extracurricular(models.Model):
 
     def __str__(self):
         return self.name
+    
+    file_field_names = ['logo']
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)

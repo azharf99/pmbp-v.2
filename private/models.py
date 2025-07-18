@@ -7,6 +7,7 @@ from django.urls import reverse
 
 from students.models import Student
 from users.models import Teacher
+from utils.models import CleanableFileModel
 
 # Create your models here.
 year_now = timezone.now().year
@@ -59,7 +60,7 @@ class Group(models.Model):
             models.Index(fields=["id",]),
         ]
 
-class Private(models.Model):
+class Private(CleanableFileModel):
     pembimbing = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name=_("Pembimbing"))
     pelajaran = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name=_("Pelajaran"))
     tanggal_bimbingan = models.DateField(verbose_name=_("Tanggal"))
@@ -75,6 +76,7 @@ class Private(models.Model):
     def __str__(self):
         return f"{self.pelajaran} ({self.tanggal_bimbingan.strftime('%d %B %Y')})"
     
+    file_field_names = ['foto']
 
     def get_absolute_url(self):
         return reverse("private:private-index")

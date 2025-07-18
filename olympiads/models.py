@@ -8,6 +8,8 @@ from users.models import Teacher
 from students.models import Student
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext as _
+
+from utils.models import CleanableFileModel
 # Create your models here.
 
 @deconstructible
@@ -61,7 +63,7 @@ class OlympiadField(models.Model):
         ]
 
 
-class OlympiadReport(models.Model):
+class OlympiadReport(CleanableFileModel):
     field_name = models.ForeignKey(OlympiadField, on_delete=models.CASCADE, verbose_name=_("Olympiad Field"))
     report_date = models.DateField(_("Report Date"))
     students = models.ManyToManyField(Student, blank=True, verbose_name=_("Student's Students"), help_text=_("Ketik yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu)"))
@@ -74,6 +76,8 @@ class OlympiadReport(models.Model):
 
     def __str__(self):
         return f'{self.field_name} tanggal {self.report_date}'
+    
+    file_field_names = ['report_photo']
     
     def get_absolute_url(self):
         return reverse('olympiad-report-list')

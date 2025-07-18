@@ -2,9 +2,11 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
+from utils.models import CleanableFileModel
+
 # Create your models here.
 
-class Alumni(models.Model):
+class Alumni(CleanableFileModel):
     nis = models.CharField(_("NIS"), max_length=255, blank=True, null=True)
     nisn = models.CharField(_("NISN"), max_length=255, blank=True, null=True)
     name = models.CharField(_("Nama Lengkap"), max_length=255, help_text=("Dilengkapi gelar jika ada"))
@@ -41,6 +43,7 @@ class Alumni(models.Model):
     def __str__(self) -> str:
         return f"{self.name} | Angkatan {self.group or '-'}"
     
+    file_field_names = ['photo']
 
     def get_absolute_url(self):
         return reverse("alumni:alumni-detail", args={self.id})

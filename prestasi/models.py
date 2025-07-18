@@ -7,6 +7,8 @@ from django.urls import reverse
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext as _
 
+from utils.models import CleanableFileModel
+
 
 @deconstructible
 class PathAndRename(object):
@@ -29,7 +31,7 @@ path_and_rename = PathAndRename('prestasi')
 path_and_rename2 = PathAndRename('prestasi/sertifikat')
 
 
-class Prestasi(models.Model):
+class Prestasi(CleanableFileModel):
     category = models.CharField(_("Kategori"), max_length=100)
     type = models.CharField(_("Jenis Lomba"), max_length=100)
     level = models.CharField(_("Tingkat Lomba"), max_length=100)
@@ -50,6 +52,8 @@ class Prestasi(models.Model):
 
     def __str__(self):
         return f"{self.awardee} {self.predicate} {self.name} {self.year}"
+    
+    file_field_names = ['photo', 'certificate']
     
     def get_absolute_url(self):
         return reverse("prestasi-list")

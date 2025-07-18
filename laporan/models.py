@@ -9,6 +9,7 @@ from users.models import Teacher
 from students.models import Student
 from django.utils.deconstruct import deconstructible
 from random import randint
+from utils.models import CleanableFileModel
 
 
 @deconstructible
@@ -31,7 +32,7 @@ class PathAndRename(object):
 path_and_rename = PathAndRename('ekskul/laporan')
 
 # Create your models here.
-class Report(models.Model):
+class Report(CleanableFileModel):
     extracurricular = models.ForeignKey(Extracurricular, on_delete=models.CASCADE)
     teacher = models.ManyToManyField(Teacher, help_text=_("Ketik nama yang ingin dicari dan pilih. Kamu bisa memilih lebih dari 1 (satu). Untuk menghapusnya, klik nama yang ingin dihapus hingga berwarna biru/terang, lalu tekan delete atau backspace."))
     report_date = models.DateField(_("Report Date"))
@@ -45,6 +46,8 @@ class Report(models.Model):
 
     def __str__(self):
         return f"{self.extracurricular} {self.report_date.strftime('%d %B %Y')}"
+    
+    file_field_names = ['photo']
     
 
     def get_absolute_url(self):

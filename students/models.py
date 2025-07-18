@@ -7,6 +7,8 @@ from django.utils.translation import gettext as _
 from django.utils import timezone
 from uuid import uuid4
 
+from utils.models import CleanableFileModel
+
 @deconstructible
 class PathAndRename(object):
 
@@ -28,7 +30,7 @@ path_and_rename = PathAndRename('student')
 
 
 # Create your models here.
-class Student(models.Model):
+class Student(CleanableFileModel):
     nis = models.CharField(max_length=20, unique=True)
     nisn = models.CharField(max_length=20, blank=True, null=True)
     student_name = models.CharField(max_length=100)
@@ -47,6 +49,8 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.student_class} | {self.student_name}"
+    
+    file_field_names = ['photo']
 
     def get_absolute_url(self):
         return reverse("student-list")

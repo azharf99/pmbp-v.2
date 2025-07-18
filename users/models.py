@@ -6,6 +6,8 @@ from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext as _
 from uuid import uuid4
 from random import randint
+
+from utils.models import CleanableFileModel
 # Create your models here.
 
 @deconstructible
@@ -28,7 +30,7 @@ class PathAndRename(object):
 path_and_rename = PathAndRename('user')
 
 
-class Teacher(models.Model):
+class Teacher(CleanableFileModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Username",)
     niy = models.IntegerField(default=0, verbose_name='NIY')
     teacher_name = models.CharField(max_length=100, verbose_name="Nama Pembina", help_text="Nama lengkap pembina, misal: Aam Hamdani, S.Pd.")
@@ -45,6 +47,8 @@ class Teacher(models.Model):
 
     def __str__(self):
         return self.teacher_name
+    
+    file_field_names = ['photo']
 
     def get_absolute_url(self):
         return reverse("teacher-list")
