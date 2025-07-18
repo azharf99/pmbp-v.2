@@ -141,7 +141,7 @@ class NilaiQuickCreateView(LoginRequiredMixin, CreateView):
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         ex_id = request.POST.get("extracurricular")
         extracurricular = Extracurricular.objects.get(id=ex_id)
-        data = requests.get(f"https://pmbp.albinaa.sch.id/extracurriculars/get-members/?query={ex_id}")
+        data = requests.get(f"https://smait.albinaa.sch.id/pmbp/extracurriculars/get-members/?query={ex_id}")
         # data = requests.get(f"http://127.0.0.1:8000/extracurriculars/get-members/?query={ex_id}")
         response = json.loads(data.text)
         for i in range(1, len(response)+1):

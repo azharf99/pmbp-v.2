@@ -24,12 +24,12 @@
       <p class="text-2xl">
         &triangleright;
       </p>
-      <a href="{% url 'report-list' %}">Laporan List</a>
+      <a href="{% url 'extracurricular:report-list' %}">Laporan List</a>
       <p class="text-2xl">
         &triangleright;
       </p>
       {% if form_name == "Create" %}
-      <a href="{% url 'report-create' %}">Laporan {{form_name}} Form</a>
+      <a href="{% url 'extracurricular:report-create' %}">Laporan {{form_name}} Form</a>
       {% else %}
       <a href="">Laporan {{form_name}} Form</a>
       {% endif %}
@@ -47,7 +47,7 @@
             <span class="sr-only">Info</span>
             <div>
               <span class="font-medium">Success!</span> {{message.message}}
-              <p class="m-2">Silahkan lihat hasilnya <a href="{% url 'report-list' %}" class="p-1 rounded-md bg-green-500 text-white font-bold">di sini</a></p>
+              <p class="m-2">Silahkan lihat hasilnya <a href="{% url 'extracurricular:report-list' %}" class="p-1 rounded-md bg-green-500 text-white font-bold">di sini</a></p>
             </div>
           </div>
           {% else %}
@@ -90,7 +90,7 @@
               {% endif %}
               
               <input type="submit" id="submit" value="{{form_name|default:'Input'}} Data" class="text-white p-2 bg-blue-500 rounded-md cursor-pointer hover:bg-fuchsia-500 my-4">
-              <div id="loading" class="hidden flex gap-4 justify-center items-center text-white p-2 bg-blue-500 rounded-md cursor-pointer my-4">
+              <div id="loading" class="hidden gap-4 justify-center items-center text-white p-2 bg-blue-500 rounded-md cursor-pointer my-4">
                 <div class="loader"></div>
                 <p>Loading ...</p>
               </div>

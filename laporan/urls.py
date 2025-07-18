@@ -2,6 +2,8 @@ from django.urls import path
 from laporan.views import ReportIndexView, ReportDetailView, PrintToPrintView, \
                          ReportOptionsView, ReportCreateView, ReportUpdateView, ReportDeleteView
 
+app_name = 'extracurricular'
+
 urlpatterns = [
     path('', ReportIndexView.as_view(), name='report-list'),
     path('create/', ReportCreateView.as_view(), name='report-create'),

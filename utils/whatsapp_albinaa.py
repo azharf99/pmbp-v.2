@@ -14,7 +14,7 @@ def send_WA_create_update_delete(phone: str | None = admin_phone, action: str = 
         message = f'''*[NOTIFIKASI PMBP]*
 Anda berhasil {action} {messages}.
 Detail:
-https://pmbp.albinaa.sch.id/{type}{slug}'''
+https://smait.albinaa.sch.id/pmbp/{type}{slug}'''
         
         url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender={sender_albinaa_phone}&no=62{phone[1:] if phone.startswith('0') and phone != '0' else admin_phone[1:]}&pesan={message}"
 
@@ -30,7 +30,7 @@ def send_WA_general(phone: str | None = admin_phone, action: str = "", messages:
         message = f'''*[NOTIFIKASI PMBP]*
 Anda berhasil {action} {messages}.
 Detail:
-https://pmbp.albinaa.sch.id/'''
+https://smait.albinaa.sch.id/pmbp/'''
         
         url = f"https://albinaa.sch.id/wp-content/wa/api.php?sender={sender_albinaa_phone}&no=62{phone[1:] if phone.startswith('0') and phone != '0' else admin_phone[1:]}&pesan={message}"
 

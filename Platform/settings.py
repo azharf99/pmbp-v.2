@@ -32,7 +32,7 @@ DEBUG = False
 MAINTENANCE_MODE = False  # Set to True to enable maintenance mode
 
 if not DEBUG:
-    ALLOWED_HOSTS = ['pmbp.pythonanywhere.com', 'smaitalbinaa.pythonanywhere.com', 'pmbp.albinaa.sch.id', 'smait.albinaa.sch.id']
+    ALLOWED_HOSTS = ['pmbp.pythonanywhere.com', 'smaitalbinaa.pythonanywhere.com', 'smait.albinaa.sch.id/pmbp', 'smait.albinaa.sch.id']
 else:
     ALLOWED_HOSTS = ['*']
 
@@ -324,7 +324,7 @@ if not DEBUG:
     CORS_ALLOWED_ORIGINS = [
         "https://smaitalbinaa.pythonanywhere.com",
         "https://pythonanywhere.com",
-        "https://pmbp.albinaa.sch.id",
+        "https://smait.albinaa.sch.id/pmbp",
         "http://localhost:8080",
         "http://127.0.0.1:8000",
         "http://127.0.0.1:9000",
@@ -351,7 +351,7 @@ if not DEBUG:
     CSRF_TRUSTED_ORIGINS = [
         "https://smaitalbinaa.pythonanywhere.com",
         "https://pythonanywhere.com",
-        "https://pmbp.albinaa.sch.id",
+        "https://smait.albinaa.sch.id/pmbp",
         "http://localhost:8080",
         "http://127.0.0.1:8000",
         "http://127.0.0.1:9000",

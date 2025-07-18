@@ -48,7 +48,7 @@ class Report(models.Model):
     
 
     def get_absolute_url(self):
-        return reverse("report-list")
+        return reverse("extracurricular:report-list")
     
     class Meta:
         ordering = ["-report_date"]

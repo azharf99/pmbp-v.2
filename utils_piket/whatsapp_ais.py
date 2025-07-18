@@ -12,7 +12,7 @@ def send_whatsapp_action(phone: str | None = admin_phone, action: str = "", mess
     message = f'''*[NOTIFIKASI PIKET]*
 Anda berhasil {action} {messages}.
 Detail:
-https://piket.albinaa.sch.id/{type}{slug}
+https://smait.albinaa.sch.id/piket/{type}{slug}
 '''
     url = f"https://sent.fafashop.my.id/send-message?api_key={token}&sender={sender_ais_phone}&number={phone}&message={message}"
 

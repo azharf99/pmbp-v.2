@@ -13,7 +13,7 @@ def send_WA_create_update_delete(phone: str | None = admin_phone, action: str = 
         message = f'''*[NOTIFIKASI PMBP]*
 Anda berhasil {action} {messages}.
 Detail:
-https://pmbp.albinaa.sch.id/{type}{slug}'''
+https://smait.albinaa.sch.id/pmbp/{type}{slug}'''
         
         url = f"https://sent.fafashop.my.id/send-message?api_key={token}&sender={sender_ais_phone}&number={phone}&message={message}"
 
@@ -30,7 +30,7 @@ def send_WA_general(phone: str | None = admin_phone, action: str = "", messages:
         message = f'''*[NOTIFIKASI PMBP]*
 Anda berhasil {action} {messages}.
 Detail:
-https://pmbp.albinaa.sch.id/'''
+https://smait.albinaa.sch.id/pmbp/'''
         
         url = f"https://sent.fafashop.my.id/send-message?api_key={token}&sender={sender_ais_phone}&number={phone}&message={message}"
 

@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = False
 
 if not DEBUG:
-    ALLOWED_HOSTS = ['humas.pythonanywhere.com', 'humas.albinaa.sch.id']
+    ALLOWED_HOSTS = ['humas.pythonanywhere.com', 'smait.albinaa.sch.id/humas']
 else:
     ALLOWED_HOSTS = ['*']
 
@@ -257,7 +257,7 @@ if not DEBUG:
     CORS_ALLOWED_ORIGINS = [
         "https://humas.pythonanywhere.com",
         "https://pythonanywhere.com",
-        "https://humas.albinaa.sch.id",
+        "https://smait.albinaa.sch.id/humas",
         "http://localhost:8080",
         "http://127.0.0.1:8000",
         "http://127.0.0.1:9000",
@@ -284,7 +284,7 @@ if not DEBUG:
     CSRF_TRUSTED_ORIGINS = [
         "https://humas.pythonanywhere.com",
         "https://pythonanywhere.com",
-        "https://humas.albinaa.sch.id",
+        "https://smait.albinaa.sch.id/humas",
         "http://localhost:8080",
         "http://127.0.0.1:8000",
         "http://127.0.0.1:9000",

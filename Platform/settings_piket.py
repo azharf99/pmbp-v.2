@@ -34,7 +34,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = False
 
 if not DEBUG:
-    ALLOWED_HOSTS = ['piket.pythonanywhere.com', '127.0.0.1', 'piket.albinaa.sch.id']
+    ALLOWED_HOSTS = ['piket.pythonanywhere.com', '127.0.0.1', 'smait.albinaa.sch.id/piket']
 else:
     ALLOWED_HOSTS = ['*']
 
@@ -216,7 +216,7 @@ if not DEBUG:
     CORS_ALLOWED_ORIGINS = [
         "https://piket.pythonanywhere.com",
         "https://pythonanywhere.com",
-        "https://piket.albinaa.sch.id",
+        "https://smait.albinaa.sch.id/piket",
         "http://localhost:8080",
         "http://127.0.0.1:8000",
         "http://127.0.0.1:9000",
@@ -243,7 +243,7 @@ if not DEBUG:
     CSRF_TRUSTED_ORIGINS = [
         "https://piket.pythonanywhere.com",
         "https://pythonanywhere.com",
-        "https://piket.albinaa.sch.id",
+        "https://smait.albinaa.sch.id/piket",
         "http://localhost:8080",
         "http://127.0.0.1:8000",
         "http://127.0.0.1:9000",

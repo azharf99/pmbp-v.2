@@ -74,7 +74,7 @@ class ReportDetailView(DetailView):
 class ReportCreateView(LoginRequiredMixin, CreateView):
     model = Report
     form_class = ReportForm
-    success_url = reverse_lazy("report-create")
+    success_url = reverse_lazy("extracurricular:report-create")
 
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
@@ -118,7 +118,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
         
         send_WA_create_update_delete(self.request.user.teacher.phone, f'{self.request.user.teacher} menambahkan', f'laporan pertemuan Ekskul/SC {self.object}', 'report/', f'detail/{self.object.id}/')
         # messages.success(self.request, "Input Laporan berhasil!")
-        messages.success(self.request, '<p>Input Laporan berhasil!</p><p class="m-1">Silahkan lihat hasilnya <a href="https://pmbp.albinaa.sch.id/report/" class="p-1 rounded-md bg-green-500 text-white font-bold">di sini</a></p>')
+        messages.success(self.request, '<p>Input Laporan berhasil!</p><p class="m-1">Silahkan lihat hasilnya <a href="https://smait.albinaa.sch.id/pmbp/report/" class="p-1 rounded-md bg-green-500 text-white font-bold">di sini</a></p>')
         message_list = []
         for message in messages.get_messages(self.request):
             message_list.append(str(message))
@@ -143,7 +143,7 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
 class ReportUpdateView(LoginRequiredMixin, UpdateView):
     model = Report
     form_class = ReportForm
-    success_url = reverse_lazy("report-list")
+    success_url = reverse_lazy("extracurricular:report-list")
 
     def get_form_kwargs(self) -> dict[str, Any]:
         kwargs = super().get_form_kwargs()
@@ -182,7 +182,7 @@ class ReportUpdateView(LoginRequiredMixin, UpdateView):
 
 class ReportDeleteView(LoginRequiredMixin, DeleteView):
     model = Report
-    success_url = reverse_lazy("report-list")
+    success_url = reverse_lazy("extracurricular:report-list")
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         if request.user.teacher in self.get_object().teacher.all() or self.request.user.is_superuser:

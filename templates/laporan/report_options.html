@@ -9,14 +9,14 @@
     <p class="text-2xl">
         &triangleright;
     </p>
-    <a href="{% url 'report-list' %}">Laporan List</a>
+    <a href="{% url 'extracurricular:report-list' %}">Laporan List</a>
     <p class="text-2xl">
         &triangleright;
     </p>
     <a href="">Laporan Print Options</a>
     </div>
 
-    <form method="get" action="{% url 'report-print' slug %}" class="my-6 flex flex-col justify-center items-center">
+    <form method="get" action="{% url 'extracurricular:report-print' slug %}" class="my-6 flex flex-col justify-center items-center">
         {% for data in object_list %}
           <fieldset class="flex gap-2">
             <legend class="font-semibold my-2">Pilih Bulan</legend>
@@ -33,7 +33,7 @@
             {% endfor %} 
           </fieldset>
           <button type="submit" id="submit" class="text-white p-2 bg-blue-500 rounded-md cursor-pointer hover:bg-fuchsia-500 my-4">🖨️ Print Laporan</button>
-          <div id="loading" class="hidden flex gap-4 justify-center items-center text-white p-2 bg-blue-500 rounded-md cursor-pointer my-4">
+          <div id="loading" class="hidden gap-4 justify-center items-center text-white p-2 bg-blue-500 rounded-md cursor-pointer my-4">
             <div class="loader"></div>
             <p>Loading ...</p>
           </div>
