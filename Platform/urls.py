@@ -42,6 +42,7 @@ urlpatterns = [
     path('accounts/', include('users.urls')),
     path('admin/', admin.site.urls),
     path('class/', include('classes.urls')),
+    path('blog/', include('blog.urls')),
     path('course/', include('courses.urls')),
     path('device/', device_webhook, name='device-status'),
     path('galleries/', include("galleries.urls")),
