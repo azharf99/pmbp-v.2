@@ -19,6 +19,11 @@
   {% include 'components/messages.html' %}
 
   <div class="block md:flex justify-center m-2 gap-2 text-balance text-center">
+    {% if type %}
+    <a href="{% url 'reporter-schedule-view' %}"><p class="p-1 px-2 my-2 bg-blue-500 text-white rounded-md font-semibold">&#128195; Jadwal Tim Putra</p></a>
+    {% else %}
+    <a href="{% url 'reporter-putri-schedule-view' %}"><p class="p-1 px-2 my-2 bg-blue-500 text-white rounded-md font-semibold">&#128195; Jadwal Tim Putri</p></a>
+    {% endif %}
     <a href="{% url 'reporter-schedule-upload' %}"><p class="p-1 px-2 my-2 bg-lime-500 text-white rounded-md font-semibold">&#128229; Import Excel</p></a>
     <a href="{% url 'reporter-schedule-download' %}"><p class="p-1 px-2 my-2 bg-green-500 text-white rounded-md font-semibold">&#128196; Export to Excel</p></a>
     <a href="{% url 'dashboard-reporters' %}"><p class="p-1 px-2 my-2 bg-indigo-500 text-white rounded-md font-semibold">&#128196; Rekap Kehadiran</p></a>

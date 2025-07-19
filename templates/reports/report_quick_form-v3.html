@@ -38,9 +38,6 @@
       <input type="submit" value="Cari Data" class="p-2 m-1 rounded-lg text-white bg-indigo-500 text-xs cursor-pointer">
     </form>
   </div>
-  <div class="p-2 flex justify-center items-center">
-    <p class="font-bold">Daftar Laporan Piket {{query_date|date:"l, d F Y"}}</p>
-  </div>
 
   <div class="grid grid-cols-1">
     <!-- Analytics Table -->
@@ -358,7 +355,7 @@
 
   for (const element of report_ids) {
     element.addEventListener('click', (e) => {
-      report_form.setAttribute("action", `/report/update-v2/${element.id}/`)
+      report_form.setAttribute("action", `/piket/report/update-v2/${element.id}/`)
       report_id = element.id
       dialogreporter.close()
       dialog.showModal()
@@ -368,7 +365,7 @@
   for (const reporter of reporters) {
     reporter.addEventListener('click', (e) => {
       [date, time] = reporter.id.split("__")
-      reporter_form.setAttribute("action", `/report/update/reporter-v3/${date}/${time}/`);
+      reporter_form.setAttribute("action", `/piket/report/update/reporter-v3/${date}/${time}/`);
       reporter_time_id = time;
       reporter_date = date;
       dialog.close();
@@ -408,7 +405,7 @@
       status = report_form_data.get("status")
       p_id.classList.remove("bg-green-500", "bg-indigo-500", "bg-red-500", "bg-yellow-600")
       p_id.innerText = `Berubah menjadi: ${status}`
-      fetch(`/report/update-v3/${report_id}/`, {
+      fetch(`/piket/report/update-v3/${report_id}/`, {
         method: 'POST',
         body: report_form_data
       }).then(response => {

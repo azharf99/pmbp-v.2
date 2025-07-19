@@ -1,7 +1,7 @@
 from django.urls import path
 from users.views import TeacherCreateView, TeacherUpdateView, TeacherDeleteView, TeacherListView, TeacherDetailView, MyLoginView,\
-                        MyLogoutView, MyProfileView, MyProfileUpdateView, UserCreateView, UserListView, UserUpdateView, UserDeleteView,\
-                        UserDetailView, UserPasswordChangeView, UserPasswordChangeDoneView
+                        MyLogoutView, MyProfileView, MyProfileUpdateView, UserCreateView, UserDownloadExcelView, UserListView, UserUpdateView, UserDeleteView,\
+                        UserDetailView, UserPasswordChangeView, UserPasswordChangeDoneView, UserUploadView
 
 urlpatterns = [
     path('', UserListView.as_view(), name="user-list"),
@@ -13,6 +13,9 @@ urlpatterns = [
     path('update/<int:pk>/', UserUpdateView.as_view(), name="user-update"),
     path('delete/<int:pk>/', UserDeleteView.as_view(), name="user-delete"),
 
+    path("upload/", UserUploadView.as_view(),  {"site_title": "UPLOAD USER - PIKET SMA IT AL BINAA"}, "user-upload"),
+    path("download/", UserDownloadExcelView.as_view(),  {"site_title": "DOWNLOAD USER - PIKET SMA IT AL BINAA"}, "user-download"),
+    
     path('login/', MyLoginView.as_view(), name="login"),
     path('logout/', MyLogoutView.as_view(), name="logout"),
 

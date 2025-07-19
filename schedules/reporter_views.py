@@ -22,7 +22,7 @@ class ReporterScheduleView(BaseAuthorizedModelView, ListView):
     def get_queryset(self) -> QuerySet[Any]:
         groupped_qs = []
         for i in range(1, 10):
-            qs = ReporterSchedule.objects.select_related("reporter").filter(schedule_time=i)\
+            qs = ReporterSchedule.objects.select_related("reporter").filter(schedule_time=i, type='putra')\
                         .values('schedule_day', 'schedule_time', 'reporter__teacher_name', 'time_start', 'time_end')\
                         .order_by()
             if len(qs) > 0:
@@ -32,6 +32,30 @@ class ReporterScheduleView(BaseAuthorizedModelView, ListView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["class"] = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Sabtu', 'Ahad']
+        return context
+    
+class ReporterPutriScheduleView(BaseAuthorizedModelView, ListView):
+    model = ReporterSchedule
+    menu_name = 'reporter-schedule'
+    template_name = 'schedules/reporterschedule_view.html'
+    queryset = ReporterSchedule.objects.select_related("reporter")
+    permission_required = 'schedules.view_reporterschedule'
+    raise_exception = False
+
+    def get_queryset(self) -> QuerySet[Any]:
+        groupped_qs = []
+        for i in range(1, 10):
+            qs = ReporterSchedule.objects.select_related("reporter").filter(schedule_time=i, type='putri')\
+                        .values('schedule_day', 'schedule_time', 'reporter__teacher_name', 'time_start', 'time_end')\
+                        .order_by()
+            if len(qs) > 0:
+                groupped_qs.append(qs)
+        return groupped_qs
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["class"] = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Sabtu', 'Ahad']
+        context["type"] = "putri"
         return context
     
     

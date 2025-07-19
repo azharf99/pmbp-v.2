@@ -177,17 +177,18 @@ class BaseModelUploadView(BaseAuthorizedModelView, FormView):
                         },
                     )
                 case "Course":
-                    teacher = get_object_or_404(User, id=df.iloc[i, 5])
+                    teacher = get_object_or_404(Teacher, id=df.iloc[i, 5])
                     model_name.objects.update_or_create(
                         pk = df.iloc[i, 0],
                         # course_name = df.iloc[i, 1],
                         # teacher = teacher,
                         defaults={
-                            "course_name": df.iloc[i, 2],
+                            "course_name": df.iloc[i, 1],
                             "teacher": teacher,
                             "course_short_name": df.iloc[i, 2],
                             "course_code": df.iloc[i, 3],
                             "category": df.iloc[i, 4],
+                            "type": df.iloc[i, 6],
                         },
                     )
 
@@ -203,6 +204,7 @@ class BaseModelUploadView(BaseAuthorizedModelView, FormView):
                             "schedule_class": class_name,
                             "time_start": df.iloc[i, 5],
                             "time_end": df.iloc[i, 6],
+                            "type": df.iloc[i, 7],
                         },
                     )
                 case "ReporterSchedule":
@@ -214,13 +216,15 @@ class BaseModelUploadView(BaseAuthorizedModelView, FormView):
                             "reporter_id": df.iloc[i, 3] or None,
                             "time_start": df.iloc[i, 4],
                             "time_end": df.iloc[i, 5],
+                            "type": df.iloc[i, 6],
                         },
                     )
                 case "User":
-                    group = get_object_or_404(Group, pk=df.iloc[i, 8])
+                    if df.iloc[i, 8]:
+                        group = get_object_or_404(Group, pk=df.iloc[i, 8])
                     obj, is_created = User.objects.update_or_create(
                         pk = df.iloc[i, 0],
-                        username = df.iloc[i, 0],
+                        username = df.iloc[i, 1],
                         defaults={
                             "first_name": df.iloc[i, 3],
                             "last_name": df.iloc[i, 4],
@@ -229,10 +233,20 @@ class BaseModelUploadView(BaseAuthorizedModelView, FormView):
                             "is_superuser": True if df.iloc[i, 7] else False,
                         },
                     )
+                    Teacher.objects.update_or_create(
+                        user = obj,
+                        defaults = {
+                            "teacher_name": df.iloc[i, 3],
+                            "short_name": df.iloc[i, 3],
+                            "email": df.iloc[i, 5],
+                            "gender": df.iloc[i, 10],
+                        },
+                    )
                     if is_created:
                         obj.set_password(df.iloc[i, 2])
                         obj.save()
-                    obj.groups.add(group)
+                    if df.iloc[i, 8]:
+                        obj.groups.add(group)
                 case _:
                     print("Error Case!")
                     
@@ -294,14 +308,15 @@ class ModelDownloadExcelView(BaseAuthorizedModelView):
 class QuickReportMixin(BaseAuthorizedModelView, ListView):
     class_name = ['10A', '10B', '10C', '10D', '10E', '11A', '11B', '11C', '11D', '11E', '12A', '12B', '12C', '12D', '12E']
     grouped_report_data = []
+    type = "putra"
 
     def find_and_create_reports(self, valid_date_query: Any, time: Any) -> QuerySet[Any]:
         data = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher", "reporter")\
-                                    .filter(report_date=valid_date_query, schedule__schedule_time=time)\
+                                    .filter(report_date=valid_date_query, schedule__schedule_time=time, schedule__type=self.type)\
                                     .values("id", "status", "reporter__short_name", "schedule__schedule_class", "schedule__time_start", "schedule__time_end",
                                             "schedule__schedule_course__teacher__short_name",
                                             "schedule__schedule_course__course_short_name").order_by('schedule__schedule_class')
-        if len(data) == 15:
+        if (self.type == "putra" and len(data) == 15) or (self.type == "putri" and len(data) == 9):
             self.grouped_report_data.append(data)
         else:
             self.create_report_objects(valid_date_query, time)
@@ -309,16 +324,16 @@ class QuickReportMixin(BaseAuthorizedModelView, ListView):
     def create_report_objects(self, valid_query_date: Any, schedule_time: Any) -> bool:
         # Cari data jadwal di hari sesuai query dan di waktu jam 1 sampai  9
         schedule_list = Schedule.objects.select_related("schedule_course", "schedule_course__teacher","schedule_class") \
-                                .filter(schedule_day=get_day(valid_query_date), schedule_time=schedule_time)
+                                .filter(schedule_day=get_day(valid_query_date), schedule_time=schedule_time, type=self.type)
         try:
-            reporter_schedule = ReporterSchedule.objects.select_related("reporter").get(schedule_day=get_day(valid_query_date), schedule_time=schedule_time)
+            reporter_schedule = ReporterSchedule.objects.select_related("reporter").get(schedule_day=get_day(valid_query_date), schedule_time=schedule_time, type=self.type)
         except:
             reporter_schedule = None
         # Jika tidak ditemukan, maka nilai False
-        if len(schedule_list) == 15:
+        if (self.type == "putra" and len(schedule_list) == 15) or (self.type == "putri" and len(schedule_list) == 9):
             # Jika ditemukan, maka buat laporan dengan jadwal dimasukkan satu per satu
             for schedule in schedule_list:
-                report_data = Report.objects.filter(report_date=valid_query_date, schedule=schedule)
+                report_data = Report.objects.filter(report_date=valid_query_date, schedule=schedule, type=self.type)
                 if len(report_data) > 1:
                     report_data.first().delete()
                 obj, is_created = Report.objects.update_or_create(
@@ -326,7 +341,8 @@ class QuickReportMixin(BaseAuthorizedModelView, ListView):
                     schedule = schedule,
                     # reporter = reporter_schedule.reporter,
                     defaults={
-                        'reporter': reporter_schedule.reporter
+                        'reporter': reporter_schedule.reporter,
+                        'type': self.type
                     }
                 )
             return True

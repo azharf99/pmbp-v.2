@@ -18,6 +18,8 @@ from users.forms import TeacherForm, UserCreateForm, UserForm, UserPasswordUpdat
 from utils.whatsapp import send_WA_login_logout, send_WA_create_update_delete
 from typing import Any
 
+from utils_piket.mixins import BaseModelUploadView, ModelDownloadExcelView
+
 # Create your views here.
 class MyLoginView(LoginView):
     redirect_authenticated_user = True
@@ -203,6 +205,22 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
         messages.success(self.request, "Data Berhasil Dihapus! :)")
         return super().post(request, *args, **kwargs)
 
+
+class UserUploadView(BaseModelUploadView):
+    template_name = 'auth/user_form.html'
+    menu_name = "user"
+    permission_required = 'users.create_user'
+    success_url = reverse_lazy("user-list")
+    model_class = User
+
+
+class UserDownloadExcelView(ModelDownloadExcelView):
+    menu_name = 'user'
+    permission_required = 'users.view_user'
+    template_name = 'auth/download.html'
+    header_names = ['No', 'USERNAME', 'PASSWORD', 'PASSWORD', 'EMAIL', 'IS STAFF', 'IS ACTIVE', 'IS ADMIN', 'TANGGAL GABUNG', 'TERAKHIR LOGIN']
+    filename = 'USERS PIKET SMA IT Al Binaa.xlsx'
+    queryset = User.objects.all()
 
 class UserPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     form_class = UserPasswordUpdateForm

@@ -34,6 +34,15 @@ class ReportQuickCreateViewV3(QuickReportMixin):
     template_name = 'reports/report_quick_form-v3.html'
     permission_required = 'reports.add_report'
 
+class ReportPutriQuickCreateViewV3(QuickReportMixin):
+    model = Report
+    menu_name = 'report'
+    form_class = ReportFormV2
+    template_name = 'reports/report_quick_form-v3.html'
+    permission_required = 'reports.add_report'
+    type = "putri"
+    class_name = ['10F', '10G', '10H', '11F', '11G', '11H', '12F', '12G', '12H']
+
 
 class SubmitButtonView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     form_class = SubmitForm
