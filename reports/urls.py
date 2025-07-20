@@ -1,5 +1,5 @@
 from django.urls import path
-from reports.views import ReportListView, ReportDetailView, ReportDeleteView, ReportDeleteAllView,\
+from reports.views import PutriSubmitButtonView, ReportListView, ReportDetailView, ReportDeleteView, ReportDeleteAllView,\
                          ReportDownloadExcelView, ReportPutriQuickCreateViewV3, ReportUploadView, \
                          ReportQuickCreateViewV3, ReportUpdateViewV3, ReportUpdatePetugasViewV3, SubmitButtonView
 from reports.views_version2 import ReportQuickCreateViewV2, ReportUpdateViewV2, ReportUpdatePetugasView
@@ -12,6 +12,7 @@ urlpatterns = [
     path("quick-create-v3/", ReportQuickCreateViewV3.as_view(),  {"site_title": "QUICK CREATE REPORT V3 - PIKET SMA IT AL BINAA"}, "report-quick-create-v3"),
     path("putri/quick-create-v3/", ReportPutriQuickCreateViewV3.as_view(),  {"site_title": "QUICK CREATE PUTRI REPORT V3 - PIKET SMA IT AL BINAA"}, "report-putri-quick-create-v3"),
     path("submit/", SubmitButtonView.as_view(),  {"site_title": "QUICK CREATE REPORT V3 - PIKET SMA IT AL BINAA"}, "report-submit"),
+    path("putri/submit/", PutriSubmitButtonView.as_view(),  {"site_title": "QUICK CREATE REPORT V3 - PIKET SMA IT AL BINAA"}, "putri-report-submit"),
     path("upload/", ReportUploadView.as_view(),  {"site_title": "UPLOAD REPORT - PIKET SMA IT AL BINAA"}, "report-upload"),
     path("update/<int:pk>/", ReportUpdateView.as_view(),  {"site_title": "UPDATE REPORT - PIKET SMA IT AL BINAA"}, "report-update"),
     path("update/reporter/<str:date>/<int:pk>/", ReportUpdatePetugasView.as_view(),  {"site_title": "UPDATE PETUGAS PIKET - PIKET SMA IT AL BINAA"}, "report-update-reporter"),

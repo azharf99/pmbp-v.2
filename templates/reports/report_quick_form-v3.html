@@ -134,7 +134,11 @@
                 </p>
               </button>
               <p class="text-xs m-1">{{reports.first.reporter__short_name|default:"Tidak ada"}}</p>
-              <form action="{% url 'report-submit' %}" method="post">
+              {% if type == "putri" %}
+                <form action="{% url 'putri-report-submit' %}" method="post">
+              {% else %}
+                <form action="{% url 'report-submit' %}" method="post">
+              {% endif %}
                 {% csrf_token %}
                 <input type="hidden" name="date_string" id="id_date_string" value="{{query_date}}">
                 <input type="hidden" name="time_string" id="id_time_string" value="{{forloop.counter}}">

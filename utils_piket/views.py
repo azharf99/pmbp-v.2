@@ -15,7 +15,7 @@ from datetime import datetime
 from schedules.models import ReporterSchedule, Schedule
 from reports.models import Report
 from userlog.models import UserLog
-from utils_piket.mixins import BaseAuthorizedModelView, BaseModelQueryListView
+from utils_piket.mixins import BaseAuthorizedModelView, BaseModelQueryListView, TeacherRecapMixins
 from utils_piket.constants import WEEKDAYS
 from xlsxwriter import Workbook
 
@@ -82,63 +82,22 @@ class DashboardListView(BaseAuthorizedModelView, BaseModelQueryListView):
         return data
 
     
-class TeacherRecapListView(BaseAuthorizedModelView, BaseModelQueryListView):
+class TeacherRecapListView(TeacherRecapMixins):
     model = Report
     menu_name = "report"
     permission_required = 'reports.view_report'
     template_name = 'teacher-reporter-recap.html'
     raise_exception = False
+    type ="putra"
 
-    def get_queryset(self) -> QuerySet[Any]:
-        date_start = self.request.GET.get('date_start')
-        date_end = self.request.GET.get('date_end')
-
-        if date_start and date_end:
-            return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
-                                .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
-                                .filter(report_date__gte=date_start, report_date__lte=date_end)\
-                                .values('schedule__schedule_course__teacher','schedule__schedule_course__teacher__teacher_name')\
-                                .annotate(
-                                    hadir_count=Count('status',  filter=Q(status="Hadir")),
-                                    izin_count=Count('status',  filter=Q(status="Izin")),
-                                    sakit_count=Count('status',  filter=Q(status="Sakit")),
-                                    alpha_count=Count('status',  filter=Q(status="Tanpa Keterangan")),
-                                    all_count=Count('status'),
-                                    )\
-                                .distinct().order_by()
-        else:
-            return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
-                                .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
-                                .filter(report_date__month=datetime.now().month, report_date__year=datetime.now().year)\
-                                .values('schedule__schedule_course__teacher','schedule__schedule_course__teacher__teacher_name')\
-                                .annotate(
-                                    hadir_count=Count('status',  filter=Q(status="Hadir")),
-                                    izin_count=Count('status',  filter=Q(status="Izin")),
-                                    sakit_count=Count('status',  filter=Q(status="Sakit")),
-                                    alpha_count=Count('status',  filter=Q(status="Tanpa Keterangan")),
-                                    all_count=Count('status'),
-                                    )\
-                                .distinct().order_by()
-
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        date_start = self.request.GET.get('date_start')
-        date_end = self.request.GET.get('date_end')
-        this_year = datetime.now().year
-        this_month = datetime.now().month
-        last_day_of_month = calendar.monthrange(this_year, this_month)[1]
-
-        if date_start and date_end:
-            context["date_start"] = datetime.strptime(date_start, "%Y-%m-%d")
-            context["date_end"] = datetime.strptime(date_end, "%Y-%m-%d")
-        else:
-            context["date_start"] = datetime.strptime(f"{this_year}-{this_month}-1", "%Y-%m-%d")
-            context["date_end"] = datetime.strptime(f"{this_year}-{this_month}-{last_day_of_month}", "%Y-%m-%d")
-
-        context["date_start_str"] = date_start
-        context["date_end_str"] = date_end
-        return context
+    
+class TeacherPutriRecapListView(TeacherRecapMixins):
+    model = Report
+    menu_name = "report"
+    permission_required = 'reports.view_report'
+    template_name = 'teacher-reporter-recap.html'
+    raise_exception = False
+    type ="putri"
     
 
 class TeacherAbsenceListView(BaseAuthorizedModelView, BaseModelQueryListView):

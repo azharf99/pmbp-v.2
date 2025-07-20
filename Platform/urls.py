@@ -26,7 +26,7 @@ from dashboard.views import HomeView, HumasDashboardView
 from galleries.models import Gallery
 from utils.views import ProkerPMBPView
 from utils_piket.menu_link import export_home_kwargs
-from utils_piket.views import DashboardListView, ReporterRecapDownloadExcelView, ReporterRecapListView, TeacherAbsenceDetailDownloadExcelView, TeacherAbsenceDownloadExcelView, TeacherAbsenceListView, TeacherRecapDetailView, TeacherRecapDownloadExcelView, TeacherRecapListView, device_webhook, message_webhook, tracking_webhook
+from utils_piket.views import DashboardListView, ReporterRecapDownloadExcelView, ReporterRecapListView, TeacherAbsenceDetailDownloadExcelView, TeacherAbsenceDownloadExcelView, TeacherAbsenceListView, TeacherPutriRecapListView, TeacherRecapDetailView, TeacherRecapDownloadExcelView, TeacherRecapListView, device_webhook, message_webhook, tracking_webhook
 from .sitemaps import StaticViewSitemap
 from raker.views import ProgramKerjaCreateView, ProgramKerjaDeleteView, ProgramKerjaUpdateView, proker
 
@@ -59,6 +59,7 @@ urlpatterns = [
     path('piket/menu/', TemplateView.as_view(template_name='menu.html'), export_home_kwargs("menu", "MENU PIKET"), "menu"),
     path('piket/dashboard/', DashboardListView.as_view(), export_home_kwargs("dashboard", "DASHBOARD PIKET"), "dashboard"),
     path('piket/dashboard/teachers/', TeacherRecapListView.as_view(), export_home_kwargs("dashboard", "DATA KEHADIRAN GURU"), "dashboard-teachers"),
+    path('piket/dashboard/teachers/putri/', TeacherPutriRecapListView.as_view(), export_home_kwargs("dashboard", "DATA KEHADIRAN GURU  PUTRI"), "putri-dashboard-teachers"),
     path('piket/dashboard/teachers/download/', TeacherRecapDownloadExcelView.as_view(), export_home_kwargs("dashboard", "DOWNLOAD TEACHER REPORT"), "dashboard-teachers-download"),
     path('piket/dashboard/teachers/absence/', TeacherAbsenceListView.as_view(), export_home_kwargs("dashboard", "DATA KETIDAKHADIRAN GURU"), "dashboard-teachers-absence"),
     path('piket/dashboard/teachers/absence/download/', TeacherAbsenceDownloadExcelView.as_view(), export_home_kwargs("dashboard", "DOWNLOAD DATA KETIDAKHADIRAN GURU"), "dashboard-teachers-absence-download"),

@@ -5,10 +5,10 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import User, Group
 from django.db import IntegrityError
-from django.db.models import Q, Model
+from django.db.models import Q, Model, Count
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
-from django.http import FileResponse, HttpRequest, HttpResponse, Http404
+from django.http import FileResponse, HttpRequest, HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import View, ListView, FormView, DeleteView, UpdateView
@@ -25,7 +25,8 @@ from utils.forms import UploadModelForm
 from utils.menu_link import export_menu_link
 from xlsxwriter import Workbook
 from utils_piket.validate_datetime import get_day, parse_to_date
-from utils_piket.whatsapp_albinaa import send_whatsapp_action, send_whatsapp_report
+from utils_piket.whatsapp_albinaa import send_whatsapp_action, send_whatsapp_group, send_whatsapp_report
+import calendar
 
 
 # KELAS DEFAULT UNTUK HALAMAN WAJIB LOGIN DAN PERMISSION
@@ -316,7 +317,7 @@ class QuickReportMixin(BaseAuthorizedModelView, ListView):
                                     .values("id", "status", "reporter__short_name", "schedule__schedule_class", "schedule__time_start", "schedule__time_end",
                                             "schedule__schedule_course__teacher__short_name",
                                             "schedule__schedule_course__course_short_name").order_by('schedule__schedule_class')
-        if (self.type == "putra" and len(data) == 15) or (self.type == "putri" and len(data) == 9):
+        if (self.type == "putra" and len(data) == len(self.class_name)) or (self.type == "putri" and len(data) == len(self.class_name)):
             self.grouped_report_data.append(data)
         else:
             self.create_report_objects(valid_date_query, time)
@@ -330,7 +331,7 @@ class QuickReportMixin(BaseAuthorizedModelView, ListView):
         except:
             reporter_schedule = None
         # Jika tidak ditemukan, maka nilai False
-        if (self.type == "putra" and len(schedule_list) == 15) or (self.type == "putri" and len(schedule_list) == 9):
+        if (self.type == "putra" and len(schedule_list) == len(self.class_name)) or (self.type == "putri" and len(schedule_list) == len(self.class_name)):
             # Jika ditemukan, maka buat laporan dengan jadwal dimasukkan satu per satu
             for schedule in schedule_list:
                 report_data = Report.objects.filter(report_date=valid_query_date, schedule=schedule, type=self.type)
@@ -369,6 +370,7 @@ class QuickReportMixin(BaseAuthorizedModelView, ListView):
         context["teachers"] = Teacher.objects.select_related('user').all()
         query_date = self.request.GET.get('query_date', str(datetime.now().date()))
         context["query_date"] = query_date
+        context["type"] = self.type
         return context
     
 
@@ -445,4 +447,179 @@ class ReportUpdateQuickViewMixin(BaseAuthorizedFormView, UpdateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["object"] = self.get_object()
+        return context
+    
+
+
+class SubmitViewMixins(LoginRequiredMixin, PermissionRequiredMixin, FormView):
+    type = ""
+
+    def form_valid(self, form: Any) -> HttpResponse:
+        report_date = form.cleaned_data['date_string']
+        schedule_time = form.cleaned_data['time_string']
+
+        reports = self.queryset.filter(report_date=report_date, schedule__schedule_time=schedule_time, schedule__type=self.type, type=self.type)
+        reports.update(is_submitted=True)
+        rep = reports.values_list("status", flat=True)
+        if "Sakit" in rep or "Izin" in rep or "Tanpa Keterangan" in rep:
+            reports.update(is_complete=False)
+        else:
+            reports.update(is_complete=True)
+
+        # Filter and order the queryset
+        qs = self.queryset.filter(report_date=report_date, type=self.type).order_by('schedule__schedule_time', 'schedule__schedule_class')
+        # reporter_schedule = ReporterSchedule.objects.filter(schedule_day=get_day(report_date))
+
+
+        total_time = 10
+        if get_day(report_date) == "Ahad":
+            total_time = 8
+
+        # Initialize the grouped data list
+        grouped_data = []
+
+        # Initialize a dictionary to group reports by schedule_time
+        grouped_dict = {}
+
+        # Group the reports by schedule_time
+        for report in qs:
+            schedule_time = int(report.schedule.schedule_time)
+            is_complete = report.is_complete
+            # is_submitted = report.is_submitted
+            status = report.status
+            if schedule_time not in grouped_dict:
+                grouped_dict[schedule_time] = []
+            elif not is_complete and status != "Hadir":
+                grouped_dict[schedule_time].append(report)
+            elif is_complete:
+                grouped_dict[schedule_time] = [report]
+
+        # Create the grouped_data list based on the schedule_time
+        for time_num in range(1, total_time):  # Assuming schedule_time ranges from 1 to 9
+            if time_num in grouped_dict:
+                grouped_data.append(grouped_dict[time_num])
+            else:
+                grouped_data.append([])
+
+        messages = f'''*[LAPORAN KETIDAKHADIRAN GURU DALAM KBM]*
+*TIM PIKET SMAS IT AL BINAA*
+Hari: {get_day(report_date)}, {qs.first().report_date.strftime("%d %B %Y") if qs.exists() else datetime.now().date().strftime("%d %B %Y")}
+Pukul: {datetime.now().time().strftime("%H:%M:%S")} WIB
+
+'''
+        for index_outer in range(len(grouped_data)):
+            inner_data_length = len(grouped_data[index_outer])
+            if inner_data_length > 0:
+                for inner_index in range(inner_data_length):
+                    if grouped_data[index_outer][inner_index].is_complete:
+                        messages += f"Jam ke {index_outer+1} ✅ LENGKAP\n"
+                    elif inner_index == 0 and not grouped_data[index_outer][inner_index].is_complete:
+                        messages += f"Jam ke {index_outer+1} ✅\n"
+                        messages += f'''
+KELAS {grouped_data[index_outer][inner_index].schedule.schedule_class}
+{grouped_data[index_outer][inner_index].schedule.schedule_course}
+Keterangan : {grouped_data[index_outer][inner_index].status}
+Pengganti : {grouped_data[index_outer][inner_index].subtitute_teacher.teacher_name if grouped_data[index_outer][inner_index].subtitute_teacher else "-"}
+Catatan : {grouped_data[index_outer][inner_index].notes or "-"}
+'''
+                        
+                    elif inner_index != 0 and not grouped_data[index_outer][inner_index].is_complete:
+                        messages += f'''
+KELAS {grouped_data[index_outer][inner_index].schedule.schedule_class}
+{grouped_data[index_outer][inner_index].schedule.schedule_course}
+Keterangan : {grouped_data[index_outer][inner_index].status}
+Pengganti : {grouped_data[index_outer][inner_index].subtitute_teacher.teacher_name if grouped_data[index_outer][inner_index].subtitute_teacher else "-"}
+Catatan : {grouped_data[index_outer][inner_index].notes or "-"}
+'''
+                    if inner_index == inner_data_length-1:
+                        messages += f'\nPetugas Piket: {grouped_data[index_outer][inner_index].reporter.teacher_name if grouped_data[index_outer][inner_index].reporter else "-"}\n'
+                        messages += '--------------------------\n\n'
+            else:
+                messages += f"Jam ke {index_outer+1}\n"
+
+        send_whatsapp_group(messages)
+        if type == "putra":
+            simplified_message = f'''📹📹📹 *PIKET SMA* 📹📹📹
+
+        *{reports[0].report_day}, {report_date}*
+        KBM *Jam ke-{form.cleaned_data["time_string"]}*
+
+10-A {"✅        " if reports[0].subtitute_teacher or reports[0].status == "Hadir" else "⚠️ (" + reports[0].status + ")"}11-A {"✅        " if reports[5].subtitute_teacher or reports[5].status == "Hadir" else "⚠️ (" + reports[5].status + ")"}12-A {"✅        " if reports[10].subtitute_teacher or reports[10].status == "Hadir" else "⚠️ (" + reports[10].status + ")"}
+10-B {"✅        " if reports[1].subtitute_teacher or reports[1].status == "Hadir" else "⚠️ (" + reports[1].status + ")"}11-B {"✅        " if reports[6].subtitute_teacher or reports[6].status == "Hadir" else "⚠️ (" + reports[6].status + ")"}12-B {"✅        " if reports[11].subtitute_teacher or reports[11].status == "Hadir" else "⚠️ (" + reports[11].status + ")"}
+10-C {"✅        " if reports[2].subtitute_teacher or reports[2].status == "Hadir" else "⚠️ (" + reports[2].status + ")"}11-C {"✅        " if reports[7].subtitute_teacher or reports[7].status == "Hadir" else "⚠️ (" + reports[7].status + ")"}12-C {"✅        " if reports[12].subtitute_teacher or reports[12].status == "Hadir" else "⚠️ (" + reports[12].status + ")"}
+10-D {"✅        " if reports[3].subtitute_teacher or reports[3].status == "Hadir" else "⚠️ (" + reports[3].status + ")"}11-D {"✅        " if reports[8].subtitute_teacher or reports[8].status == "Hadir" else "⚠️ (" + reports[8].status + ")"}12-D {"✅        " if reports[13].subtitute_teacher or reports[13].status == "Hadir" else "⚠️ (" + reports[13].status + ")"}
+10-E  {"✅        " if reports[4].subtitute_teacher or reports[4].status == "Hadir" else "⚠️ (" + reports[4].status + ")"}11-E  {"✅        " if reports[9].subtitute_teacher or reports[9].status == "Hadir" else "⚠️ (" + reports[9].status + ")"}12-E {"✅        " if reports[14].subtitute_teacher or reports[14].status == "Hadir" else "⚠️ (" + reports[14].status + ")"}
+
+Petugas: *{reports[0].reporter.teacher_name}*
+🎦🎦🎦🎦🎦🎦🎦🎦🎦🎦'''
+        else:
+            simplified_message = f'''📹📹📹 *PIKET SMA* 📹📹📹
+
+        *{reports[0].report_day}, {report_date}*
+        KBM *Jam ke-{form.cleaned_data["time_string"]}*
+
+10-F {"✅        " if reports[0].subtitute_teacher or reports[0].status == "Hadir" else "⚠️ (" + reports[0].status + ")"}11-F {"✅        " if reports[3].subtitute_teacher or reports[3].status == "Hadir" else "⚠️ (" + reports[3].status + ")"}12-F {"✅        " if reports[6].subtitute_teacher or reports[6].status == "Hadir" else "⚠️ (" + reports[6].status + ")"}
+10-G {"✅        " if reports[1].subtitute_teacher or reports[1].status == "Hadir" else "⚠️ (" + reports[1].status + ")"}11-G {"✅        " if reports[4].subtitute_teacher or reports[4].status == "Hadir" else "⚠️ (" + reports[4].status + ")"}12-G {"✅        " if reports[7].subtitute_teacher or reports[7].status == "Hadir" else "⚠️ (" + reports[7].status + ")"}
+10-H {"✅        " if reports[2].subtitute_teacher or reports[2].status == "Hadir" else "⚠️ (" + reports[2].status + ")"}11-H {"✅        " if reports[5].subtitute_teacher or reports[5].status == "Hadir" else "⚠️ (" + reports[5].status + ")"}12-H {"✅        " if reports[8].subtitute_teacher or reports[8].status == "Hadir" else "⚠️ (" + reports[8].status + ")"}
+
+Petugas: *{reports[0].reporter.teacher_name}*
+🎦🎦🎦🎦🎦🎦🎦🎦🎦🎦'''
+        send_whatsapp_group(simplified_message)
+        messages.success(request=self.request, message="Submit Data Berhasil!")
+        query_params = f'?query_date={report_date}'
+        return HttpResponseRedirect(reverse("report-quick-create-v3") + query_params)
+    
+
+class TeacherRecapMixins(BaseAuthorizedModelView, BaseModelQueryListView):
+    type = "putra"
+    
+    def get_queryset(self) -> QuerySet[Any]:
+        date_start = self.request.GET.get('date_start')
+        date_end = self.request.GET.get('date_end')
+
+        if date_start and date_end:
+            return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
+                                .exclude(schedule__schedule_course__course_code__in=["APE", "TKL", "APEN3"])\
+                                .filter(report_date__gte=date_start, report_date__lte=date_end, type=self.type)\
+                                .values('schedule__schedule_course__teacher','schedule__schedule_course__teacher__teacher_name')\
+                                .annotate(
+                                    hadir_count=Count('status',  filter=Q(status="Hadir")),
+                                    izin_count=Count('status',  filter=Q(status="Izin")),
+                                    sakit_count=Count('status',  filter=Q(status="Sakit")),
+                                    alpha_count=Count('status',  filter=Q(status="Tanpa Keterangan")),
+                                    all_count=Count('status'),
+                                    )\
+                                .distinct().order_by()
+        else:
+            return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
+                                .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
+                                .filter(report_date__month=datetime.now().month, report_date__year=datetime.now().year, type=self.type)\
+                                .values('schedule__schedule_course__teacher','schedule__schedule_course__teacher__teacher_name')\
+                                .annotate(
+                                    hadir_count=Count('status',  filter=Q(status="Hadir")),
+                                    izin_count=Count('status',  filter=Q(status="Izin")),
+                                    sakit_count=Count('status',  filter=Q(status="Sakit")),
+                                    alpha_count=Count('status',  filter=Q(status="Tanpa Keterangan")),
+                                    all_count=Count('status'),
+                                    )\
+                                .distinct().order_by()
+
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        date_start = self.request.GET.get('date_start')
+        date_end = self.request.GET.get('date_end')
+        this_year = datetime.now().year
+        this_month = datetime.now().month
+        last_day_of_month = calendar.monthrange(this_year, this_month)[1]
+
+        if date_start and date_end:
+            context["date_start"] = datetime.strptime(date_start, "%Y-%m-%d")
+            context["date_end"] = datetime.strptime(date_end, "%Y-%m-%d")
+        else:
+            context["date_start"] = datetime.strptime(f"{this_year}-{this_month}-1", "%Y-%m-%d")
+            context["date_end"] = datetime.strptime(f"{this_year}-{this_month}-{last_day_of_month}", "%Y-%m-%d")
+
+        context["date_start_str"] = date_start
+        context["date_end_str"] = date_end
         return context
