@@ -44,6 +44,7 @@ class Student(CleanableFileModel):
     student_status = models.CharField(max_length=20, blank=True, default="Aktif")
     photo = models.ImageField(upload_to=path_and_rename, blank=True, null=True, default='blank-profile.png', help_text="Format foto .jpg/.jpeg")
     academic_year = models.CharField(max_length=20, blank=True, null=True, default=f"{timezone.now().year}/{timezone.now().year + 1}")
+    face_encoding = models.BinaryField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 

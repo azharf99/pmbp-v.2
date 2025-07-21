@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="sm:ml-64 mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-6">Attendance Records</h1>
+    <table class="min-w-full border border-gray-300">
+        <thead>
+            <tr>
+                <th class="py-2 px-4 border-b">Student Name</th>
+                <th class="py-2 px-4 border-b">Student ID</th>
+                <th class="py-2 px-4 border-b">Tanggal</th>
+                <th class="py-2 px-4 border-b">Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr>
+                <td class="py-2 px-4 border-b">{{ record.student.student_name }}</td>
+                <td class="py-2 px-4 border-b">{{ record.student.nis }}</td>
+                <td class="py-2 px-4 border-b">{{ record.date }}</td>
+                <td class="py-2 px-4 border-b">{{ record.timestamp }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="py-2 px-4 text-center">No attendance records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'attendance-dashboard' %}" class="mt-4 inline-block text-blue-500 hover:underline">Back to Dashboard</a>
+</div>
+{% endblock %}

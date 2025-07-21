@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container sm:ml-64 mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-6">Register Student</h1>
+    <form id="registerForm" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label for="students" class="block text-gray-700 text-sm font-bold mb-2">Student Name</label>
+            <select name="students" id="students">
+                <option value>----Pilih nama santri----</option>
+                {% for object in students %}
+                <option value="{{object.nis}}">{{object.student_name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Capture Face Image</label>
+            <video id="webcam" autoplay class="border rounded w-1/2"></video>
+            <canvas id="snapshot" class="hidden"></canvas>
+            <button type="button" onclick="captureImage()" class="mt-2 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">Capture Image</button>
+            <input type="hidden" name="image_data" id="image_data">
+        </div>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">Register</button>
+        <a href="{% url 'attendance-dashboard' %}" class="ml-4 text-blue-500 hover:underline">Back to Dashboard</a>
+    </form>
+</div>
+
+<script>
+    const webcam = document.getElementById('webcam');
+    const canvas = document.getElementById('snapshot');
+    const imageDataInput = document.getElementById('image_data');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            webcam.srcObject = stream;
+        });
+
+    function captureImage() {
+        const context = canvas.getContext('2d');
+        canvas.width = webcam.videoWidth;
+        canvas.height = webcam.videoHeight;
+        context.drawImage(webcam, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/png');
+        imageDataInput.value = dataUrl;
+        alert('Image captured! Now you can submit the form.');
+    }
+</script>
+{% endblock %}
