@@ -124,16 +124,16 @@ class StudentQuickUploadView(LoginRequiredMixin, CreateView):
         row, _ = df.shape
         for i in range(row):
             try:
-                student_class = Class.objects.get(pk=df.iloc[i, 3])
+                student_class = Class.objects.get(class_name=df.iloc[i, 3])
                 Student.objects.update_or_create(
                     nis = df.iloc[i, 0],
-                    student_name = df.iloc[i, 2],
                     defaults=dict(
+                        student_name = df.iloc[i, 2],
                         student_class = student_class,
                         gender = df.iloc[i, 4],
                         address = df.iloc[i, 5],
                         student_birth_place = df.iloc[i, 6],
-                        student_birth_date = df.iloc[i, 7],
+                        student_birth_date = df.iloc[i, 7] or None,
                         email = df.iloc[i, 8],
                         phone = df.iloc[i, 9],
                         student_status = df.iloc[i, 10],
@@ -141,7 +141,7 @@ class StudentQuickUploadView(LoginRequiredMixin, CreateView):
                 )
             except:
                 messages.error(self.request, "Data pada Excel TIDAK SESUAI FORMAT! Mohon sesuaikan dengan format yang ada. Hubungi Administrator jika kesulitan.")
-                return HttpResponseRedirect(reverse("student:student-quick-create"))
+                return HttpResponseRedirect(reverse("student-quick-create"))
         UserLog.objects.create(
                 user=self.request.user.teacher,
                 action_flag="CREATE",

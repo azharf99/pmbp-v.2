@@ -104,6 +104,12 @@ class ScheduleListView(BaseAuthorizedModelView, BaseModelDateBasedListView):
     permission_required = 'schedules.view_schedule'
     paginate_by = 50
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        classes = Class.objects.all()
+        context.update({"classes": classes})
+        return context
+
 
 class ScheduleSearchView(BaseAuthorizedModelView, BaseModelDateBasedListView):
     model = Schedule

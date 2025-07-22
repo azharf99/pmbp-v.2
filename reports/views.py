@@ -4,6 +4,7 @@ from django.contrib import messages as msg
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.views.generic import CreateView, DetailView, FormView
 from reports.forms import ReportFormV2, SubmitForm
+from classes.models import Class
 from reports.models import Report
 from typing import Any
 from django.urls import reverse, reverse_lazy
@@ -33,6 +34,8 @@ class ReportQuickCreateViewV3(QuickReportMixin):
     form_class = ReportFormV2
     template_name = 'reports/report_quick_form-v3.html'
     permission_required = 'reports.add_report'
+    class_name = [name.short_class_name for name in Class.objects.filter(category="Putra")]
+
 
 class ReportPutriQuickCreateViewV3(QuickReportMixin):
     model = Report
@@ -41,7 +44,7 @@ class ReportPutriQuickCreateViewV3(QuickReportMixin):
     template_name = 'reports/report_quick_form-v3.html'
     permission_required = 'reports.add_report'
     type = "putri"
-    class_name = ['10F', '10G', '10H', '11F', '11G', '11H', '12F', '12G', '12H']
+    class_name = [name.short_class_name for name in Class.objects.filter(category="Putri")]
 
 
 class SubmitButtonView(SubmitViewMixins):

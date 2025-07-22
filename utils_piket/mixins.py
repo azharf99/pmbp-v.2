@@ -307,7 +307,7 @@ class ModelDownloadExcelView(BaseAuthorizedModelView):
         return FileResponse(buffer, as_attachment=True, filename=self.filename)
 
 class QuickReportMixin(BaseAuthorizedModelView, ListView):
-    class_name = ['10A', '10B', '10C', '10D', '10E', '11A', '11B', '11C', '11D', '11E', '12A', '12B', '12C', '12D', '12E']
+    class_name = []
     grouped_report_data = []
     type = "putra"
 
@@ -324,12 +324,13 @@ class QuickReportMixin(BaseAuthorizedModelView, ListView):
     
     def create_report_objects(self, valid_query_date: Any, schedule_time: Any) -> bool:
         # Cari data jadwal di hari sesuai query dan di waktu jam 1 sampai  9
-        schedule_list = Schedule.objects.select_related("schedule_course", "schedule_course__teacher","schedule_class") \
+        schedule_list = Schedule.objects.select_related("schedule_course", "schedule_course__teacher", "schedule_class") \
                                 .filter(schedule_day=get_day(valid_query_date), schedule_time=schedule_time, type=self.type)
         try:
             reporter_schedule = ReporterSchedule.objects.select_related("reporter").get(schedule_day=get_day(valid_query_date), schedule_time=schedule_time, type=self.type)
         except:
             reporter_schedule = None
+        print(len(schedule_list), len(self.class_name))
         # Jika tidak ditemukan, maka nilai False
         if (self.type == "putra" and len(schedule_list) == len(self.class_name)) or (self.type == "putri" and len(schedule_list) == len(self.class_name)):
             # Jika ditemukan, maka buat laporan dengan jadwal dimasukkan satu per satu
@@ -354,12 +355,13 @@ class QuickReportMixin(BaseAuthorizedModelView, ListView):
         valid_date = parse_to_date(query_date)
         day = get_day(valid_date)
         self.grouped_report_data = []
-        if day == "Ahad":
+        print(len(self.class_name))
+        if self.type=="putra" and day == "Ahad":
             for i in range(1, 8):
                 self.find_and_create_reports(valid_date, i)
 
                 
-        elif day != "Jumat":
+        elif self.type=="putri" or day != "Jumat":
             for i in range(1, 10):
                 self.find_and_create_reports(valid_date, i)
 
