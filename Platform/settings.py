@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
     'alumni',
-    'attendance',
+    # 'attendance',
     'blog',
     'classes',
     'courses',
@@ -181,7 +181,6 @@ if not DEBUG:
                     'charset': 'utf8mb4',
                     "autocommit": True,
                 }
-
             }
         }
 else:
