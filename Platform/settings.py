@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
     'alumni',
-    # 'attendance',
+    'attendance',
     'blog',
     'classes',
     'courses',
