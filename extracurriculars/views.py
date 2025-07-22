@@ -37,20 +37,16 @@ class ExtracurricularGetMembersView(ListView):
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         query = request.GET.get("query")
-        try:
-            query = int(query)
+        if query:
             data = list(get_object_or_404(Extracurricular, pk=query).members.values("id", "student_name", "student_class__class_name"))
-        except:
-            data = list(get_object_or_404(Extracurricular, short_name=query).members.values("id", "student_name", "student_class__class_name"))
-        
-        if not len(data):
-            data = list(
-                [{
-                "id": None,
-                "student_name": "Belum ada anggota! Silahkan input anggota terlebih dahulu!",
-                "student_class": "Error!"
-                }]
-                )
+            if not len(data):
+                data = list(
+                    [{
+                    "id": None,
+                    "student_name": "Belum ada anggota! Silahkan input anggota terlebih dahulu!",
+                    "student_class": "Error!"
+                    }]
+                    )
         else:
             data = list(
             [{
