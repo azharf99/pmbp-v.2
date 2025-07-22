@@ -10,10 +10,11 @@ from django.db.models.query import QuerySet
 from django.shortcuts import HttpResponseRedirect
 from django.forms import BaseModelForm
 from django.urls import reverse_lazy, reverse
-from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, FileResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, FileResponse, Http404, HttpResponseNotFound
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from classes.models import Class
 from laporan.models import Report
 from userlog.models import UserLog
 from utils.whatsapp import send_WA_create_update_delete, send_WA_general
@@ -28,6 +29,51 @@ from django.utils import timezone
 class StudentIndexView(ListView):
     model = Student
     queryset = Student.objects.select_related('student_class').filter(student_status="Aktif")
+
+class StudentLevelUpView(CreateView):
+    model = Student
+    fields = '__all__'
+    template_name = "students/student_level-up.html"
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        query = request.POST.get("query")
+        this_year_postfix = str(timezone.now().year)[2:]
+        if query == "kelas_12":
+            nis_alumni = int(this_year_postfix) - 3
+
+            graduated_students = Student.objects.select_related('student_class').filter(student_status="Aktif", nis__startswith=f"{nis_alumni}")
+            if not graduated_students.exists():
+                messages.error(request, "Naik Level Kelas 12 ke Alumni Sudah dilakukan!")
+                return HttpResponseRedirect(reverse("student-level-up"))
+
+            graduated_students.update(student_status="Lulus")
+
+            messages.success(request, "Naik Level Kelas 12 ke Alumni Berhasil!")
+            return HttpResponseRedirect(reverse("student-level-up"))
+
+        elif query == "kelas_11":
+
+            nis_kelas_12 = int(this_year_postfix) - 2
+            students_grade_12 = Student.objects.select_related('student_class').filter(student_status="Aktif", nis__startswith=f"{nis_kelas_12}")
+            if not students_grade_12.exists():
+                messages.error(request, "Naik Level Kelas 12 ke Kelas 12 Sudah dilakukan!")
+                return HttpResponseRedirect(reverse("student-level-up"))
+            for student in students_grade_12:
+                student.student_class = Class.objects.get(class_name=f"XII-MIPA-{student.student_class.class_name[-1]}")
+
+            Student.objects.bulk_update(students_grade_12, ['student_class'])
+
+            messages.success(request, "Naik Level Kelas 11 ke Kelas 12 Berhasil!")
+            return HttpResponseRedirect(reverse("student-level-up"))
+
+        return HttpResponseNotFound("Data tidak valid!")
+
+    
 
 class StudentCreateView(LoginRequiredMixin, CreateView):
     model = Student
@@ -78,20 +124,19 @@ class StudentQuickUploadView(LoginRequiredMixin, CreateView):
         row, _ = df.shape
         for i in range(row):
             try:
+                student_class = Class.objects.get(pk=df.iloc[i, 3])
                 Student.objects.update_or_create(
                     nis = df.iloc[i, 0],
-                    nisn = df.iloc[i, 1],
-                    nama_siswa = df.iloc[i, 2],
+                    student_name = df.iloc[i, 2],
                     defaults=dict(
-                        kelas = df.iloc[i, 3],
-                        jenis_kelamin = df.iloc[i, 4],
-                        alamat = df.iloc[i, 5],
-                        tempat_lahir = df.iloc[i, 6],
-                        tanggal_lahir = df.iloc[i, 7],
+                        student_class = student_class,
+                        gender = df.iloc[i, 4],
+                        address = df.iloc[i, 5],
+                        student_birth_place = df.iloc[i, 6],
+                        student_birth_date = df.iloc[i, 7],
                         email = df.iloc[i, 8],
-                        nomor_hp = df.iloc[i, 9],
-                        status = df.iloc[i, 10],
-                        foto = df.iloc[i, 11],
+                        phone = df.iloc[i, 9],
+                        student_status = df.iloc[i, 10],
                     )
                 )
             except:

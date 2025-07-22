@@ -8,4 +8,52 @@
         <a href="{% url 'attendance_records' %}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-4 px-6 rounded text-center">View Attendance Records</a>
     </div>
 </div>
+
+<div class="sm:ml-64 text-center">
+    <h2>📊 Real-Time Attendance Dashboard</h2>
+    <div class="card p-3 my-3">
+        <h4>Total Students Present Today: <span id="total-present">0</span></h4>
+    </div>
+    <h5>✅ Who’s Here Now:</h5>
+    <ul id="present-list" class="list-group">
+        <li class="list-group-item">No students present yet.</li>
+    </ul>
+</div>
+
+<script>
+function fetchDashboardData() {
+    fetch("{% url 'dashboard_data' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}'
+        }})
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("total-present").innerText = data.total_present;
+
+            let presentList = document.getElementById("present-list");
+            presentList.innerHTML = "";
+
+            if (data.present_students.length > 0) {
+                data.present_students.forEach(student => {
+                    let li = document.createElement("li");
+                    li.className = "list-group-item";
+                    li.textContent = `${student.name} (ID: ${student.student_id}) at ${student.time}`;
+                    presentList.appendChild(li);
+                });
+            } else {
+                let li = document.createElement("li");
+                li.className = "list-group-item";
+                li.textContent = "No students present yet.";
+                presentList.appendChild(li);
+            }
+        });
+}
+
+// Refresh every 5 seconds
+setInterval(fetchDashboardData, 5000);
+fetchDashboardData();
+</script>
+
 {% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="sm:ml-64 text-center">
+    <h2>🎥 Browser-Based Attendance</h2>
+    <video id="webcam" autoplay playsinline width="640" height="640" style="border:1px solid #ccc;"></video>
+    <p id="status" class="mt-3"></p>
+</div>
+
+<script>
+const video = document.getElementById('webcam');
+const statusText = document.getElementById('status');
+
+// Start webcam
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(stream => {
+    video.srcObject = stream;
+    setInterval(captureAndSendFrame, 3000); // Send frame every 3 seconds
+})
+.catch(err => {
+    console.error('Error accessing webcam:', err);
+    statusText.innerText = '❌ Cannot access webcam.';
+});
+
+function captureAndSendFrame() {
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = canvas.toDataURL('image/jpeg');
+
+    fetch('{% url "take_attendance" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: 'image_data=' + encodeURIComponent(imageData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        statusText.innerText = data.message;
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %}

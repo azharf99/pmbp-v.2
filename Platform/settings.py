@@ -28,7 +28,7 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 MAINTENANCE_MODE = False  # Set to True to enable maintenance mode
 
 if not DEBUG:
@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
     'alumni',
-    # 'attendance',
     'blog',
     'classes',
     'courses',
@@ -111,6 +110,7 @@ if DEBUG and not TESTING:
     INSTALLED_APPS = [
         *INSTALLED_APPS,
         "debug_toolbar",
+        # 'attendance',
     ]
     MIDDLEWARE = [
         "debug_toolbar.middleware.DebugToolbarMiddleware",

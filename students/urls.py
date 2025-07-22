@@ -1,5 +1,5 @@
 from django.urls import path
-from students.views import StudentIndexView, StudentCreateView, StudentPrivateView, StudentUpdateView, StudentDetailView, StudentDeleteView, StudentQuickUploadView,\
+from students.views import StudentIndexView, StudentCreateView, StudentLevelUpView, StudentPrivateView, StudentUpdateView, StudentDetailView, StudentDeleteView, StudentQuickUploadView,\
                             StudentQuickCSVUploadView, ActiveStudentListView, NonActiveStudentListView, \
                             DownloadExcelActiveStudent, DownloadExcelInactiveStudent
 from students_humas.views import DownloadPrivateListView
@@ -8,6 +8,7 @@ from students_humas.views import DownloadPrivateListView
 urlpatterns = [
     path('', StudentIndexView.as_view(), name='student-list'),
     path('create/', StudentCreateView.as_view(), name='student-create'),
+    path('level-up/', StudentLevelUpView.as_view(), name='student-level-up'),
     path('quick-create/', StudentQuickUploadView.as_view(), name='student-quick-create'),
     path('quick-create-csv/', StudentQuickCSVUploadView.as_view(), name='student-quick-create-csv'),
     path('detail/<int:pk>/', StudentDetailView.as_view(), name='student-detail'),
