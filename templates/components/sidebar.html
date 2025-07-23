@@ -30,6 +30,12 @@
                 </a>
             </li>
             <li class="mb-2">
+                <a href="{% url 'prestasi-list' %}" class="flex items-center p-3 text-lg font-medium rounded-lg text-blue-100 transition-all duration-200 hover:bg-blue-700 hover:text-white">
+                    <i data-lucide="award" class="w-5 h-5 mr-3 sidebar-icon"></i>
+                    <span class="transition-opacity duration-100 ease-in-out whitespace-nowrap overflow-hidden sidebar-text">Achievements</span>
+                </a>
+            </li>
+            <li class="mb-2">
                 <a href="{% url 'report-quick-create-v3' %}" class="flex items-center p-3 text-lg font-medium rounded-lg text-blue-100 transition-all duration-200 hover:bg-blue-700 hover:text-white">
                     <i data-lucide="calendar" class="w-5 h-5 mr-3 sidebar-icon"></i>
                     <span class="transition-opacity duration-100 ease-in-out whitespace-nowrap overflow-hidden sidebar-text">Attendance</span>
@@ -116,9 +122,10 @@
         </ul>
     </nav>
     <div class="mt-auto py-4 border-t border-blue-600/50">
-        <a href="{% url 'logout' %}" class="sidebar-item-link flex items-center p-3 text-lg font-medium rounded-lg text-blue-100 transition-all duration-200 hover:bg-blue-700 hover:text-white">
+        <form action="{% url 'logout' %}" method="post" class="sidebar-item-link flex items-center p-3 text-lg font-medium rounded-lg text-blue-100 transition-all duration-200 hover:bg-blue-700 hover:text-white">
+            {% csrf_token %}
             <i data-lucide="log-out" class="w-5 h-5 mr-3 sidebar-icon"></i>
-            <span class="transition-opacity duration-100 ease-in-out whitespace-nowrap overflow-hidden sidebar-text">Logout</span>
-        </a>
+            <input type="submit" class="transition-opacity duration-100 ease-in-out whitespace-nowrap overflow-hidden sidebar-text" value="Logout">
+        </form>
     </div>
 </aside>
