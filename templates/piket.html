@@ -10,7 +10,7 @@
   <header class="bg-blue-500 dark:bg-gradient-to-r dark:from-slate-900 dark:via-purple-800 dark:to-black w-full sticky top-0">
     <nav class="backdrop-blur-sm mx-auto flex w-full items-center justify-between p-4 lg:px-8" aria-label="Global">
       <div class="flex lg:flex-1">
-        <a href="{% url 'home' %}" class="-m-1.5 p-1.5">
+        <a href="{% url 'piket-index' %}" class="-m-1.5 p-1.5">
           <span class="sr-only">PIKET - SMAS IT AL BINAA</span>
           <img class="h-8 w-auto" src="{% static 'images/Binaaul-Mustaqbal.png' %}" alt="Logo" />
         </a>
@@ -59,7 +59,7 @@
         </button>
       </div>
       <div class="hidden lg:flex lg:gap-x-12">
-        <a href="{% url 'home' %}" class="text-sm font-semibold leading-6 text-gray-100">Beranda</a>
+        <a href="{% url 'piket-index' %}" class="text-sm font-semibold leading-6 text-gray-100">Beranda</a>
         <a href="{% url 'report-quick-create-v3' %}" class="text-sm font-semibold leading-6 text-gray-100">Laporan</a>
         <a href="{% url 'class-list' %}" class="text-sm font-semibold leading-6 text-gray-100">Kelas</a>
         <a href="{% url 'course-list' %}" class="text-sm font-semibold leading-6 text-gray-100">Pelajaran</a>
@@ -125,7 +125,7 @@
         <div class="mt-6 flow-root">
           <div class="-my-6 divide-y divide-gray-500/10 dark:divide-white">
             <div class="space-y-2 py-6">
-              <a href="{% url 'home' %}"
+              <a href="{% url 'piket-index' %}"
                 class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Beranda</a>
               <a href="{% url 'report-quick-create-v3' %}"
                 class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Laporan</a>
@@ -203,7 +203,7 @@
 
       <ul class="my-4 flex flex-wrap justify-center gap-2 md:gap-6">
         <li>
-          <a href="{% url 'home' %}" class="transition hover:text-gray-700/75">Beranda</a>
+          <a href="{% url 'piket-index' %}" class="transition hover:text-gray-700/75">Beranda</a>
         </li>
         <li>
           <a href="{% url 'report-quick-create-v3' %}" class="transition hover:text-gray-700/75">Laporan</a>
@@ -254,7 +254,7 @@
 
   <div class="lg:hidden sticky bottom-0 left-0 text-center p-2" id="bottom-menu">
     <div class="flex justify-center p-2 px-6 dark:bg-gray-800 bg-blue-600 rounded-lg">
-      <a href="{% url 'home' %}"><p class="px-4 py-2 mx-2 text-sm {{home}} rounded-lg flex flex-col">&#127968;<span class="text-xs text-black font-semibold">Home</span></p></a>
+      <a href="{% url 'piket-index' %}"><p class="px-4 py-2 mx-2 text-sm {{home}} rounded-lg flex flex-col">&#127968;<span class="text-xs text-black font-semibold">Home</span></p></a>
       <a href="{% url 'report-quick-create-v3' %}"><p class="px-4 py-2 mx-2 text-sm {{report}} rounded-lg flex flex-col">&#128221;<span class="text-xs text-black font-semibold">Report</span></p></a>
       <a href="{% url 'menu' %}"><p class="px-4 py-2 mx-2 text-sm bg-gray-300 rounded-lg {{menu}} flex flex-col">&#128241;<span class="text-xs text-black font-semibold">Menu</span></p></a>
       {% if request.user.is_authenticated %}

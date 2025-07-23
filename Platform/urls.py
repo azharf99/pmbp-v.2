@@ -57,7 +57,7 @@ urlpatterns = [
 
     path('piket/', TemplateView.as_view(template_name='piket.html'), export_home_kwargs("home", "PIKET"), "piket-index"),
     path('piket/menu/', TemplateView.as_view(template_name='menu.html'), export_home_kwargs("menu", "MENU PIKET"), "menu"),
-    path('piket/dashboard/', DashboardListView.as_view(), export_home_kwargs("dashboard", "DASHBOARD PIKET"), "dashboard"),
+    path('piket/dashboard/', DashboardListView.as_view(), export_home_kwargs("dashboard", "DASHBOARD PIKET"), "piket-dashboard"),
     path('piket/dashboard/teachers/', TeacherRecapListView.as_view(), export_home_kwargs("dashboard", "DATA KEHADIRAN GURU"), "dashboard-teachers"),
     path('piket/dashboard/teachers/putri/', TeacherPutriRecapListView.as_view(), export_home_kwargs("dashboard", "DATA KEHADIRAN GURU  PUTRI"), "putri-dashboard-teachers"),
     path('piket/dashboard/teachers/download/', TeacherRecapDownloadExcelView.as_view(), export_home_kwargs("dashboard", "DOWNLOAD TEACHER REPORT"), "dashboard-teachers-download"),
@@ -72,7 +72,6 @@ urlpatterns = [
 
 
     path('pmbp/', HomeView.as_view(), name='pmbp-index'),
-    path('pmbp/dashboard/', include('dashboard.urls')),
     path('pmbp/extracurriculars/', include('extracurriculars.urls')),
     path('pmbp/lpj/', include('raker.urls')),
     path('pmbp/report/', include('laporan.urls')),
@@ -85,7 +84,8 @@ urlpatterns = [
     path('pmbp/olympiads/', include('olympiads.urls')),
     path('pmbp/projects/', include('projects.urls')),
 
-    path('dashboard/', TemplateView.as_view(template_name='dashboard.html'), name='dashboard'),
+    path('dashboard/', include('dashboard.urls')),
+    path('notifications/', include('notifications.urls')),
     path('message/', message_webhook, name='message-status'),
     path('tracking/', tracking_webhook, name='tracking-status'),
     path("pages/", include("django.contrib.flatpages.urls")),

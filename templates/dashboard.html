@@ -13,10 +13,23 @@
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
                 <div>
                     <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Students</p>
-                    <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">1,250</h3>
+                    <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{{students|length}}</h3>
                 </div>
                 <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-full text-blue-600 dark:text-blue-300">
                     <i data-lucide="users" class="w-8 h-8"></i>
+                </div>
+            </div>
+
+            <!-- Card 1: Total Students -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+                <div>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Alumni</p>
+                    <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{{jumlah_alumni|length}}</h3>
+                    <span class="text-xs font-bold text-gray-900 dark:text-gray-100 mt-1">Putra: {{jumlah_alumni_putra|length}}</span>
+                    <span class="text-xs font-bold text-gray-900 dark:text-gray-100 mt-1">Putri: {{jumlah_alumni_putri|length}}</span>
+                </div>
+                <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-full text-blue-600 dark:text-blue-300">
+                    <i data-lucide="graduation-cap" class="w-8 h-8"></i>
                 </div>
             </div>
 
@@ -24,7 +37,7 @@
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
                 <div>
                     <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Teachers</p>
-                    <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">75</h3>
+                    <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{{teachers|length}}</h3>
                 </div>
                 <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full text-green-600 dark:text-green-300">
                     <i data-lucide="user-check" class="w-8 h-8"></i>
@@ -35,7 +48,20 @@
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
                 <div>
                     <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Active Classes</p>
-                    <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">42</h3>
+                    <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{{classes|length}}</h3>
+                </div>
+                <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full text-yellow-600 dark:text-yellow-300">
+                    <i data-lucide="school" class="w-8 h-8"></i>
+                </div>
+            </div>
+
+            <!-- Card 3: Active Classes -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+                <div>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Subjects/Lesson</p>
+                    <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{{sum_of_course|length}}</h3>
+                    <span class="text-xs font-bold text-gray-900 dark:text-gray-100 mt-1">Syar'i: {{sum_of_course_syari|length}}</span>
+                    <span class="text-xs font-bold text-gray-900 dark:text-gray-100 mt-1">Ashri: {{sum_of_course_ashri|length}}</span>
                 </div>
                 <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full text-yellow-600 dark:text-yellow-300">
                     <i data-lucide="school" class="w-8 h-8"></i>
@@ -52,83 +78,82 @@
                     <i data-lucide="calendar-days" class="w-8 h-8"></i>
                 </div>
             </div>
+
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+                <div>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Privat 12th Grade</p>
+                    <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{{jumlah_private|length}}</h3>
+                    <h3 class="text-xs font-bold text-gray-900 dark:text-gray-100 mt-1">This month: {{jumlah_private_bulan_ini|length}}</h3>
+                </div>
+                <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-full text-blue-600 dark:text-blue-300">
+                    <i data-lucide="notebook-pen" class="w-8 h-8"></i>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+                <div>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total S1 Alumni</p>
+                    <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{{jumlah_alumni_universitas|length}}</h3>
+                    <h3 class="text-xs font-bold text-gray-900 dark:text-gray-100 mt-1">Not data: {{jumlah_alumni_non_univ|length}}</h3>
+                </div>
+                <div class="p-3 bg-cyan-100 dark:bg-cyan-900 rounded-full text-cyan-600 dark:text-cyan-300">
+                    <i data-lucide="graduation-cap" class="w-8 h-8"></i>
+                </div>
+            </div>
         </section>
 
         <!-- Charts and Recent Activities -->
         <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 flex-grow">
             <!-- Student Attendance Chart -->
-            <div class="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md flex flex-col">
-                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Student Attendance Overview</h3>
+            <div class="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md flex flex-col gap-4">
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4 text-center">Extracurricular Attendance Overview</h3>
                 <div class="h-64">
                     <canvas id="attendanceChart"></canvas>
+                </div>
+                <div id="secondChart">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4 text-center">Extracurricular Attendance This Month</h3>
+                    <div class="h-64">
+                        <canvas id="extracurricularAttendanceChart"></canvas>
+                    </div>
                 </div>
             </div>
 
             <!-- Recent Activities -->
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md flex flex-col">
-                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Recent Activities</h3>
-                <div class="space-y-4 overflow-y-auto h-64 sidebar-scroll pr-2">
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Top 7 Recent Activities</h3>
+                <div class="space-y-2 overflow-y-auto {% if report_extracurricular_length %} h-full {% else %} h-64 {% endif %} sidebar-scroll pr-2">
+                    {% for userlog in userlogs %}
                     <div class="flex items-start">
+                        {% if userlog.action_flag == "CREATE" or userlog.action_flag == "ADD" %}
                         <div class="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-full text-indigo-600 dark:text-indigo-300 mr-3">
                             <i data-lucide="plus-circle" class="w-4 h-4"></i>
                         </div>
+                        {% elif userlog.action_flag == "mengubah" or userlog.action_flag == "UPDATE" %}
+                        <div class="p-2 bg-indigo-100 dark:bg-yellow-900 rounded-full text-yellow-600 dark:text-yellow-300 mr-3">
+                            <i data-lucide="square-pen" class="w-4 h-4"></i>
+                        </div>
+                        {% elif userlog.action_flag == "DELETE" or userlog.action_flag == "HAPUS" %}
+                        <div class="p-2 bg-indigo-100 dark:bg-red-900 rounded-full text-red-600 dark:text-red-300 mr-3">
+                            <i data-lucide="trash" class="w-4 h-4"></i>
+                        </div>
+                        {% else %}
+                        <div class="p-2 bg-indigo-100 dark:bg-blue-900 rounded-full text-blue-600 dark:text-blue-300 mr-3">
+                            <i data-lucide="bell" class="w-4 h-4"></i>
+                        </div>
+                        {% endif %}
                         <div>
-                            <p class="text-gray-800 dark:text-gray-100 font-medium">New student "Alice Smith" enrolled.</p>
-                            <p class="text-gray-500 dark:text-gray-300 text-sm">2 hours ago</p>
+                            <p class="text-gray-800 dark:text-gray-100 font-medium">{{userlog.user}} {{userlog.message|title}}</p>
+                            <p class="text-gray-500 dark:text-gray-300 text-xs">{{userlog.created_at|timesince}} ago</p>
                         </div>
                     </div>
-                    <div class="flex items-start">
-                        <div class="p-2 bg-green-100 dark:bg-green-900 rounded-full text-green-600 dark:text-green-300 mr-3">
-                            <i data-lucide="check-circle" class="w-4 h-4"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-800 dark:text-gray-100 font-medium">Math exam results published.</p>
-                            <p class="text-gray-500 dark:text-gray-300 text-sm">Yesterday</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start">
-                        <div class="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-full text-yellow-600 dark:text-yellow-300 mr-3">
-                            <i data-lucide="alert-circle" class="w-4 h-4"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-800 dark:text-gray-100 font-medium">Reminder: Parent-Teacher meeting next week.</p>
-                            <p class="text-gray-500 dark:text-gray-300 text-sm">3 days ago</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start">
-                        <div class="p-2 bg-blue-100 dark:bg-blue-900 rounded-full text-blue-600 dark:text-blue-300 mr-3">
-                            <i data-lucide="dollar-sign" class="w-4 h-4"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-800 dark:text-gray-100 font-medium">Fee payment received from John Doe.</p>
-                            <p class="text-gray-500 dark:text-gray-300 text-sm">5 days ago</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start">
-                        <div class="p-2 bg-purple-100 dark:bg-purple-900 rounded-full text-purple-600 dark:text-purple-300 mr-3">
-                            <i data-lucide="award" class="w-4 h-4"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-800 dark:text-gray-100 font-medium">Annual sports day announced.</p>
-                            <p class="text-gray-500 dark:text-gray-300 text-sm">1 week ago</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start">
-                        <div class="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-full text-indigo-600 dark:text-indigo-300 mr-3">
-                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-800 dark:text-gray-100 font-medium">New teacher "Mr. David Lee" joined.</p>
-                            <p class="text-gray-500 dark:text-gray-300 text-sm">1 week ago</p>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </section>
 
         <!-- New section for Grades Chart -->
         <section class="mt-6 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Student Grades Overview</h3>
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4 text-center">Top 10 Alumni's Universities</h3>
             <div class="h-64">
                 <canvas id="gradesChart"></canvas>
             </div>

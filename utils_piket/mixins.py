@@ -594,7 +594,7 @@ class TeacherRecapMixins(BaseAuthorizedModelView, BaseModelQueryListView):
                                 .distinct().order_by()
         else:
             return super().get_queryset().select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
-                                .exclude(schedule__schedule_course__course_code__in=["APE", "TKL"])\
+                                .exclude(schedule__schedule_course__course_code__in=["APE", "TKL", "APEN3"])\
                                 .filter(report_date__month=datetime.now().month, report_date__year=datetime.now().year, type=self.type)\
                                 .values('schedule__schedule_course__teacher','schedule__schedule_course__teacher__teacher_name')\
                                 .annotate(

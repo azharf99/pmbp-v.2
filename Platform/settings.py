@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'galleries',
     'laporan',
     'nilai',
+    'notifications',
     'olympiads',
     'prestasi',
     'private',
