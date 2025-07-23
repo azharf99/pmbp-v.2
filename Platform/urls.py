@@ -24,7 +24,7 @@ from django.contrib.flatpages.views import flatpage
 from django.views.generic import ListView
 from dashboard.views import HomeView, HumasDashboardView
 from galleries.models import Gallery
-from utils.views import ProkerPMBPView
+from utils.views import ProkerPMBPView, SMAITHomeWiew
 from utils_piket.menu_link import export_home_kwargs
 from utils_piket.views import DashboardListView, ReporterRecapDownloadExcelView, ReporterRecapListView, TeacherAbsenceDetailDownloadExcelView, TeacherAbsenceDownloadExcelView, TeacherAbsenceListView, TeacherPutriRecapListView, TeacherRecapDetailView, TeacherRecapDownloadExcelView, TeacherRecapListView, device_webhook, message_webhook, tracking_webhook
 from .sitemaps import StaticViewSitemap
@@ -38,7 +38,7 @@ class IndexView(ListView):
     model = Gallery
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name="home.html"), name='app-index'),
+    path('', SMAITHomeWiew.as_view(), name='app-index'),
     path('accounts/', include('users.urls')),
     path('admin/', admin.site.urls),
     path('class/', include('classes.urls')),
@@ -55,7 +55,7 @@ urlpatterns = [
     path('humas/students/', include("students.urls")),
 
 
-    path('piket/', TemplateView.as_view(template_name='piket.html'), export_home_kwargs("home", "PIKET"), "home"),
+    path('piket/', TemplateView.as_view(template_name='piket.html'), export_home_kwargs("home", "PIKET"), "piket-index"),
     path('piket/menu/', TemplateView.as_view(template_name='menu.html'), export_home_kwargs("menu", "MENU PIKET"), "menu"),
     path('piket/dashboard/', DashboardListView.as_view(), export_home_kwargs("dashboard", "DASHBOARD PIKET"), "dashboard"),
     path('piket/dashboard/teachers/', TeacherRecapListView.as_view(), export_home_kwargs("dashboard", "DATA KEHADIRAN GURU"), "dashboard-teachers"),

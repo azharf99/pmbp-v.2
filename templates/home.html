@@ -126,25 +126,27 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero-section flex items-center justify-center text-center h-screen px-4 rounded-b-xl shadow-xl text-white">
-        <div class="max-w-4xl p-8  bg-opacity-40 rounded-xl">
+        <div class="flex flex-col max-w-4xl p-8 bg-opacity-40 rounded-xl">
             <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6 animate-fade-in-down">
                 SMAS IT AL BINAA</span>
             </h1>
             <p class="text-lg md:text-xl mb-8 opacity-90 animate-fade-in-up">
                 Profesional, Unggul dan Mandiri.
             </p>
-            <a href="#about" class="bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
-                Explore Us
-            </a>
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'dashboard' %}" class="mx-2 bg-green-400 hover:bg-yellow-500 text-blue-900 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
-                Dashboard
-            </a>
-            {% else %}
-            <a href="{% url 'login' %}" class="mx-2 bg-green-400 hover:bg-yellow-500 text-blue-900 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
-                Login
-            </a>
-            {% endif %}
+            <div class="flex justify-center flex-wrap gap-2">
+                <a href="#about" class="bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
+                    Explore Us
+                </a>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="bg-green-400 hover:bg-yellow-500 text-blue-900 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
+                    Dashboard
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="bg-green-400 hover:bg-yellow-500 text-blue-900 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
+                    Login
+                </a>
+                {% endif %}
+            </div>
         </div>
     </section>
 
@@ -154,30 +156,16 @@
             <h2 class="text-4xl font-bold text-blue-900 mb-12 dark:text-blue-400">Galeri Kegiatan</h2>
             <div id="campus-carousel" class="relative overflow-hidden rounded-xl shadow-lg w-full max-w-[1200px] mx-auto h-96 md:h-[500px] lg:h-[600px]">
                 <div class="carousel-wrapper flex transition-transform duration-500 ease-in-out h-full">
+                    {% for gallery in galleries %}
                     <!-- Carousel Slide 1 -->
                     <div class="carousel-slide-item min-w-full box-border h-auto flex justify-center items-center flex-shrink-0 relative">
-                        <img src="https://placehold.co/1200x600/60a5fa/ffffff?text=Modern+Classroom" alt="Modern Classroom with interactive whiteboard" class="w-full h-full rounded-xl object-cover">
+                        <img src="{{gallery.image.url}}" alt="Modern Classroom with interactive whiteboard" class="w-full h-full rounded-xl object-cover">
                         <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-4 text-center rounded-bl-xl rounded-br-xl">
-                            <h3 class="text-2xl font-semibold mb-2">Modern Classrooms</h3>
-                            <p class="text-base opacity-90">Equipped with the latest technology for interactive learning.</p>
+                            <h3 class="text-2xl font-semibold mb-2">{{gallery.title}}</h3>
+                            <p class="text-base opacity-90">{{gallery.caption}}</p>
                         </div>
                     </div>
-                    <!-- Carousel Slide 2 -->
-                    <div class="carousel-slide-item min-w-full box-border h-auto flex justify-center items-center flex-shrink-0 relative">
-                        <img src="https://placehold.co/1200x600/818cf8/ffffff?text=School+Library" alt="Spacious school library with books and study areas" class="w-full h-full rounded-xl object-cover">
-                        <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-4 text-center rounded-bl-xl rounded-br-xl">
-                            <h3 class="text-2xl font-semibold mb-2">Extensive Library</h3>
-                            <p class="text-base opacity-90">A hub for knowledge and quiet study for all students.</p>
-                        </div>
-                    </div>
-                    <!-- Carousel Slide 3 -->
-                    <div class="carousel-slide-item min-w-full box-border h-auto flex justify-center items-center flex-shrink-0 relative">
-                        <img src="https://placehold.co/1200x600/a78bfa/ffffff?text=Sports+Field" alt="Green sports field with soccer goals" class="w-full h-full rounded-xl object-cover">
-                        <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-4 text-center rounded-bl-xl rounded-br-xl">
-                            <h3 class="text-2xl font-semibold mb-2">Vibrant Sports Fields</h3>
-                            <p class="text-base opacity-90">Encouraging physical activity and team spirit.</p>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
 
                 <!-- Navigation Arrows -->
@@ -212,7 +200,36 @@
                 </p>
             </div>
             <div class="md:w-1/2">
-                <img src="https://placehold.co/600x400/a78bfa/ffffff?text=Happy+Students" alt="Group of happy students smiling" class="rounded-xl shadow-xl w-full h-auto object-cover">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/abholBZz0wE?si=bje6BGGFUyLl_aWc&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Acievement Section -->
+    <section id="achievements" class="py-16 px-6 md:px-10 bg-blue-50 rounded-xl shadow-lg mx-auto max-w-7xl my-16 dark:bg-gray-900 transition-colors duration-300">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold text-blue-900 mb-12 dark:text-blue-400">Our Achievements</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for object in object_list %}
+                <!-- Course Card 1 -->
+                <div class="bg-white p-8 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 dark:bg-gray-800 dark:border-gray-700">
+                    <img src="{{object.photo.url}}" alt="Primary school children in classroom" class="rounded-lg mb-6 w-full h-48 object-cover">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-3 dark:text-blue-300">{{object.awardee}}</h3>
+                    <p class="text-gray-600 mb-2 text-sm dark:text-gray-400">
+                        {{object.predicate|upper}} {{object.name|upper}} {{object.level|upper}} {{object.year|upper}}
+                    </p>
+                    <p class="text-gray-600 mb-2 text-sm dark:text-gray-400">
+                        BIDANG: {{object.field|upper}}
+                    </p>
+                    <a href="{% url 'prestasi-detail' object.id %}" class="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center dark:text-blue-400 dark:hover:text-blue-300">
+                        Detail
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="m-4 p-4">
+                <a href="{% url 'prestasi-list' %}"" class="m-4 p-4 bg-amber-400 cursor-pointer rounded-2xl">Read more...</a>
             </div>
         </div>
     </section>
@@ -220,42 +237,40 @@
     <!-- Courses Section -->
     <section id="courses" class="py-16 px-6 md:px-10 bg-blue-50 rounded-xl shadow-lg mx-auto max-w-7xl my-16 dark:bg-gray-900 transition-colors duration-300">
         <div class="container mx-auto text-center">
-            <h2 class="text-4xl font-bold text-blue-900 mb-12 dark:text-blue-400">Our Academic Programs</h2>
+            <h2 class="text-4xl font-bold text-blue-900 mb-12 dark:text-blue-400">Our Application</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Course Card 1 -->
                 <div class="bg-white p-8 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 dark:bg-gray-800 dark:border-gray-700">
-                    <img src="https://placehold.co/300x200/60a5fa/ffffff?text=Primary+School" alt="Primary school children in classroom" class="rounded-lg mb-6 w-full h-48 object-cover">
-                    <h3 class="text-2xl font-semibold text-blue-700 mb-3 dark:text-blue-300">Primary School</h3>
+                    <img src="https://placehold.co/300x200/60a5fa/ffffff?text=PMBP" alt="Primary school children in classroom" class="rounded-lg mb-6 w-full h-48 object-cover">
+                    <h3 class="text-2xl font-semibold text-blue-700 mb-3 dark:text-blue-300">PMBP</h3>
                     <p class="text-gray-600 mb-4 dark:text-gray-400">
-                        Building foundational knowledge in a fun and engaging environment for young learners.
+                        Pengembangan Minat, Bakat dan Prestasi Siswa.
                     </p>
-                    <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center dark:text-blue-400 dark:hover:text-blue-300">
+                    <a href="{% url 'pmbp-index' %}" class="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center dark:text-blue-400 dark:hover:text-blue-300">
                         Learn More
                         <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
                 </div>
-
                 <!-- Course Card 2 -->
                 <div class="bg-white p-8 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 dark:bg-gray-800 dark:border-gray-700">
-                    <img src="https://placehold.co/300x200/818cf8/ffffff?text=Middle+School" alt="Middle school students collaborating" class="rounded-lg mb-6 w-full h-48 object-cover">
-                    <h3 class="text-2xl font-semibold text-blue-700 mb-3 dark:text-blue-300">Middle School</h3>
+                    <img src="https://placehold.co/300x200/60a5fa/ffffff?text=Humas" alt="Primary school children in classroom" class="rounded-lg mb-6 w-full h-48 object-cover">
+                    <h3 class="text-2xl font-semibold text-blue-700 mb-3 dark:text-blue-300">Humas & PT</h3>
                     <p class="text-gray-600 mb-4 dark:text-gray-400">
-                        Developing critical thinking and preparing students for advanced studies.
+                        Hubungan Masyarakat dan Persiapan Perguruan Tinggi untuk siswa.
                     </p>
-                    <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center dark:text-blue-400 dark:hover:text-blue-300">
+                    <a href="{% url 'humas-index' %}" class="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center dark:text-blue-400 dark:hover:text-blue-300">
                         Learn More
                         <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
                 </div>
-
                 <!-- Course Card 3 -->
                 <div class="bg-white p-8 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 dark:bg-gray-800 dark:border-gray-700">
-                    <img src="https://placehold.co/300x200/a78bfa/ffffff?text=High+School" alt="High school students in graduation caps" class="rounded-lg mb-6 w-full h-48 object-cover">
-                    <h3 class="text-2xl font-semibold text-blue-700 mb-3 dark:text-blue-300">High School</h3>
+                    <img src="https://placehold.co/300x200/60a5fa/ffffff?text=Piket" alt="Primary school children in classroom" class="rounded-lg mb-6 w-full h-48 object-cover">
+                    <h3 class="text-2xl font-semibold text-blue-700 mb-3 dark:text-blue-300">Piket</h3>
                     <p class="text-gray-600 mb-4 dark:text-gray-400">
-                        Comprehensive programs for college preparation and career readiness.
+                        Aplkasi piket untuk guru.
                     </p>
-                    <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center dark:text-blue-400 dark:hover:text-blue-300">
+                    <a href="{% url 'piket-index' %}" class="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center dark:text-blue-400 dark:hover:text-blue-300">
                         Learn More
                         <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
@@ -273,50 +288,23 @@
             </p>
             <div id="extracurriculars-carousel" class="relative overflow-hidden rounded-xl shadow-lg w-full max-w-[1200px] mx-auto h-[500px] md:h-[400px] lg:h-[350px]">
                 <div class="carousel-wrapper flex transition-transform duration-500 ease-in-out h-full">
+                    {% for extracurricular in extracurriculars %}
                     <!-- Activity Card 1 -->
                     <div class="carousel-slide-item box-border h-auto flex justify-center items-center flex-shrink-0 relative p-4">
                         <div class="bg-blue-50 p-8 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 w-full max-w-[400px] mx-auto dark:bg-gray-900 dark:border-gray-700">
-                            <img src="https://placehold.co/300x200/60a5fa/ffffff?text=Sports+Clubs" alt="Students playing basketball" class="rounded-lg mb-6 w-full h-48 object-cover">
-                            <h3 class="text-2xl font-semibold text-blue-700 mb-3 dark:text-blue-300">Sports Clubs</h3>
-                            <p class="text-gray-600 mb-4 dark:text-gray-400">
-                                From basketball to soccer, our sports clubs promote teamwork, discipline, and healthy competition.
+                            <img src="{{extracurricular.logo.url}}" alt="Students playing basketball" class="rounded-lg mb-6 w-full h-48 object-cover">
+                            <h3 class="text-2xl font-semibold text-blue-700 mb-3 dark:text-blue-300">{{extracurricular.name}}</h3>
+                            <p class="text-gray-600 text-xs mb-4 dark:text-gray-400">
+                                {{extracurricular.description|truncatechars:50}}
                             </p>
-                            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center dark:text-blue-400 dark:hover:text-blue-300">
-                                View Schedule
+                            <a href="{% url 'extracurricular:report-list' %}" class="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center dark:text-blue-400 dark:hover:text-blue-300">
+                                View
                                 <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                             </a>
                         </div>
                     </div>
+                    {% endfor %}
 
-                    <!-- Activity Card 2 -->
-                    <div class="carousel-slide-item box-border h-auto flex justify-center items-center flex-shrink-0 relative p-4">
-                        <div class="bg-blue-50 p-8 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 w-full max-w-[400px] mx-auto dark:bg-gray-900 dark:border-gray-700">
-                            <img src="https://placehold.co/300x200/818cf8/ffffff?text=Arts+Programs" alt="Students painting in art class" class="rounded-lg mb-6 w-full h-48 object-cover">
-                            <h3 class="text-2xl font-semibold text-blue-700 mb-3 dark:text-blue-300">Arts & Drama</h3>
-                            <p class="text-gray-600 mb-4 dark:text-gray-400">
-                                Unleash creativity through our vibrant arts, music, and drama programs.
-                            </p>
-                            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center dark:text-blue-400 dark:hover:text-blue-300">
-                                Discover More
-                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Activity Card 3 -->
-                    <div class="carousel-slide-item box-border h-auto flex justify-center items-center flex-shrink-0 relative p-4">
-                        <div class="bg-blue-50 p-8 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 w-full max-w-[400px] mx-auto dark:bg-gray-900 dark:border-gray-700">
-                            <img src="https://placehold.co/300x200/a78bfa/ffffff?text=Academic+Clubs" alt="Students in a robotics club" class="rounded-lg mb-6 w-full h-48 object-cover">
-                            <h3 class="text-2xl font-semibold text-blue-700 mb-3 dark:text-blue-300">Academic Clubs</h3>
-                            <p class="text-gray-600 mb-4 dark:text-gray-400">
-                                Engage in stimulating discussions and competitions in clubs like Debate, Science, and Robotics.
-                            </p>
-                            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center dark:text-blue-400 dark:hover:text-blue-300">
-                                Join a Club
-                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                            </a>
-                        </div>
-                    </div>
 
                     <!-- Add more extracurricular cards here as needed -->
                     <div class="carousel-slide-item box-border h-auto flex justify-center items-center flex-shrink-0 relative p-4">
@@ -429,52 +417,16 @@
             </p>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Teacher Card 1 -->
+                {% for teacher in teachers %}
                 <div class="bg-white p-6 rounded-xl shadow-md text-center transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-slate-200 dark:bg-gray-900 dark:border-gray-700">
-                    <img src="https://placehold.co/120x120/60a5fa/ffffff?text=Dr.+Smith" alt="Portrait of Dr. Emily Smith" class="w-30 h-30 rounded-full object-cover mx-auto mb-4 border-4 border-blue-400">
-                    <h3 class="text-xl font-semibold text-blue-700 mb-1 dark:text-blue-300">Dr. Emily Smith</h3>
-                    <p class="text-gray-600 dark:text-gray-400">Head of Science Department</p>
-                    <p class="text-sm text-gray-500 mt-2 dark:text-gray-500">Specializing in Biology and Environmental Science.</p>
+                    {% if teacher.photo %}
+                    <img src="{{teacher.photo.url}}" alt="Portrait of {{teacher.teacher_name}}" class="w-30 h-30 rounded-full object-cover mx-auto mb-4 border-4 border-blue-400">
+                    {% endif %}
+                    <h3 class="text-xl font-semibold text-blue-700 mb-1 dark:text-blue-300">{{teacher.teacher_name}}</h3>
+                    <p class="text-gray-600 dark:text-gray-400">{{teacher.job|default:"-"}}</p>
+                    <p class="text-sm text-gray-500 mt-2 dark:text-gray-500">{{teacher.job|default:"-"}}</p>
                 </div>
-
-                <!-- Teacher Card 2 -->
-                <div class="bg-white p-6 rounded-xl shadow-md text-center transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-slate-200 dark:bg-gray-900 dark:border-gray-700">
-                    <img src="https://placehold.co/120x120/818cf8/ffffff?text=Mr.+Jones" alt="Portrait of Mr. David Jones" class="w-30 h-30 rounded-full object-cover mx-auto mb-4 border-4 border-blue-400">
-                    <h3 class="text-xl font-semibold text-blue-700 mb-1 dark:text-blue-300">Mr. David Jones</h3>
-                    <p class="text-gray-600 dark:text-gray-400">Mathematics Teacher</p>
-                    <p class="text-sm text-gray-500 mt-2 dark:text-gray-500">Expert in Calculus and Algebra, passionate about problem-solving.</p>
-                </div>
-
-                <!-- Teacher Card 3 -->
-                <div class="bg-white p-6 rounded-xl shadow-md text-center transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-slate-200 dark:bg-gray-900 dark:border-gray-700">
-                    <img src="https://placehold.co/120x120/a78bfa/ffffff?text=Ms.+Chen" alt="Portrait of Ms. Sarah Chen" class="w-30 h-30 rounded-full object-cover mx-auto mb-4 border-4 border-blue-400">
-                    <h3 class="text-xl font-semibold text-blue-700 mb-1 dark:text-blue-300">Ms. Sarah Chen</h3>
-                    <p class="text-gray-600 dark:text-gray-400">English Literature</p>
-                    <p class="text-sm text-gray-500 mt-2 dark:text-gray-500">Inspiring students through classic and contemporary literature.</p>
-                </div>
-
-                <!-- Teacher Card 4 -->
-                <div class="bg-white p-6 rounded-xl shadow-md text-center transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-slate-200 dark:bg-gray-900 dark:border-gray-700">
-                    <img src="https://placehold.co/120x120/6ee7b7/ffffff?text=Mr.+Garcia" alt="Portrait of Mr. Carlos Garcia" class="w-30 h-30 rounded-full object-cover mx-auto mb-4 border-4 border-blue-400">
-                    <h3 class="text-xl font-semibold text-blue-700 mb-1 dark:text-blue-300">Mr. Carlos Garcia</h3>
-                    <p class="text-gray-600 dark:text-gray-400">History & Social Studies</p>
-                    <p class="text-sm text-gray-500 mt-2 dark:text-gray-500">Making history come alive with engaging narratives and critical analysis.</p>
-                </div>
-
-                <!-- Teacher Card 5 -->
-                <div class="bg-white p-6 rounded-xl shadow-md text-center transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-slate-200 dark:bg-gray-900 dark:border-gray-700">
-                    <img src="https://placehold.co/120x120/d8b4fe/ffffff?text=Mrs.+Lee" alt="Portrait of Mrs. Jessica Lee" class="w-30 h-30 rounded-full object-cover mx-auto mb-4 border-4 border-blue-400">
-                    <h3 class="text-xl font-semibold text-blue-700 mb-1 dark:text-blue-300">Mrs. Jessica Lee</h3>
-                    <p class="text-gray-600 dark:text-gray-400">Art & Design</p>
-                    <p class="text-sm text-gray-500 mt-2 dark:text-gray-500">Encouraging artistic expression and creative thinking.</p>
-                </div>
-
-                <!-- Teacher Card 6 -->
-                <div class="bg-white p-6 rounded-xl shadow-md text-center transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-slate-200 dark:bg-gray-900 dark:border-gray-700">
-                    <img src="https://placehold.co/120x120/fcd34d/ffffff?text=Mr.+Kim" alt="Portrait of Mr. Alex Kim" class="w-30 h-30 rounded-full object-cover mx-auto mb-4 border-4 border-blue-400">
-                    <h3 class="text-xl font-semibold text-blue-700 mb-1 dark:text-blue-300">Mr. Alex Kim</h3>
-                    <p class="text-gray-600 dark:text-gray-400">Physical Education</p>
-                    <p class="text-sm text-gray-500 mt-2 dark:text-gray-500">Promoting health, fitness, and sportsmanship.</p>
-                </div>
+                {% endfor%}
             </div>
         </div>
     </section>
@@ -484,38 +436,28 @@
         <div class="container mx-auto text-center">
             <h2 class="text-4xl font-bold text-blue-900 mb-12 dark:text-blue-400">Latest News & Events</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for post in news %}
                 <!-- News Article 1 -->
                 <div class="bg-blue-50 p-6 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 dark:bg-gray-900 dark:border-gray-700">
                     <img src="https://placehold.co/300x200/60a5fa/ffffff?text=Science+Fair" alt="Students presenting at science fair" class="rounded-lg mb-4 w-full h-40 object-cover">
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2 dark:text-blue-300">Annual Science Fair a Huge Success!</h3>
-                    <p class="text-gray-500 text-sm mb-3 dark:text-gray-400">July 10, 2025</p>
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2 dark:text-blue-300">{{post.title}}</h3>
+                    <p class="text-gray-500 text-sm mb-3 dark:text-gray-400">{{post.updated_at}}</p>
                     <p class="text-gray-600 mb-4 dark:text-gray-300">
-                        Our students showcased incredible innovation and scientific prowess at this year's fair.
+                        {{post.content}}
                     </p>
                     <a href="#" class="text-blue-600 hover:text-blue-800 font-medium dark:text-blue-400 dark:hover:text-blue-300">Read More</a>
                 </div>
-
-                <!-- News Article 2 -->
-                <div class="bg-blue-50 p-6 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 dark:bg-gray-900 dark:border-gray-700">
-                    <img src="https://placehold.co/300x200/818cf8/ffffff?text=Sports+Day" alt="Students competing on sports day" class="rounded-lg mb-4 w-full h-40 object-cover">
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2 dark:text-blue-300">Sports Day Champions Crowned!</h3>
-                    <p class="text-gray-500 text-sm mb-3 dark:text-gray-400">June 28, 2025</p>
-                    <p class="text-gray-600 mb-4 dark:text-gray-300">
-                        Congratulations to all participants and our winning teams for a fantastic Sports Day.
-                    </p>
-                    <a href="#" class="text-blue-600 hover:text-blue-800 font-medium dark:text-blue-400 dark:hover:text-blue-300">Read More</a>
+                {% empty%}
+                <div class="flex justify-center">
+                    <p class="text-red-500 text-xl">Sorry, not yet available!</p>
                 </div>
-
-                <!-- News Article 3 -->
-                <div class="bg-blue-50 p-6 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 dark:bg-gray-900 dark:border-gray-700">
-                    <img src="https://placehold.co/300x200/a78bfa/ffffff?text=Admissions+Open" alt="Open sign for admissions" class="rounded-lg mb-4 w-full h-40 object-cover">
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2 dark:text-blue-300">Admissions Open for New Academic Year</h3>
-                    <p class="text-gray-500 text-sm mb-3 dark:text-gray-400">June 15, 2025</p>
-                    <p class="text-gray-600 mb-4 dark:text-gray-300">
-                        Applications are now being accepted for all grades. Apply early to secure your spot!
-                    </p>
-                    <a href="#" class="text-blue-600 hover:text-blue-800 font-medium dark:text-blue-400 dark:hover:text-blue-300">Read More</a>
+                <div class="flex justify-center">
+                    <p class="text-red-500 text-xl">Sorry, not yet available!</p>
                 </div>
+                <div class="flex justify-center">
+                    <p class="text-red-500 text-xl">Sorry, not yet available!</p>
+                </div>
+                {% endfor%}
             </div>
         </div>
     </section>

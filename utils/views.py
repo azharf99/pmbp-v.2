@@ -2,16 +2,32 @@ from django.conf import settings
 from django.forms import BooleanField
 import requests
 from typing import Any
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.utils import timezone
 from django.utils.dates import MONTHS
 from django.db.models import Count, Case, When, Value
+from blog.models import Post
 from extracurriculars.models import Extracurricular
+from galleries.models import Gallery
 from laporan.models import Report
 from olympiads.models import OlympiadReport
 from prestasi.models import Prestasi, ProgramPrestasi
 from raker.models import LaporanPertanggungJawaban, ProgramKerja
-    
+from users.models import Teacher
+
+
+class SMAITHomeWiew(ListView):
+    model = Prestasi
+    queryset = Prestasi.objects.order_by("-created_at")[:18]
+    template_name = "home.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["galleries"] = Gallery.objects.all()
+        context["extracurriculars"] = Extracurricular.objects.filter(status="Aktif")
+        context["teachers"] = Teacher.objects.exclude(id__in=["31", "112", "110", "35", "113", "111"]).filter(status="Aktif", photo__isnull=False, gender="L")
+        context["news"] = Post.objects.all()[:20]
+        return context
 
 class CurrationListView(TemplateView):
     template_name = "kurasi.html"
