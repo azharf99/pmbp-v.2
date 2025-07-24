@@ -20,7 +20,7 @@ class MaintenanceModeMiddleware:
             }
 
             return render(request, 'maintenance.html', status=503, context=context)
-        elif settings.PIKET_MODE_ON and request.path.startswith('/piket/'):
+        elif not settings.PIKET_MODE_ON and request.path.startswith('/piket/'):
             context = {
                 "title" : "Aplikasi belum bisa digunakan!",
                 "message" : "Aplikasi Piket tidak bisa digunakan apabila belum ada jadwal fix terbaru dari Kurikulum!",
