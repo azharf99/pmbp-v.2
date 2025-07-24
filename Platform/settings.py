@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
+    'academic_calendar',
     'alumni',
     'blog',
     'classes',
