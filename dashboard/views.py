@@ -97,9 +97,9 @@ class DashboardView(ListView):
         context["sum_of_course"] = list(Course.objects.select_related("teacher").exclude(course_code__in=["APE", "LQ1", "TKL", "APEN3"]).filter(type="putra").values("course_name", "category").distinct())
         context["sum_of_course_syari"] = [subject for subject in context["sum_of_course"] if subject["category"]=="Syar'i"]
         context["sum_of_course_ashri"] = [subject for subject in context["sum_of_course"] if subject["category"]=="Ashri"]
-
-        context["notifications"] = list(Notification.objects.filter(teacher=self.request.user.teacher))
-        context["notifications_left"] = [notif for notif in context["notifications"] if notif.is_read==False]
+        if self.request.user.is_authenticated:
+            context["notifications"] = list(Notification.objects.filter(teacher=self.request.user.teacher))
+            context["notifications_left"] = [notif for notif in context["notifications"] if notif.is_read==False]
         return context
 
 class InactiveReportView(ListView):
