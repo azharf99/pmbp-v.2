@@ -30,6 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 MAINTENANCE_MODE = False  # Set to True to enable maintenance mode
+PIKET_MODE_ON = False  # Set to True to enable maintenance mode
 
 if not DEBUG:
     ALLOWED_HOSTS = ['pmbp.pythonanywhere.com', 'smaitalbinaa.pythonanywhere.com', 'smait.albinaa.sch.id']
