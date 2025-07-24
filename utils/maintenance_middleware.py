@@ -14,6 +14,17 @@ class MaintenanceModeMiddleware:
             if request.path.startswith('/admin/') and hasattr(request, "user") and request.user.is_superuser:
                 return self.get_response(request)
 
-            return render(request, 'maintenance.html', status=503)
+            context = {
+                "title" : "Kami sedang melakukan pemeliharaan sistem.",
+                "message" : "Proses Merger Besar 3 Aplikasi (PMBP, Humas dan Piket) menjadi <strong>smait.albinaa.sch.id</strong>",
+            }
+
+            return render(request, 'maintenance.html', status=503, context=context)
+        elif request.path.startswith('/piket/'):
+            context = {
+                "title" : "Aplikasi belum bisa digunakan!",
+                "message" : "Aplikasi Piket tidak bisa digunakan apabila belum ada jadwal fix terbaru dari Kurikulum!",
+            }
+            return render(request, 'maintenance.html', status=503, context=context)
 
         return self.get_response(request)
