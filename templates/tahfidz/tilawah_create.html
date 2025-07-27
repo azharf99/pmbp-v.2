@@ -158,6 +158,7 @@
   }
 
   const debug = document.getElementById("debug")
+  const prod = document.getElementById("prod")
   document.getElementById('class_id').addEventListener('change', function() {
       const firstSelectValue = this.value;
       const studentList = document.getElementById('student_list');
@@ -165,10 +166,10 @@
       studentList.innerText = ''
 
       // URL for the API request (replace with your actual API endpoint)
-      if(debug.id == "debug"){
+      if(debug && debug.id == "debug"){
         const apiUrl = `http://127.0.0.1:8000/students/?class_id=${firstSelectValue}`;
         getApiUrl(apiUrl, studentList);
-      }else{
+      }else if(prod && prod.id == "prod"){
         const apiUrl = `https://smait.albinaa.sch.id/students/?class_id=${firstSelectValue}`;
         getApiUrl(apiUrl, studentList);
       }
