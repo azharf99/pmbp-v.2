@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from users.models import Teacher
+from utils.constants import TAHSIN_STATUS_CHOICES
 
 # Create your models here.
 class Tahfidz(models.Model):
@@ -47,6 +48,8 @@ class Tilawah(models.Model):
     halaman = models.PositiveBigIntegerField(_("Halaman"), blank=True, null=True)
     catatan = models.CharField(_("Catatan"), max_length=255, blank=True, null=True)
     pendamping = models.ManyToManyField(Teacher,_("Pendamping"), max_length=255, blank=True)
+    tajwid = models.CharField(_("Tajwid"), max_length=255, blank=True, null=True, choices=TAHSIN_STATUS_CHOICES)
+    kelancaran = models.CharField(_("Kelancaran"), max_length=255, blank=True, null=True, choices=TAHSIN_STATUS_CHOICES)
     semester = models.CharField(max_length=7, default=settings.SEMESTER, null=True)
     academic_year = models.CharField(max_length=20, default=settings.TAHUN_AJARAN, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

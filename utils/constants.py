@@ -65,3 +65,16 @@ STATUS_CHOICES = (
     ("Sakit", _("Sakit")),
     ("Tanpa Keterangan", _("Tanpa Keterangan")),
 )
+
+
+TAHSIN_STATUS_CHOICES = (
+    (None, "----Pilih Nilai Tahsin Tajwid----"),
+    ("Mumtaz", _("Mumtaz")),
+    ("Jayyid Jiddan", _("Jayyid Jiddan")),
+    ("Jayyid", _("Jayyid")),
+    ("Maqbul", _("Maqbul")),
+    ("Da'if", _("Da'if")),
+)
+
+
+TAHSIN_STATUS_LIST = ["Mumtaz", "Jayyid Jiddan", "Jayyid", "Maqbul", "Da'if"]

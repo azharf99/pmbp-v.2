@@ -50,6 +50,8 @@
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Kelas</th>
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tercapai</th>
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Halaman</th>
+          <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tajwid</th>
+          <th class="p-2 border border-gray-400 bg-blue-100 text-black">Lancar</th>
           {% if request.user.is_authenticated %}        
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Aksi</th>
           {% endif %}
@@ -63,6 +65,8 @@
             <td class="p-2 border border-gray-400">{{object.santri.student_class.short_class_name}}</td>
             <td class="p-2 border border-gray-400 text-center">{% if object.tercapai %} &check; {% else %} &cross; {% endif %}</td>
             <td class="p-2 border border-gray-400 text-center">{{object.halaman|default:"-"}}</td>
+            <td class="p-2 border border-gray-400 text-center">{{object.tajwid|default:"-"}}</td>
+            <td class="p-2 border border-gray-400 text-center">{{object.kelancaran|default:"-"}}</td>
             {% if request.user.is_authenticated %}
             <td class="p-2 border border-gray-400">
               <div class="flex flex-wrap gap-2 justify-center">

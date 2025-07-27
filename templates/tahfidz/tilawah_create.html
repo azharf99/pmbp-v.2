@@ -69,12 +69,13 @@
                 <option value="{{object.id}}" class="dark:bg-black">{{object}}</option>
                 {% endfor %}
               </select>
-              <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+              <div class="grid grid-cols-1 md:grid-cols-5 gap-2">
                 <p class="col-span-2 md:text-center">Nama Santri</p>
-                <p class="md:text-center">Tercapai?</p>
                 <p class="md:text-center">Halaman</p>
+                <p class="md:text-center">Tajwid</p>
+                <p class="md:text-center">Kelancaran</p>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-4 gap-2" id="student_list">
+              <div class="grid grid-cols-1 md:grid-cols-5 gap-2" id="student_list">
               </div>
               <p class="my-2"><label for="teachers">Pendamping:</label></p>
               <p>
@@ -104,6 +105,8 @@
   {% include 'loader.html' %}
 
 <script>
+const tahsinStatus = [null, "Mumtaz", "Jayyid Jiddan", "Jayyid", "Maqbul", "Da'if"]
+
   function getApiUrl(url, studentList){
     const target = document.getElementById("target").value
 
@@ -124,34 +127,66 @@
                   studentLabel.innerText = `${index+1} (${student.student_class__short_class_name}) ${student.student_name}`;
                   
                   if(student.id !== null){
-                    const wrapperCapaian = document.createElement("div");
-                    wrapperCapaian.className = "flex justify-center items-center rounded-md text-black dark:text-white border-2 border-blue-500"
-                    const studentCapaianInput = document.createElement("input");
-                    studentCapaianInput.type = "checkbox"
-                    studentCapaianInput.checked = "true"
-                    studentCapaianInput.htmlFor = student.id
-                    studentCapaianInput.name = `tercapai${student.nis}`;
-                    studentCapaianInput.id = student.nis;
-                    studentCapaianInput.className = "rounded-md text-black dark:text-white border-2 border-blue-500 shadow-lg"
-                    wrapperCapaian.appendChild(studentCapaianInput)
+                    // const wrapperCapaian = document.createElement("div");
+                    // wrapperCapaian.className = "flex justify-center items-center rounded-md text-black dark:text-white border-2 border-blue-500"
+                    // const studentCapaianInput = document.createElement("input");
+                    // studentCapaianInput.type = "checkbox"
+                    // studentCapaianInput.checked = "true"
+                    // studentCapaianInput.htmlFor = student.id
+                    // studentCapaianInput.name = `tercapai${student.nis}`;
+                    // studentCapaianInput.id = student.nis;
+                    // studentCapaianInput.className = "rounded-md text-black dark:text-white border-2 border-blue-500 shadow-lg"
+                    // wrapperCapaian.appendChild(studentCapaianInput)
                     
                     // const wrapperHalaman = document.createElement("div");
                     // wrapperHalaman.className = "flex justify-center items-center"
                     const studentHalamanInput = document.createElement("input");
                     studentHalamanInput.type = "number"
-                    studentHalamanInput.htmlFor = student.id
                     studentHalamanInput.value = target
                     studentHalamanInput.required = "true"
                     studentHalamanInput.name = `halaman${student.nis}`;
                     studentHalamanInput.className = "halaman px-4 rounded-md text-black dark:text-white border-2 border-blue-500 shadow-lg text-center"
-                    studentHalamanInput.id = student.nis;
+                    studentHalamanInput.id = `halaman${student.nis}`;
                     // wrapperHalaman.appendChild(studentHalamanInput)
+                    
+                    const studentTajwidSelect = document.createElement("select");
+                    studentTajwidSelect.className = "px-2 py-1 text-xs rounded-md text-black dark:text-white border-2 border-blue-500 shadow-lg text-center"
+                    studentTajwidSelect.name = `tajwid${student.nis}`;
+                    studentTajwidSelect.id = `tajwid${student.nis}`;
+                    for (let status of tahsinStatus){
+                      const studentTajwidOption = document.createElement("option");
+                      if(status === null){
+                        studentTajwidOption.innerText = "---Tajwid---";
+                      } else{
+                        studentTajwidOption.innerText = status
+                      }
+                      studentTajwidOption.value = status;
+                      studentTajwidSelect.appendChild(studentTajwidOption)
+                    }
+
+                    const studentKelancaranSelect = document.createElement("select");
+                    studentKelancaranSelect.className = "px-2 py-1 text-xs rounded-md text-black dark:text-white border-2 border-blue-500 shadow-lg text-center"
+                    studentKelancaranSelect.name = `kelancaran${student.nis}`;
+                    studentKelancaranSelect.id = `kelancaran${student.nis}`;
+                    for (let status of tahsinStatus){
+                      const studentKelancaranOption = document.createElement("option");
+                      if(status === null){
+                        studentKelancaranOption.innerText = "---Kelancaran---";
+                      } else{
+                        studentKelancaranOption.innerText = status
+                      }
+                      studentKelancaranOption.value = status;
+                      studentKelancaranSelect.appendChild(studentKelancaranOption)
+                    }
+
   
                     studentList.appendChild(studentLabel);
                     studentList.appendChild(studentInput);
-                    studentList.appendChild(wrapperCapaian);
+                    // studentList.appendChild(wrapperCapaian);
                     // studentList.appendChild(wrapperHalaman);
                     studentList.appendChild(studentHalamanInput);
+                    studentList.appendChild(studentTajwidSelect);
+                    studentList.appendChild(studentKelancaranSelect);
                   }
 
                 });

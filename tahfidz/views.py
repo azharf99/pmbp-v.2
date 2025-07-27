@@ -12,6 +12,7 @@ from classes.models import Class
 from files.forms import FileForm
 from files.models import File
 from users.models import Teacher
+from utils.constants import TAHSIN_STATUS_LIST
 from utils_humas.mixins import GeneralAuthPermissionMixin, GeneralContextMixin, GeneralFormDeleteMixin, GeneralFormValidateMixin
 from students.models import Student
 from tahfidz.models import Tahfidz, Tilawah
@@ -178,7 +179,8 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
         students = Student.objects.select_related("student_class").filter(student_status="Aktif", student_class_id=class_id)
         for student in students:
             nis_santri = request.POST.get(f"student{student.nis}")
-            tercapai = request.POST.get(f"tercapai{student.nis}")
+            tajwid = request.POST.get(f"tajwid{student.nis}")
+            kelancaran = request.POST.get(f"kelancaran{student.nis}")
             halaman = request.POST.get(f"halaman{student.nis}", 0)
             if nis_santri:
                 object, is_updated = Tilawah.objects.select_related("santri").prefetch_related("pendamping").update_or_create(
@@ -189,6 +191,8 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
                         halaman = halaman,
                         target = target,
                         catatan = catatan,
+                        tajwid = tajwid if tajwid != "null" and tajwid in TAHSIN_STATUS_LIST else None,
+                        kelancaran = tajwid if tajwid != "null" and tajwid in TAHSIN_STATUS_LIST else None,
                     )
                 )
                 if teachers:
