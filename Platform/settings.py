@@ -28,7 +28,7 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = False    # Set to True to enable debug mode
 MAINTENANCE_MODE = False  # Set to True to enable maintenance mode
 PIKET_MODE_ON = False  # Set to True to enable maintenance mode
 

@@ -105,6 +105,8 @@
 
 <script>
   function getApiUrl(url, studentList){
+    const target = document.getElementById("target").value
+
     fetch(url)
           .then(response => response.json())
           .then(students => {
@@ -126,6 +128,7 @@
                     wrapperCapaian.className = "flex justify-center items-center rounded-md text-black dark:text-white border-2 border-blue-500"
                     const studentCapaianInput = document.createElement("input");
                     studentCapaianInput.type = "checkbox"
+                    studentCapaianInput.checked = "true"
                     studentCapaianInput.htmlFor = student.id
                     studentCapaianInput.name = `tercapai${student.nis}`;
                     studentCapaianInput.id = student.nis;
@@ -137,8 +140,10 @@
                     const studentHalamanInput = document.createElement("input");
                     studentHalamanInput.type = "number"
                     studentHalamanInput.htmlFor = student.id
+                    studentHalamanInput.value = target
+                    studentHalamanInput.required = "true"
                     studentHalamanInput.name = `halaman${student.nis}`;
-                    studentHalamanInput.className = "rounded-md text-black dark:text-white border-2 border-blue-500 shadow-lg"
+                    studentHalamanInput.className = "halaman px-4 rounded-md text-black dark:text-white border-2 border-blue-500 shadow-lg text-center"
                     studentHalamanInput.id = student.nis;
                     // wrapperHalaman.appendChild(studentHalamanInput)
   
@@ -159,6 +164,15 @@
 
   const debug = document.getElementById("debug")
   const prod = document.getElementById("prod")
+
+  document.getElementById('target').addEventListener('change', function() {
+    const semua_halaman = document.getElementsByClassName('halaman');
+    for(halaman of semua_halaman){
+      halaman.value = this.value
+    }
+  });
+
+
   document.getElementById('class_id').addEventListener('change', function() {
       const firstSelectValue = this.value;
       const studentList = document.getElementById('student_list');
