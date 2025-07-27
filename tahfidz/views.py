@@ -210,6 +210,9 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
         context["teachers"] = Teacher.objects.filter(status="Aktif", gender="L")
         if settings.DEBUG:
             context["debug"] = "debug"
+        else:
+            context["debug"] = "prod"
+
         return context
     
 
