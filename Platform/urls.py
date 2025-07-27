@@ -92,6 +92,7 @@ urlpatterns = [
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path('students/', include('students.urls')),
     path('tahfidz/', include("tahfidz.urls")),
+    # path('timetable/', include("scheduler.urls")),
     path('userlog/', include('userlog.urls')),
     path(
     "sitemap.xml",

@@ -1,8 +1,10 @@
 from datetime import datetime
 from django.contrib import messages
+from django.core.management import call_command
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.views.generic import CreateView, UpdateView, DetailView, ListView
 from django.urls import reverse_lazy
 from classes.models import Class
@@ -194,3 +196,65 @@ class ScheduleDownloadExcelView(ModelDownloadExcelView):
     header_names = ['No', 'HARI', 'JAM KE-', 'KELAS', 'PELAJARAN', 'PENGAJAR']
     filename = 'DATA JADWAL GURU SMA IT Al Binaa.xlsx'
     queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher", "schedule_class").all()
+
+
+
+def timetable_view(request):
+    """
+    This view fetches and displays the generated timetable in a grid format.
+    """
+    # Get all unique classes, periods, and the days of the week
+    classes = Class.objects.filter(category="Putra")
+    periods = Schedule.objects.values("schedule_time", "time_start", "time_end").order_by('schedule_time').distinct()
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Saturday", "Sunday"]
+
+    # You can select a class to view its specific timetable
+    selected_class_id = request.GET.get('class_id')
+    
+    if selected_class_id:
+        # Filter entries for the selected class
+        schedule_entries = Schedule.objects.filter(schedule_class_id=selected_class_id, schedule_course__type="putra").select_related('schedule_course', 'schedule_class')
+        selected_class = Class.objects.get(id=selected_class_id)
+    else:
+        # By default, show the first class or an empty schedule
+        if classes.exists():
+            selected_class = classes.first()
+            schedule_entries = Schedule.objects.filter(lesson__class_assigned=selected_class, schedule_course__type="putra").select_related('schedule_course__teacher', 'schedule_course__course_name')
+        else:
+            selected_class = None
+            schedule_entries = Schedule.objects.none()
+
+    # Structure the data for easy rendering in the template
+    # The grid will be a dictionary: {(day, period_number): "Subject by Teacher in Room", ...}
+    schedule_grid = {}
+    for entry in schedule_entries:
+        key = (entry.schedule_day, entry.schedule_time)
+        schedule_grid[key] = f"{entry.schedule_course.course_name}<br><small>{entry.schedule_course.teacher.teacher_name}<br>({entry.schedule_class.class_name})</small>"
+
+    context = {
+        'classes': classes,
+        'selected_class': selected_class,
+        'periods': periods,
+        'days': days,
+        'schedule_grid': schedule_grid,
+    }
+    return render(request, 'schedules/timetable.html', context)
+
+def generate_timetable_view(request):
+    """
+    This view triggers the timetable generation command.
+    """
+    if request.method == 'POST':
+        try:
+            # Call the management command programmatically
+            call_command('generatetimetable')
+            messages.success(request, 'Successfully generated a new timetable!')
+        except Exception as e:
+            # Catch potential errors during generation
+            messages.error(request, f'An error occurred during timetable generation: {e}')
+        
+        # Redirect back to the timetable display page
+        return redirect('timetable_view')
+    
+    # If not a POST request, just redirect
+    return redirect('timetable_view')

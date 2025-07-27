@@ -20,7 +20,6 @@ SCHEDULE_WEEKDAYS = (
     ("Selasa", _("Selasa")),
     ("Rabu", _("Rabu")),
     ("Kamis", _("Kamis")),
-    ("Jumat", _("Jumat")),
     ("Sabtu", _("Sabtu")),
     ("Ahad", _("Ahad")),
 )

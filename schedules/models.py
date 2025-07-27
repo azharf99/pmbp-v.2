@@ -1,7 +1,7 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from classes.models import Class
 from courses.models import Course
-from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -31,8 +31,20 @@ class Schedule(models.Model):
     def get_absolute_url(self) -> str:
         return reverse("schedule-list")
     
+    def clean(self):
+        if self.schedule_day == self.schedule_course.teacher.day_off:
+            raise ValidationError(f"Teacher {self.schedule_course.teacher.teacher_name} has a day off on {self.schedule_day}.")
+
+        # Constraint: No classes on Friday (already handled by DAY_CHOICES, but this is an extra safeguard).
+        if self.schedule_day == "Jum'at":
+            raise ValidationError("Scheduling on Friday is not allowed.")
+    
 
     class Meta:
+        unique_together = (
+            ('schedule_day', 'schedule_time', 'teacher'),
+            ('schedule_day', 'schedule_time', 'schedule_class'),
+        )
         ordering = ["-schedule_day", "schedule_class", "schedule_time"]
         verbose_name = _("Schedule")
         verbose_name_plural = _("Schedules")
@@ -40,6 +52,16 @@ class Schedule(models.Model):
         indexes = [
             models.Index(fields=["schedule_day", "schedule_time"]),
         ]
+
+    # We need to override the save method to dynamically get related fields
+    # for the unique_together constraint check. To do this, we add proxy
+    # fields that are not saved to the database.
+    def save(self, *args, **kwargs):
+        self.teacher = self.schedule_course.teacher
+        super().save(*args, **kwargs)
+
+# Proxy fields for validation, not stored in the database
+Schedule.add_to_class('teacher', models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True, blank=True))
     
 
 

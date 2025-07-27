@@ -10,7 +10,7 @@ from django.db.models.query import QuerySet
 from django.shortcuts import HttpResponseRedirect
 from django.forms import BaseModelForm
 from django.urls import reverse_lazy, reverse
-from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, FileResponse, Http404, HttpResponseNotFound
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, FileResponse, Http404, HttpResponseNotFound, JsonResponse
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -29,6 +29,15 @@ from django.utils import timezone
 class StudentIndexView(ListView):
     model = Student
     queryset = Student.objects.select_related('student_class').filter(student_status="Aktif")
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        class_id = request.GET.get("class_id")
+        if class_id:
+            data = list(Student.objects.select_related('student_class')\
+                        .filter(student_status="Aktif", student_class_id=class_id)\
+                        .values("nis", "student_name", "student_class__short_class_name"))
+            return JsonResponse(data, safe=False)
+        return super().get(request, *args, **kwargs)
 
 class StudentLevelUpView(CreateView):
     model = Student

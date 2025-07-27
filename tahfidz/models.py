@@ -3,6 +3,9 @@ from django.db import models
 from django.utils.translation import gettext as _
 from students.models import Student
 from django.urls import reverse
+from django.utils import timezone
+
+from users.models import Teacher
 
 # Create your models here.
 class Tahfidz(models.Model):
@@ -30,6 +33,38 @@ class Tahfidz(models.Model):
         verbose_name = _("Tahfidz")
         verbose_name_plural = _("Tahfidz")
         db_table = "tahfidz"
+        indexes = [
+            models.Index(fields=["id",]),
+        ]
+
+
+# Create your models here.
+class Tilawah(models.Model):
+    tanggal = models.DateField(_("Tanggal"), default=timezone.datetime.now)
+    santri = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name=_("Santri"))
+    tercapai = models.BooleanField(_("Tercapai?"), max_length=10, choices=((True, "True"), (False, "False")), default=True, blank=True, null=True)
+    target = models.PositiveBigIntegerField(_("Target Tilawah Hari Ini"), blank=True, null=True)
+    halaman = models.PositiveBigIntegerField(_("Halaman"), blank=True, null=True)
+    catatan = models.CharField(_("Catatan"), max_length=255, blank=True, null=True)
+    pendamping = models.ManyToManyField(Teacher,_("Pendamping"), max_length=255, blank=True)
+    semester = models.CharField(max_length=7, default=settings.SEMESTER, null=True)
+    academic_year = models.CharField(max_length=20, default=settings.TAHUN_AJARAN, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return f"{self.tanggal} - {self.santri} - {self.halaman}"
+    
+
+    def get_absolute_url(self):
+        return reverse("tahfidz:tilawah-create")
+    
+    class Meta:
+        ordering = ["-tanggal", "santri"]
+        verbose_name = _("Tilawah")
+        verbose_name_plural = _("Tilawah")
+        db_table = "tilawah"
         indexes = [
             models.Index(fields=["id",]),
         ]

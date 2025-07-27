@@ -6,7 +6,7 @@ from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext as _
 from uuid import uuid4
 from random import randint
-
+from utils.constants import SCHEDULE_WEEKDAYS
 from utils.models import CleanableFileModel
 # Create your models here.
 
@@ -42,6 +42,7 @@ class Teacher(CleanableFileModel):
     phone = models.CharField(max_length=20, blank=True, default=0, help_text="Nomor telepon pembina, misal: 08123456789")
     photo = models.ImageField(upload_to=path_and_rename, default='blank-profile.png', blank=True, null=True, help_text="format foto .jpg/.jpeg")
     status = models.CharField(max_length=20, blank=True, null=True, default="Aktif", help_text="Status aktif atau tidaknya guru ini")
+    day_off = models.CharField(max_length=10, choices=SCHEDULE_WEEKDAYS, default=SCHEDULE_WEEKDAYS[4][0], help_text="The teacher's designated day off.")
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
