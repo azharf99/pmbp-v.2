@@ -71,7 +71,7 @@ class TahfidzQuickUploadView(GeneralAuthPermissionMixin, CreateView):
                 app="TAHFIDZ",
                 message="berhasil impor file Excel data tahfidz santri"
             )
-        send_WA_create_update_delete(self.request.user.teacher.no_hp, 'impor file Excel', 'data tahfidz santri', 'tahfidz/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'impor file Excel', 'data tahfidz santri', 'tahfidz/')
         messages.success(self.request, "Import Data Excel Berhasil! :)")
         return HttpResponseRedirect(self.get_success_url())
     
@@ -117,7 +117,7 @@ class TahfidzQuickCSVUploadView(GeneralAuthPermissionMixin, CreateView):
                 app="STUDENT",
                 message="berhasil impor file CSV data tahfidz santri"
             )
-        send_WA_create_update_delete(self.request.user.teacher.no_hp, 'impor file CSV', 'data tahfidz santri', 'tahfidz/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'impor file CSV', 'data tahfidz santri', 'tahfidz/')
         messages.success(self.request, "Import Data CSV Berhasil! :)")
         return HttpResponseRedirect(self.get_success_url())
     
@@ -150,6 +150,8 @@ class TahfidzDeleteView(GeneralFormDeleteMixin):
 
 class TilawahIndexView(GeneralContextMixin, ListView):
     model = Tilawah
+    queryset = Tilawah.objects.select_related("santri__student_class").prefetch_related("pendamping")
+    paginate_by = 426
 
 class TilawahCreateView(GeneralFormValidateMixin, CreateView):
     model = Tilawah
@@ -170,29 +172,28 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
         date = request.POST.get("date")
         target = request.POST.get("target")
         catatan = request.POST.get("catatan")
-        if not date or not class_id:
-            return HttpResponseBadRequest("Tanggal atau Kelas tidak boleh kosong!")
+        if not date or not class_id or not target:
+            return HttpResponseBadRequest("Tanggal atau Kelas atau Target tidak boleh kosong!")
         teachers = request.POST.getlist("teachers")
         students = Student.objects.select_related("student_class").filter(student_status="Aktif", student_class_id=class_id)
         for student in students:
             nis_santri = request.POST.get(f"student{student.nis}")
             tercapai = request.POST.get(f"tercapai{student.nis}")
-            halaman = request.POST.get(f"halaman{student.nis}")
+            halaman = request.POST.get(f"halaman{student.nis}", 0)
             if nis_santri:
-                object, is_updated = Tilawah.objects.update_or_create(
+                object, is_updated = Tilawah.objects.select_related("santri").prefetch_related("pendamping").update_or_create(
                     tanggal = date,
                     santri = student,
                     defaults=dict(
-                        tercapai = True if tercapai else False,
+                        tercapai = True if target and int(halaman) >= int(target) else False,
                         halaman = halaman,
                         target = target,
                         catatan = catatan,
                     )
                 )
                 if teachers:
-                    for teacher_id in teachers:
-                        guru = Teacher.objects.get(id=teacher_id)
-                        object.pendamping.add(guru)
+                    teachers_list = [Teacher.objects.get(id=teacher_id) for teacher_id in teachers]
+                    object.pendamping.set(teachers_list)
                 object.save()
 
         UserLog.objects.create(

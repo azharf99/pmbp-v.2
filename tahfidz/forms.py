@@ -1,5 +1,11 @@
+from typing import Any, Mapping
 from django import forms
+from django.core.files.base import File
+from django.db.models.base import Model
+from django.forms.utils import ErrorList
+from students.models import Student
 from tahfidz.models import Tahfidz, Tilawah
+from users.models import Teacher
 
 class TahfidzForm(forms.ModelForm):
     class Meta:
@@ -15,6 +21,11 @@ class TahfidzForm(forms.ModelForm):
         }
 
 class TilawahForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["santri"].queryset = Student.objects.select_related("student_class").filter(student_status="Aktif")
+        self.fields["pendamping"].queryset = Teacher.objects.select_related("user").filter(status="Aktif", gender="L")
+
     class Meta:
         model = Tilawah
         fields = '__all__'

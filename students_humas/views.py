@@ -109,7 +109,7 @@ class StudentQuickUploadView(GeneralAuthPermissionMixin, CreateView):
                 app="STUDENT",
                 message="berhasil impor file Excel data santri"
             )
-        send_WA_create_update_delete(self.request.user.teacher.no_hp, 'impor file Excel', 'data santri', 'students/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'impor file Excel', 'data santri', 'students/')
         messages.success(self.request, "Import Data Excel Berhasil! :)")
         return HttpResponseRedirect(self.get_success_url())
     
@@ -152,7 +152,7 @@ class StudentQuickCSVUploadView(GeneralAuthPermissionMixin, CreateView):
                 app="STUDENT",
                 message="berhasil impor file CSV data santri"
             )
-        send_WA_create_update_delete(self.request.user.teacher.no_hp, 'impor file CSV', 'data santri', 'students/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'impor file CSV', 'data santri', 'students/')
         messages.success(self.request, "Import Data CSV Berhasil! :)")
         return HttpResponseRedirect(self.get_success_url())
     

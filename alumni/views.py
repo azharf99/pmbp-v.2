@@ -136,7 +136,7 @@ class AlumniQuickUploadView(GeneralAuthPermissionMixin, CreateView):
             message = f"berhasil impor data excel alumni"
         )
         messages.success(self.request, "Selamat, Impor data excel alumni berhasil!")
-        send_WA_create_update_delete(self.request.user.teacher.no_hp, 'mengimpor dari excel', 'data alumni', 'alumni/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengimpor dari excel', 'data alumni', 'alumni/')
         return HttpResponseRedirect(self.get_success_url())
     
 
@@ -199,7 +199,7 @@ class AlumniCSVQuickUploadView(GeneralAuthPermissionMixin, CreateView):
             message = f"berhasil impor data csv alumni"
         )
         messages.success(self.request, "Selamat, Impor data CSV alumni berhasil!")
-        send_WA_create_update_delete(self.request.user.teacher.no_hp, 'mengimpor dari csv', 'data alumni', 'alumni/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengimpor dari csv', 'data alumni', 'alumni/')
         return HttpResponseRedirect(self.get_success_url())
     
     

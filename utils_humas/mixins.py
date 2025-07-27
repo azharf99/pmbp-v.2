@@ -42,7 +42,7 @@ class GeneralFormValidateMixin(GeneralAuthPermissionMixin, FormView):
             app = self.app_name.upper(),
             message = f"berhasil {self.form_name.lower()} data {self.app_name} dengan detail berikut: {self.object}"
         )
-        send_WA_create_update_delete(self.request.user.teacher.no_hp, self.form_name.lower(), f'data {self.app_name} dengan detail berikut: {self.object}', self.type_url, self.slug_url)
+        send_WA_create_update_delete(self.request.user.teacher.phone, self.form_name.lower(), f'data {self.app_name} dengan detail berikut: {self.object}', self.type_url, self.slug_url)
         return super().form_valid(form)
     
     def form_invalid(self, form: Any) -> HttpResponse:
@@ -63,7 +63,7 @@ class GeneralFormDeleteMixin(GeneralAuthPermissionMixin, DeleteView):
             app = self.app_name.upper(),
             message = f"berhasil menghapus data {self.app_name} dengan detail berikut: {self.obj}"
         )
-        send_WA_create_update_delete(request.user.teacher.no_hp, 'menghapus', f'data {self.app_name} dengan detail berikut: {self.obj}', self.type_url, self.slug_url)
+        send_WA_create_update_delete(request.user.teacher.phone, 'menghapus', f'data {self.app_name} dengan detail berikut: {self.obj}', self.type_url, self.slug_url)
         messages.success(self.request, "Data Berhasil Dihapus! :)")
         return super().post(request, *args, **kwargs)
     
@@ -110,5 +110,5 @@ class GeneralDownloadExcelView(GeneralAuthPermissionMixin):
             app=self.app_name.upper(),
             message=f"berhasil download daftar {self.app_name.lower()} dalam format Excel"
         )
-        send_WA_general(request.user.teacher.no_hp, 'download', f'file Excel data {self.app_name.lower()}')
+        send_WA_general(request.user.teacher.phone, 'download', f'file Excel data {self.app_name.lower()}')
         return FileResponse(buffer, as_attachment=True, filename=self.filename)

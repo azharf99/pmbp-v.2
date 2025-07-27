@@ -178,7 +178,7 @@ class GroupQuickUploadView(GeneralAuthPermissionMixin, CreateView):
             message = f"berhasil impor data excel kelompok privat"
         )
         messages.success(self.request, "Selamat, Impor data excel kelompok privat berhasil!")
-        send_WA_create_update_delete(self.request.user.teacher.no_hp, 'mengimpor dari excel', 'data kelompok privat', 'private/', 'groups/')
+        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengimpor dari excel', 'data kelompok privat', 'private/', 'groups/')
         return HttpResponseRedirect(self.get_success_url())
 
 
