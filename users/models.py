@@ -41,6 +41,7 @@ class Teacher(CleanableFileModel):
     email = models.EmailField(default='smaitalbinaa.ekskul@outlook.com', blank=True)
     phone = models.CharField(max_length=20, blank=True, default=0, help_text="Nomor telepon pembina, misal: 08123456789")
     photo = models.ImageField(upload_to=path_and_rename, default='blank-profile.png', blank=True, null=True, help_text="format foto .jpg/.jpeg")
+    work_area = models.CharField(max_length=20, blank=True, null=True, help_text="Wilayah Kerja guru ini")
     status = models.CharField(max_length=20, blank=True, null=True, default="Aktif", help_text="Status aktif atau tidaknya guru ini")
     day_off = models.CharField(max_length=10, choices=SCHEDULE_WEEKDAYS, default=SCHEDULE_WEEKDAYS[4][0], help_text="The teacher's designated day off.")
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)

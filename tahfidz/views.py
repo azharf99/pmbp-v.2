@@ -183,7 +183,7 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
                     tanggal = date,
                     santri = student,
                     defaults=dict(
-                        pencapaian = True if tercapai else False,
+                        tercapai = True if tercapai else False,
                         halaman = halaman,
                         target = target,
                         catatan = catatan,
