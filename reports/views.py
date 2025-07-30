@@ -34,7 +34,8 @@ class ReportQuickCreateViewV3(QuickReportMixin):
     form_class = ReportFormV2
     template_name = 'reports/report_quick_form-v3.html'
     permission_required = 'reports.add_report'
-    class_name = [name.short_class_name for name in Class.objects.filter(category="Putra")]
+    # class_name = [name.short_class_name for name in Class.objects.filter(category="Putra")]
+    class_name = []
     queryset = Report.objects.select_related("schedule__schedule_course__course", "schedule__schedule_course__teacher", "schedule__schedule_time", "schedule__schedule_class", "schedule__teacher", "subtitute_teacher", "reporter")
 
 
@@ -45,7 +46,9 @@ class ReportPutriQuickCreateViewV3(QuickReportMixin):
     template_name = 'reports/report_quick_form-v3.html'
     permission_required = 'reports.add_report'
     type = "putri"
-    class_name = [name.short_class_name for name in Class.objects.filter(category="Putri")]
+    # class_name = [name.short_class_name for name in Class.objects.filter(category="Putri")]
+    class_name = []
+
     queryset = Report.objects.select_related("schedule__schedule_course__course", "schedule__schedule_course__teacher", "schedule__schedule_time", "schedule__schedule_class", "schedule__teacher", "subtitute_teacher", "reporter")
 
 
