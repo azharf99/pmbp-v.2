@@ -3,14 +3,14 @@ from django.contrib import messages
 from django.core.management import call_command
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.views.generic import CreateView, UpdateView, DetailView, ListView
+from typing import Any
 from django.urls import reverse_lazy
 from classes.models import Class
 from schedules.forms import ScheduleForm
-from schedules.models import Schedule
-from typing import Any
+from schedules.models import Period, Schedule
 from utils_piket.mixins import BaseAuthorizedFormView, BaseModelDateBasedListView, BaseModelDeleteView, BaseModelUploadView, BaseAuthorizedModelView, ModelDownloadExcelView
 from utils_piket.constants import WEEKDAYS
 
@@ -20,7 +20,7 @@ class ScheduleView(BaseAuthorizedModelView, ListView):
     model = Schedule
     menu_name = 'schedule'
     template_name = 'schedules/schedule_view.html'
-    queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher","schedule_class")
+    queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher", "schedule_course__course", "schedule_class", "schedule_time")
     permission_required = 'schedules.view_schedule'
     raise_exception = False
 
@@ -34,7 +34,7 @@ class ScheduleView(BaseAuthorizedModelView, ListView):
                         .values('schedule_class__short_class_name', 
                                 'schedule_course__teacher__teacher_name',
                                 'schedule_course__course_code',
-                                'schedule_course__course_short_name')\
+                                'schedule_course__course__short_name')\
                         .order_by('schedule_class__short_class_name')
             if qs.exists():
                 groupped_qs.append(qs)
@@ -42,7 +42,7 @@ class ScheduleView(BaseAuthorizedModelView, ListView):
                 groupped_qs.append([{"schedule_class__short_class_name": "Kosong", 
                                      "schedule_course__teacher__teacher_name": "Kosong",
                                      "schedule_course__course_code": "Kosong",
-                                     "schedule_course__course_short_name": "Kosong"
+                                     "schedule_course__course__short_name": "Kosong"
                                      } for j in range(15)])
         return groupped_qs
 
@@ -61,7 +61,7 @@ class SchedulePutriView(BaseAuthorizedModelView, ListView):
     model = Schedule
     menu_name = 'schedule'
     template_name = 'schedules/schedule_view.html'
-    queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher","schedule_class")
+    queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher", "schedule_course__course", "schedule_class", "schedule_time")
     permission_required = 'schedules.view_schedule'
     raise_exception = False
 
@@ -75,7 +75,7 @@ class SchedulePutriView(BaseAuthorizedModelView, ListView):
                         .values('schedule_class__short_class_name', 
                                 'schedule_course__teacher__teacher_name',
                                 'schedule_course__course_code',
-                                'schedule_course__course_short_name')\
+                                'schedule_course__course__short_name')\
                         .order_by('schedule_class__short_class_name')
             if qs.exists():
                 groupped_qs.append(qs)
@@ -83,7 +83,7 @@ class SchedulePutriView(BaseAuthorizedModelView, ListView):
                 groupped_qs.append([{"schedule_class__short_class_name": "Kosong", 
                                      "schedule_course__teacher__teacher_name": "Kosong",
                                      "schedule_course__course_code": "Kosong",
-                                     "schedule_course__course_short_name": "Kosong"
+                                     "schedule_course__course__short_name": "Kosong"
                                      } for j in range(15)])
         return groupped_qs
 
@@ -101,7 +101,7 @@ class SchedulePutriView(BaseAuthorizedModelView, ListView):
     
 class ScheduleListView(BaseAuthorizedModelView, BaseModelDateBasedListView):
     model = Schedule
-    queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher","schedule_class")
+    queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher", "schedule_course__course", "schedule_class", "schedule_time")
     menu_name = 'schedule'
     permission_required = 'schedules.view_schedule'
     paginate_by = 50
@@ -115,7 +115,7 @@ class ScheduleListView(BaseAuthorizedModelView, BaseModelDateBasedListView):
 
 class ScheduleSearchView(BaseAuthorizedModelView, BaseModelDateBasedListView):
     model = Schedule
-    queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher", "schedule_class")
+    queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher", "schedule_course__course", "schedule_class", "schedule_time")
     menu_name = 'schedule'
     permission_required = 'schedules.view_schedule'
     template_name = 'schedules/schedule_list.html'
@@ -157,8 +157,6 @@ class ScheduleCreateView(BaseAuthorizedFormView, CreateView):
             schedule_class = form.cleaned_data["schedule_class"],
             defaults=dict(
                 schedule_course = form.cleaned_data["schedule_course"],
-                time_start = form.data.get("time_start"),
-                time_end = form.data.get("time_end"),
             )
         )
         messages.success(self.request, self.success_message)
@@ -184,7 +182,7 @@ class ScheduleDeleteView(BaseModelDeleteView):
 class ScheduleUploadView(BaseModelUploadView):
     template_name = 'schedules/schedule_form.html'
     menu_name = "schedule"
-    permission_required = 'schedules.create_schedule'
+    permission_required = 'schedules.add_schedule'
     success_url = reverse_lazy("schedule-list")
     model_class = Schedule
 
@@ -195,9 +193,15 @@ class ScheduleDownloadExcelView(ModelDownloadExcelView):
     template_name = 'schedules/download.html'
     header_names = ['No', 'HARI', 'JAM KE-', 'KELAS', 'PELAJARAN', 'PENGAJAR']
     filename = 'DATA JADWAL GURU SMA IT Al Binaa.xlsx'
-    queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher", "schedule_class").all()
+    queryset = Schedule.objects.select_related("schedule_course", "schedule_course__teacher", "schedule_course__course", "schedule_class", "schedule_time")
 
 
+class PeriodUploadView(BaseModelUploadView):
+    template_name = 'schedules/schedule_form.html'
+    menu_name = "period"
+    permission_required = 'schedules.add_period'
+    success_url = reverse_lazy("schedule-list")
+    model_class = Period
 
 def timetable_view(request):
     """

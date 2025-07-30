@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 
-CLASS_CATEGORY_CHOICES = (
+GENDER_CHOICES = (
     (None, "----Pilih Kategori Kelas----"),
     ("Putra", _("Putra")),
     ("Putri", _("Putri")),

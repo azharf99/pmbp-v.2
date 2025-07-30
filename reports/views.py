@@ -16,7 +16,7 @@ from utils_piket.whatsapp_albinaa import send_whatsapp_group, send_whatsapp_repo
     
 class ReportListView(BaseAuthorizedModelView, BaseModelDateBasedListView):
     model = Report
-    queryset = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher", "reporter").all()
+    queryset = Report.objects.select_related("schedule__schedule_course__course", "schedule__schedule_course__teacher", "schedule__schedule_time", "schedule__schedule_class", "schedule__teacher", "subtitute_teacher", "reporter").all()
     menu_name = 'report'
     permission_required = 'reports.view_report'
     raise_exception = False
@@ -35,6 +35,7 @@ class ReportQuickCreateViewV3(QuickReportMixin):
     template_name = 'reports/report_quick_form-v3.html'
     permission_required = 'reports.add_report'
     class_name = [name.short_class_name for name in Class.objects.filter(category="Putra")]
+    queryset = Report.objects.select_related("schedule__schedule_course__course", "schedule__schedule_course__teacher", "schedule__schedule_time", "schedule__schedule_class", "schedule__teacher", "subtitute_teacher", "reporter")
 
 
 class ReportPutriQuickCreateViewV3(QuickReportMixin):
@@ -45,13 +46,15 @@ class ReportPutriQuickCreateViewV3(QuickReportMixin):
     permission_required = 'reports.add_report'
     type = "putri"
     class_name = [name.short_class_name for name in Class.objects.filter(category="Putri")]
+    queryset = Report.objects.select_related("schedule__schedule_course__course", "schedule__schedule_course__teacher", "schedule__schedule_time", "schedule__schedule_class", "schedule__teacher", "subtitute_teacher", "reporter")
+
 
 
 class SubmitButtonView(SubmitViewMixins):
     form_class = SubmitForm
     template_name = 'reports/report_quick_form-v3.html'
     success_url = reverse_lazy("report-quick-create-v3")
-    queryset = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher", "reporter").all()
+    queryset = Report.objects.select_related("schedule__schedule_course__course", "schedule__schedule_course__teacher", "schedule__schedule_time", "schedule__schedule_class", "schedule__teacher", "subtitute_teacher", "reporter")
     permission_required = 'reports.add_report'
     type = "putra"
 
@@ -59,7 +62,7 @@ class PutriSubmitButtonView(SubmitViewMixins):
     form_class = SubmitForm
     template_name = 'reports/report_quick_form-v3.html'
     success_url = reverse_lazy("report-putri-quick-create-v3")
-    queryset = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher", "reporter").all()
+    queryset = Report.objects.select_related("schedule__schedule_course__course", "schedule__schedule_course__teacher", "schedule__schedule_time", "schedule__schedule_class", "schedule__teacher", "subtitute_teacher", "reporter")
     permission_required = 'reports.add_report'
     type = "putri"
 
@@ -67,7 +70,7 @@ class PutriSubmitButtonView(SubmitViewMixins):
 class ReportUpdateViewV3(ReportUpdateQuickViewMixin):
     redirect_url = "report-quick-create-v3"
     app_name = "QUICK REPORT V3"
-    queryset = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher", "reporter").all()
+    queryset = Report.objects.select_related("schedule__schedule_course__course", "schedule__schedule_course__teacher", "schedule__schedule_time", "schedule__schedule_class", "schedule__teacher", "subtitute_teacher", "reporter")
     
 
 class ReportUpdatePetugasViewV3(ReportUpdateReporterMixin):
@@ -115,4 +118,4 @@ class ReportDownloadExcelView(ModelDownloadExcelView):
     template_name = 'reports/download.html'
     header_names = ['No', 'TANGGAL', 'HARI', 'STATUS', 'JAM KE-', 'KELAS', 'PELAJARAN', 'PENGAJAR', 'GURU PENGGANTI', "PETUGAS PIKET"]
     filename = 'LAPORAN PIKET SMA IT Al Binaa.xlsx'
-    queryset = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher", "reporter").all()
+    queryset = Report.objects.select_related("schedule__schedule_course__course", "schedule__schedule_course__teacher", "schedule__schedule_time", "schedule__schedule_class", "schedule__teacher", "subtitute_teacher", "reporter")

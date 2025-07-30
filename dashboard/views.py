@@ -5,7 +5,7 @@ from django.views.generic import ListView
 from django.utils import timezone
 from alumni.models import Alumni
 from classes.models import Class
-from courses.models import Course
+from courses.models import Subject as CourseSubject
 from extracurriculars.models import Extracurricular
 from notifications.models import Notification
 from private.models import Private, Subject
@@ -94,9 +94,9 @@ class DashboardView(ListView):
         context["jumlah_alumni_non_univ"] = Alumni.objects.filter(undergraduate_university__in=[0, ''])
         context["logs"] = UserLog.objects.order_by("-created_at")[:10]
         # Courses
-        context["sum_of_course"] = list(Course.objects.select_related("teacher").exclude(course_code__in=["APE", "LQ1", "TKL", "APEN3"]).filter(type="putra").values("course_name", "category").distinct())
-        context["sum_of_course_syari"] = [subject for subject in context["sum_of_course"] if subject["category"]=="Syar'i"]
-        context["sum_of_course_ashri"] = [subject for subject in context["sum_of_course"] if subject["category"]=="Ashri"]
+        context["sum_of_course"] = list(CourseSubject.objects.filter(status="Aktif"))
+        context["sum_of_course_syari"] = [subject for subject in context["sum_of_course"] if subject.category == "Syar'i"]
+        context["sum_of_course_ashri"] = [subject for subject in context["sum_of_course"] if subject.category == "Ashri"]
         if self.request.user.is_authenticated:
             context["notifications"] = list(Notification.objects.filter(teacher=self.request.user.teacher))
             context["notifications_left"] = [notif for notif in context["notifications"] if notif.is_read==False]

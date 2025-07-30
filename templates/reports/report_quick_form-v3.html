@@ -61,7 +61,7 @@
             {% endif %}
           <tr>
             <td class="p-2 border border-gray-400 text-center bg-blue-100 text-black sticky left-0 font-bold">{{forloop.counter}}</td>
-            <td class="p-2 border border-gray-400 text-xs text-center">{{reports.first.schedule__time_start|date:"H:i"}}<br> - <br>{{reports.first.schedule__time_end|date:"H:i"}}</td>
+            <td class="p-2 border border-gray-400 text-xs text-center">{{reports.first.schedule__schedule_time__time_start|date:"H:i"}}<br> - <br>{{reports.first.schedule__schedule_time__time_end|date:"H:i"}}</td>
             {% for report_data in reports %}
             <td class="p-2 border border-gray-400 text-center text-black dark:text-white">
               {% if report_data.status == "Hadir" %}
@@ -118,7 +118,7 @@
                   </button>
               {% endif %}
               <p class="text-xs text-center">{{report_data.schedule__schedule_course__teacher__short_name}}</p>
-              <p class="text-xs text-center">{{report_data.schedule__schedule_course__course_short_name}}</p>
+              <p class="text-xs text-center">{{report_data.schedule__schedule_course__course__short_name}}</p>
             </td>
             {% endfor %}
             <td class="p-2 border border-gray-400 text-center">

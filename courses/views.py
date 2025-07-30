@@ -1,6 +1,8 @@
+from django.http import HttpRequest, HttpResponse
 from courses.forms import CourseForm
-from courses.models import Course
+from courses.models import Course, Subject
 from django.views.generic import CreateView, UpdateView, DetailView
+from typing import Any
 from django.urls import reverse_lazy
 from utils_piket.mixins import BaseAuthorizedFormView, BaseModelDeleteView, BaseModelUploadView, BaseAuthorizedModelView, BaseModelQueryListView, ModelDownloadExcelView
 
@@ -47,7 +49,7 @@ class CourseDeleteView(BaseModelDeleteView):
 class CourseUploadView(BaseModelUploadView):
     template_name = 'courses/course_form.html'
     menu_name = "course"
-    permission_required = 'courses.create_course'
+    permission_required = 'courses.add_course'
     success_url = reverse_lazy("course-list")
     model_class = Course
     
@@ -59,3 +61,12 @@ class CourseDownloadExcelView(ModelDownloadExcelView):
     header_names = ['No', 'NAMA PELAJARAN', 'KODE', 'PENGAJAR']
     filename = 'DATA PELAJARAN SMA IT Al Binaa.xlsx'
     queryset = Course.objects.select_related("teacher").all()
+
+
+
+class SubjectUploadView(BaseModelUploadView):
+    template_name = 'courses/course_form.html'
+    menu_name = "subject"
+    permission_required = 'courses.add_subject'
+    success_url = reverse_lazy("subject-list")
+    model_class = Subject

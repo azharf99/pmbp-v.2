@@ -1,5 +1,5 @@
 from django.urls import path
-from courses.views import CourseListView, CourseDetailView, CourseCreateView, CourseUpdateView, CourseDeleteView, CourseUploadView, CourseDownloadExcelView
+from courses.views import CourseListView, CourseDetailView, CourseCreateView, CourseUpdateView, CourseDeleteView, CourseUploadView, CourseDownloadExcelView, SubjectUploadView
 
 urlpatterns = [
     path('', CourseListView.as_view(), {"site_title": "COURSE LIST - PIKET SMA IT AL BINAA"}, "course-list"),
@@ -9,4 +9,6 @@ urlpatterns = [
     path("detail/<int:pk>/", CourseDetailView.as_view(), {"site_title": "COURSE DETAIL - PIKET SMA IT AL BINAA"}, "course-detail"),
     path("update/<int:pk>/", CourseUpdateView.as_view(), {"site_title": "UPDATE COURSE - PIKET SMA IT AL BINAA"}, "course-update"),
     path("delete/<int:pk>/", CourseDeleteView.as_view(), {"site_title": "DELETE COURSE - PIKET SMA IT AL BINAA"}, "course-delete"),
+    path('subject/', CourseListView.as_view(), {"site_title": "COURSE LIST - PIKET SMA IT AL BINAA"}, "subject-list"),
+    path("subject/upload/", SubjectUploadView.as_view(), {"site_title": "UPLOAD SUBJECT - PIKET SMA IT AL BINAA"}, "subject-upload"),
 ]

@@ -6,20 +6,43 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from users.models import Teacher
-from utils.constants import SCHEDULE_WEEKDAYS, SCHEDULE_TIME
+from utils.constants import GENDER_CHOICES, SCHEDULE_WEEKDAYS, SCHEDULE_TIME
 from datetime import time
 # Create your models here.
 
+class Period(models.Model):
+    number = models.PositiveIntegerField(unique=True)
+    time_start = models.TimeField()
+    short_time_start = models.TimeField()
+    time_end = models.TimeField()
+    short_time_end = models.TimeField()
+    type = models.CharField(_("Tipe"), max_length=20, choices=GENDER_CHOICES, default=GENDER_CHOICES[1][0])
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['number']
+
+    def __str__(self):
+        return f"{self.number} ({self.time_start.strftime('%H:%M')} - {self.time_end.strftime('%H:%M')})"
+    
+    class Meta:
+        ordering = ["number", "type"]
+        verbose_name = _("Period")
+        verbose_name_plural = _("Periods")
+        db_table = "periods"
+        indexes = [
+            models.Index(fields=["id", "number"]),
+        ]
+
 class Schedule(models.Model):
     schedule_day = models.CharField(_("Hari"), max_length=10, blank=True, choices=SCHEDULE_WEEKDAYS)
-    schedule_time = models.CharField(_("Jam Ke-"), max_length=20, choices=SCHEDULE_TIME)
-    schedule_course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, verbose_name=_("Pelajaran"))
-    schedule_class = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True, verbose_name=_("Kelas"))
-    time_start = models.TimeField(_("Waktu Mulai"), default=time(7, 0, 0, 0))
-    time_end = models.TimeField(_("Waktu Akhir"), default=time(7, 0, 0, 0))
-    semester = models.CharField(max_length=7, null=True)
-    academic_year = models.CharField(max_length=20, default=settings.TAHUN_AJARAN_LALU, blank=True, null=True)
-    type = models.CharField(_("Tipe"), max_length=20, choices=[("putra", "Putra"), ("putri", "Putri")], default="putra")
+    schedule_time = models.ForeignKey(Period, on_delete=models.SET_NULL, related_name='schedules', null=True, verbose_name=_("Jam ke-"))
+    schedule_course = models.ForeignKey(Course, on_delete=models.SET_NULL, related_name='schedules', null=True, verbose_name=_("Pelajaran"))
+    schedule_class = models.ForeignKey(Class, on_delete=models.SET_NULL, related_name='schedules', null=True, verbose_name=_("Kelas"))
+    semester = models.CharField(max_length=7, default=settings.SEMESTER)
+    academic_year = models.CharField(max_length=20, default=settings.TAHUN_AJARAN)
+    type = models.CharField(_("Tipe"), max_length=20, choices=GENDER_CHOICES, default=GENDER_CHOICES[1][0])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -43,7 +66,7 @@ class Schedule(models.Model):
     class Meta:
         unique_together = (
             ('schedule_day', 'schedule_time', 'teacher'),
-            ('schedule_day', 'schedule_time', 'schedule_class'),
+            ('schedule_day', 'schedule_time', 'schedule_class', 'type', 'semester', 'academic_year'),
         )
         ordering = ["-schedule_day", "schedule_class", "schedule_time"]
         verbose_name = _("Schedule")
@@ -61,7 +84,7 @@ class Schedule(models.Model):
         super().save(*args, **kwargs)
 
 # Proxy fields for validation, not stored in the database
-Schedule.add_to_class('teacher', models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True, blank=True))
+Schedule.add_to_class('teacher', models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='schedules', null=True, blank=True))
     
 
 

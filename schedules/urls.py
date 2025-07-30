@@ -1,5 +1,5 @@
 from django.urls import path
-from schedules.views import ScheduleListView, ScheduleDetailView, ScheduleCreateView, SchedulePutriView, ScheduleUpdateView, ScheduleDeleteView, \
+from schedules.views import PeriodUploadView, ScheduleListView, ScheduleDetailView, ScheduleCreateView, SchedulePutriView, ScheduleUpdateView, ScheduleDeleteView, \
                             ScheduleUploadView, ScheduleDownloadExcelView, ScheduleView, ScheduleSearchView
 from schedules.reporter_views import ReporterPutriScheduleView, ReporterScheduleListView, ReporterScheduleDetailView, ReporterScheduleCreateView, ReporterScheduleUpdateView, ReporterScheduleDeleteView, \
                             ReporterScheduleUploadView, ReporterScheduleDownloadExcelView, ReporterScheduleView
@@ -17,6 +17,7 @@ urlpatterns = [
     path("delete/<int:pk>/", ScheduleDeleteView.as_view(),  {"site_title": "DELETE SCHEDULE - PIKET SMA IT AL BINAA"}, "schedule-delete"),
 
 
+    path("period/upload/", PeriodUploadView.as_view(),  {"site_title": "UPLOAD PERIOD - PIKET SMA IT AL BINAA"}, "period-upload"),
     
     path('reporter/', ReporterScheduleListView.as_view(),  {"site_title": "JADWAL PIKET LIST - PIKET SMA IT AL BINAA"}, "reporter-schedule-list"),
     path("reporter/create/", ReporterScheduleCreateView.as_view(),  {"site_title": "CREATE JADWAL PIKET - PIKET SMA IT AL BINAA"}, "reporter-schedule-create"),

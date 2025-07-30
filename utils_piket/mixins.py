@@ -1,7 +1,7 @@
 # utils/mixins.py
 from datetime import datetime
 from io import BytesIO
-from django.contrib import messages
+from django.contrib import messages as django_messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import User, Group
 from django.db import IntegrityError
@@ -15,10 +15,10 @@ from django.views.generic import View, ListView, FormView, DeleteView, UpdateVie
 from pandas import read_excel
 from typing import Any
 from classes.models import Class
-from courses.models import Course
+from courses.models import Course, Subject
 from reports.forms import ReportFormV2, ReportUpdatePetugasForm
 from reports.models import Report
-from schedules.models import ReporterSchedule, Schedule
+from schedules.models import Period, ReporterSchedule, Schedule
 from userlog.models import UserLog
 from users.models import Teacher
 from utils.forms import UploadModelForm
@@ -52,11 +52,11 @@ class BaseAuthorizedFormView(BaseAuthorizedModelView):
     error_message: str = "Gagal input. Ada sesuatu yang salah!"
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        messages.success(self.request, self.success_message)
+        django_messages.success(self.request, self.success_message)
         return super().form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
-        messages.error(self.request, self.error_message)
+        django_messages.error(self.request, self.error_message)
         return super().form_invalid(form)
 
 
@@ -66,7 +66,7 @@ class BaseModelDeleteView(BaseAuthorizedModelView, DeleteView):
     success_message: str = "Data berhasil dihapus!"
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        messages.success(self.request, self.success_message)
+        django_messages.success(self.request, self.success_message)
         return super().post(request, *args, **kwargs)
 
 
@@ -161,6 +161,7 @@ class BaseModelUploadView(BaseAuthorizedModelView, FormView):
 
     def process_excel_data(self, model_name: Model, file: str):
         """Process the uploaded Excel file and update or create Class instances."""
+        start_id = 1
         df = read_excel(
                 file,
                 na_filter=False,
@@ -177,37 +178,66 @@ class BaseModelUploadView(BaseAuthorizedModelView, FormView):
                             "category": df.iloc[i, 3],
                         },
                     )
-                case "Course":
-                    teacher = get_object_or_404(Teacher, id=df.iloc[i, 5])
+                case "Subject":
                     model_name.objects.update_or_create(
                         pk = df.iloc[i, 0],
-                        # course_name = df.iloc[i, 1],
-                        # teacher = teacher,
+                        name = df.iloc[i, 1],
                         defaults={
-                            "course_name": df.iloc[i, 1],
-                            "teacher": teacher,
-                            "course_short_name": df.iloc[i, 2],
-                            "course_code": df.iloc[i, 3],
+                            "short_name": df.iloc[i, 2],
                             "category": df.iloc[i, 4],
+                            "type": df.iloc[i, 5],
+                            "status": df.iloc[i, 6],
+                        },
+                    )
+                case "Period":
+                    model_name.objects.update_or_create(
+                        pk = df.iloc[i, 0],
+                        number = df.iloc[i, 1],
+                        defaults={
+                            "time_start": df.iloc[i, 2],
+                            "time_end": df.iloc[i, 3],
+                            "short_time_start": df.iloc[i, 4],
+                            "short_time_end": df.iloc[i, 5],
                             "type": df.iloc[i, 6],
+                        },
+                    )
+                case "Course":
+                    subject = get_object_or_404(Subject, id=df.iloc[i, 2])
+                    teacher = get_object_or_404(Teacher, id=df.iloc[i, 3])
+                    if df.iloc[i, 5]:
+                        class_obj = get_object_or_404(Class, id=df.iloc[i, 5])
+                    else:
+                        class_obj = None
+                    model_name.objects.update_or_create(
+                        pk = df.iloc[i, 0],
+                        course = subject,
+                        course_code = df.iloc[i, 1],
+                        defaults={
+                            "course_code": df.iloc[i, 1],
+                            "teacher": teacher,
+                            "type": df.iloc[i, 4],
+                            "class_assigned": class_obj if class_obj else None,
+                            "periods_per_week": df.iloc[i, 6] if df.iloc[i, 6] else 1,
+                            "consecutive_periods_needed": df.iloc[i, 7] if df.iloc[i, 7] else 1,
                         },
                     )
 
                 case "Schedule":
-                    course = get_object_or_404(Course, id=df.iloc[i, 3])
-                    class_name = get_object_or_404(Class, id=df.iloc[i, 4])
-                    model_name.objects.update_or_create(
-                        pk = df.iloc[i, 0],
-                        schedule_day = df.iloc[i, 1],
-                        schedule_time = str(df.iloc[i, 2]),
-                        defaults={
-                            "schedule_course": course,
-                            "schedule_class": class_name,
-                            "time_start": df.iloc[i, 5],
-                            "time_end": df.iloc[i, 6],
-                            "type": df.iloc[i, 7],
-                        },
-                    )
+                    class_names = Class.objects.filter(category=df.iloc[i, 18])
+                    period = get_object_or_404(Period, id=df.iloc[i, 1])
+                    for index, class_name in enumerate(class_names, start=2):
+                        course = Course.objects.select_related("teacher", "class_assigned", "course").get(course_code=df.iloc[i, index])
+                        model_name.objects.update_or_create(
+                            pk = start_id,
+                            schedule_day = df.iloc[i, 0],
+                            schedule_time = period,
+                            schedule_class = class_name,
+                            defaults={
+                                "schedule_course": course,
+                                "type": df.iloc[i, 18],
+                            },
+                        )
+                        start_id += 1
                 case "ReporterSchedule":
                     model_name.objects.update_or_create(
                         pk = df.iloc[i, 0],
@@ -256,15 +286,15 @@ class BaseModelUploadView(BaseAuthorizedModelView, FormView):
         try:
             if self.model_class is None: raise Http404("Model tidak ditemukan!")
             self.process_excel_data(self.model_class, form.cleaned_data["file"])
-            messages.success(self.request, self.success_message)
+            django_messages.success(self.request, self.success_message)
             return super().form_valid(form)
         except IntegrityError as e:
             self.error_message = f"Upload data sudah terbaru! Note: {str(e)}"
-            messages.error(self.request, self.error_message)
+            django_messages.error(self.request, self.error_message)
             return super().form_invalid(form)
         except Exception as e:
             self.error_message = f"Upload data ditolak! Error: {str(e)}"
-            messages.error(self.request, self.error_message)
+            django_messages.error(self.request, self.error_message)
             return super().form_invalid(form)
 
 
@@ -312,11 +342,10 @@ class QuickReportMixin(BaseAuthorizedModelView, ListView):
     type = "putra"
 
     def find_and_create_reports(self, valid_date_query: Any, time: Any) -> QuerySet[Any]:
-        data = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher", "reporter")\
-                                    .filter(report_date=valid_date_query, schedule__schedule_time=time, schedule__type=self.type)\
-                                    .values("id", "status", "reporter__short_name", "schedule__schedule_class", "schedule__time_start", "schedule__time_end",
+        data = self.queryset.filter(report_date=valid_date_query, schedule__schedule_time=time, schedule__type=self.type)\
+                                    .values("id", "status", "reporter__short_name", "schedule__schedule_class", "schedule__schedule_time__time_start", "schedule__schedule_time__time_end",
                                             "schedule__schedule_course__teacher__short_name",
-                                            "schedule__schedule_course__course_short_name").order_by('schedule__schedule_class')
+                                            "schedule__schedule_course__course__short_name").order_by('schedule__schedule_class__class_name')
         if (self.type == "putra" and len(data) == len(self.class_name)) or (self.type == "putri" and len(data) == len(self.class_name)):
             self.grouped_report_data.append(data)
         else:
@@ -330,12 +359,11 @@ class QuickReportMixin(BaseAuthorizedModelView, ListView):
             reporter_schedule = ReporterSchedule.objects.select_related("reporter").get(schedule_day=get_day(valid_query_date), schedule_time=schedule_time, type=self.type)
         except:
             reporter_schedule = None
-        print(len(schedule_list), len(self.class_name))
         # Jika tidak ditemukan, maka nilai False
         if (self.type == "putra" and len(schedule_list) == len(self.class_name)) or (self.type == "putri" and len(schedule_list) == len(self.class_name)):
             # Jika ditemukan, maka buat laporan dengan jadwal dimasukkan satu per satu
             for schedule in schedule_list:
-                report_data = Report.objects.filter(report_date=valid_query_date, schedule=schedule, type=self.type)
+                report_data = self.queryset.filter(report_date=valid_query_date, schedule=schedule, type=self.type)
                 if len(report_data) > 1:
                     report_data.first().delete()
                 obj, is_created = Report.objects.update_or_create(
@@ -355,7 +383,6 @@ class QuickReportMixin(BaseAuthorizedModelView, ListView):
         valid_date = parse_to_date(query_date)
         day = get_day(valid_date)
         self.grouped_report_data = []
-        print(len(self.class_name))
         if self.type=="putra" and day == "Ahad":
             for i in range(1, 8):
                 self.find_and_create_reports(valid_date, i)
@@ -404,7 +431,7 @@ class ReportUpdateReporterMixin(BaseAuthorizedFormView, FormView):
             reports.update(reporter=None)
         redirect_url = reverse(self.redirect_url)
         query_params = f'?query_date={report_date}'
-        messages.success(self.request, self.success_message)
+        django_messages.success(self.request, self.success_message)
         return redirect(redirect_url + query_params)
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -443,7 +470,7 @@ class ReportUpdateQuickViewMixin(BaseAuthorizedFormView, UpdateView):
         redirect_url = reverse(self.redirect_url)
         query_params = f'?query_date={object.report_date}'
         self.object = form.save()
-        messages.success(self.request, self.success_message)
+        django_messages.success(self.request, self.success_message)
         return redirect(redirect_url + query_params)
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -485,7 +512,7 @@ class SubmitViewMixins(LoginRequiredMixin, PermissionRequiredMixin, FormView):
 
         # Group the reports by schedule_time
         for report in qs:
-            schedule_time = int(report.schedule.schedule_time)
+            schedule_time = int(report.schedule.schedule_time.number)
             is_complete = report.is_complete
             # is_submitted = report.is_submitted
             status = report.status
@@ -567,7 +594,7 @@ Petugas: *{reports[0].reporter.teacher_name}*
 Petugas: *{reports[0].reporter.teacher_name}*
 🎦🎦🎦🎦🎦🎦🎦🎦🎦🎦'''
         send_whatsapp_group(simplified_message)
-        messages.success(request=self.request, message="Submit Data Berhasil!")
+        django_messages.success(request=self.request, message="Submit Data Berhasil!")
         query_params = f'?query_date={report_date}'
         return HttpResponseRedirect(reverse("report-quick-create-v3") + query_params)
     
