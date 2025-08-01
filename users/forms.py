@@ -3,7 +3,16 @@ from users.models import Teacher
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model, password_validation
+from django.contrib.auth.forms import AuthenticationForm
 
+class CustomAuthenticationForm(AuthenticationForm):
+    def clean_username(self):
+        username = self.cleaned_data.get('username', '').strip()
+        return username
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password', '').strip()
+        return password
 
 class TeacherForm(forms.ModelForm):
     class Meta:

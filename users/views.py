@@ -14,7 +14,7 @@ from django.contrib import messages
 from django.template.response import TemplateResponse
 from django.contrib.auth.models import User
 from users.models import Teacher
-from users.forms import TeacherForm, UserCreateForm, UserForm, UserPasswordUpdateForm
+from users.forms import CustomAuthenticationForm, TeacherForm, UserCreateForm, UserForm, UserPasswordUpdateForm
 from utils.whatsapp import send_WA_login_logout, send_WA_create_update_delete
 from typing import Any
 
@@ -23,6 +23,7 @@ from utils_piket.mixins import BaseModelUploadView, ModelDownloadExcelView
 # Create your views here.
 class MyLoginView(LoginView):
     redirect_authenticated_user = True
+    form_class = CustomAuthenticationForm
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         return super().post(request, *args, **kwargs)

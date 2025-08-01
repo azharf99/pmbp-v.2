@@ -24,6 +24,7 @@ class SMAITHomeWiew(ListView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["galleries"] = Gallery.objects.all()
+        context["achievements"] = Prestasi.objects.all()[:11]
         context["extracurriculars"] = Extracurricular.objects.filter(status="Aktif")
         context["teachers"] = Teacher.objects.exclude(id__in=["31", "112", "110", "35", "113", "111"]).filter(status="Aktif", photo__isnull=False, gender="L")
         context["news"] = Post.objects.all()[:20]

@@ -1,5 +1,4 @@
 {% extends 'blog/base.html' %}
-{% load crispy_forms_tags %}
 {% block content %}
-{% crispy form %}
+{{ form.as_p }}
 {% endblock %}

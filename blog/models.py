@@ -5,6 +5,7 @@ from django.utils.translation import gettext as _
 from ckeditor_uploader.fields import RichTextUploadingField
 from taggit.managers import TaggableManager
 
+from users.models import Teacher
 from utils.models import CleanableFileModel
 
 # Create your models here.
@@ -40,7 +41,7 @@ class Post(CleanableFileModel):
     title = models.CharField(max_length=255, db_index=True)
     slug = models.SlugField(max_length=255, unique_for_date='created_at', db_index=True)
     content = RichTextUploadingField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts', db_index=True)
+    author = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='blog_posts', db_index=True)
     category = models.ManyToManyField(Category, related_name='posts', db_index=True)
     tags = TaggableManager(blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft', db_index=True)
@@ -70,7 +71,7 @@ class Post(CleanableFileModel):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments', db_index=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    author = models.ForeignKey(Teacher, on_delete=models.CASCADE, db_index=True)
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     active = models.BooleanField(default=False, db_index=True) #For comments moderation

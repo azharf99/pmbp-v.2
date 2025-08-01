@@ -59,6 +59,8 @@ INSTALLED_APPS = [
     'alumni',
     'blog',
     'classes',
+    'ckeditor',
+    'ckeditor_uploader',
     'courses',
     'dashboard',
     'extracurriculars',
@@ -264,6 +266,17 @@ if DEBUG:
     ]
 
 SITE_ID = 1
+
+
+# CKEditor Config
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%',
+    },
+}
 
 
 # EMAIL FOR SMTP

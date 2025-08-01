@@ -1,14 +1,9 @@
 
-from typing import Any
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import PermissionDenied
-from django.forms import BaseModelForm
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from projects.models import Team, Project, DailyPlan
 from projects.forms import TeamForm, ProjectForm, DailyPlanForm
-from utils.whatsapp import send_WA_daily_plan
 
 # Create your views here.
 class TeamIndexView(ListView):
@@ -19,36 +14,24 @@ class TeamDetailView(DetailView):
     model = Team
 
 
-class TeamCreateView(LoginRequiredMixin, CreateView):
+class TeamCreateView(LoginRequiredMixin, PermissionRequiredMixin,CreateView):
     model = Team
     form_class = TeamForm
+    permission_required = "projects.add_team"
     success_url = reverse_lazy("team-list")
     
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_superuser:
-            raise PermissionDenied
-        return super().get(request, *args, **kwargs)
-    
 
-class TeamUpdateView(LoginRequiredMixin, UpdateView):
+class TeamUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Team
     form_class = TeamForm
+    permission_required = "projects.change_team"
     success_url = reverse_lazy("team-list")
 
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_superuser:
-            raise PermissionDenied
-        return super().get(request, *args, **kwargs)
 
-
-class TeamDeleteView(LoginRequiredMixin, DeleteView):
+class TeamDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Team
+    permission_required = "projects.delete_team"
     success_url = reverse_lazy("team-list")
-
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_superuser:
-            raise PermissionDenied
-        return super().get(request, *args, **kwargs)
 
 
 class ProjectIndexView(ListView):
@@ -59,36 +42,24 @@ class ProjectDetailView(DetailView):
     model = Project
 
 
-class ProjectCreateView(LoginRequiredMixin, CreateView):
+class ProjectCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Project
     form_class = ProjectForm
+    permission_required = "projects.add_project"
     success_url = reverse_lazy("project-list")
-
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_superuser:
-            raise PermissionDenied
-        return super().get(request, *args, **kwargs)
     
 
-class ProjectUpdateView(LoginRequiredMixin, UpdateView):
+class ProjectUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
+    permission_required = "projects.change_project"
     success_url = reverse_lazy("project-list")
 
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_superuser:
-            raise PermissionDenied
-        return super().get(request, *args, **kwargs)
 
-
-class ProjectDeleteView(LoginRequiredMixin, DeleteView):
+class ProjectDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Project
+    permission_required = "projects.delete_project"
     success_url = reverse_lazy("project-list")
-
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_superuser:
-            raise PermissionDenied
-        return super().get(request, *args, **kwargs)
 
 
 
@@ -105,25 +76,13 @@ class DailyPlanCreateView(CreateView):
     form_class = DailyPlanForm
     success_url = reverse_lazy("daily-plan-list")
 
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        self.object = form.save()
-        send_WA_daily_plan(self.object.project.teacher.phone, f"{self.object}", f"{self.object.target_today}", f"{self.object.problems}", self.object.id)
-        return HttpResponseRedirect(self.get_success_url())
-    
-
 class DailyPlanUpdateView(UpdateView):
     model = DailyPlan
     form_class = DailyPlanForm
     success_url = reverse_lazy("daily-plan-list")
 
 
-class DailyPlanDeleteView(LoginRequiredMixin, DeleteView):
+class DailyPlanDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = DailyPlan
+    permission_required = "projects.delete_dailyplan"
     success_url = reverse_lazy("daily-plan-list")
-
-
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_superuser:
-            raise PermissionDenied
-        return super().get(request, *args, **kwargs)
-    

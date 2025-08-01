@@ -44,6 +44,7 @@ urlpatterns = [
     path('class/', include('classes.urls')),
     path('blog/', include('blog.urls')),
     path('course/', include('courses.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     path('device/', device_webhook, name='device-status'),
     path('galleries/', include("galleries.urls")),
     path('files/', include('files.urls')),
