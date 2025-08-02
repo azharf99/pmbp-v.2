@@ -1,6 +1,9 @@
+from datetime import datetime
+from django.utils import timezone
+from django.db.models import Count
 from typing import Any
 from django.conf import settings
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, BadRequest
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.forms import BaseModelForm
@@ -151,8 +154,94 @@ class TahfidzDeleteView(GeneralFormDeleteMixin):
 
 class TilawahIndexView(GeneralContextMixin, ListView):
     model = Tilawah
-    queryset = Tilawah.objects.select_related("santri__student_class").prefetch_related("pendamping")
+    queryset = Tilawah.objects.select_related("santri__student_class").prefetch_related("pendamping").filter(santri__student_status="Aktif")
     paginate_by = 426
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        class_id = request.GET.get("class_id")
+        date = request.GET.get("date")
+        student_name = request.GET.get("student_name")
+        if class_id:
+            try:
+                class_id = int(class_id)
+            except:
+                raise BadRequest("Kelas tidak valid!")
+            self.queryset = self.queryset.filter(santri__student_class_id=class_id)
+        if date:
+            try:
+                date = datetime.strptime(date, "%Y-%m-%d").date()
+            except:
+                raise BadRequest("Tanggal tidak valid!")
+            self.queryset = self.queryset.filter(tanggal=date)
+        else:
+            self.queryset = self.queryset.filter(tanggal=timezone.now().date())
+        if student_name:
+            self.queryset = self.queryset.filter(santri__student_name__icontains=student_name)
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        class_id = self.request.GET.get("class_id")
+        date = self.request.GET.get("date")
+        student_name = self.request.GET.get("student_name")
+        c["student_above_target"] = self.queryset.filter(santri__student_status="Aktif", tercapai=True).count()
+        c["student_below_target"] = self.queryset.filter(santri__student_status="Aktif", tercapai=False).count()
+        c["every_class_target"] = self.queryset.filter(santri__student_status="Aktif", tercapai=True).values("santri__student_class__short_class_name").annotate(total=Count("tercapai")).order_by().distinct()
+        c["every_class_target_false"] = self.queryset.filter(santri__student_status="Aktif", tercapai=False).values("santri__student_class__short_class_name").annotate(total=Count("tercapai")).order_by().distinct()
+        c["classes"] = Class.objects.filter(category="Putra")
+        if class_id:
+            c["class_id"] = int(class_id)
+        if date:
+            c["date"] = date
+        if student_name:
+            c["student_name"] = student_name
+        return c
+    
+
+class QuickFillUnsubmittedTilawahView(GeneralContextMixin, ListView):
+    model = Tilawah
+    queryset = Tilawah.objects.select_related("santri__student_class").prefetch_related("pendamping").filter(santri__student_status="Aktif")
+    paginate_by = 426
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        classes = Class.objects.filter(category="Putra")
+        date = request.GET.get("date")
+        if date:
+            try:
+                date = datetime.strptime(date, "%Y-%m-%d").date()
+            except:
+                raise BadRequest("Tanggal tidak valid!")
+        else:
+            date = timezone.now().date()
+        for class_ in classes:
+            students = Student.objects.select_related("student_class").filter(student_status="Aktif", student_class=class_)
+            for student in students:
+                object, is_created = Tilawah.objects.get_or_create(
+                    tanggal = date,
+                    santri = student,
+                    defaults=dict(
+                        tercapai = False,
+                        halaman = 0,
+                        target = 1,
+                        catatan = "",
+                        tajwid = None,
+                        kelancaran = None,
+                    )
+                )
+        
+        return HttpResponseRedirect(reverse("tahfidz:tilawah-list"))
+
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        c["date"] = self.request.GET.get("date")
+        if c["date"]:
+            try:
+                c["date"] = datetime.strptime(c["date"], "%Y-%m-%d").date()
+            except:
+                raise BadRequest("Tanggal tidak valid!")
+        return c
+    
 
 class TilawahCreateView(GeneralFormValidateMixin, CreateView):
     model = Tilawah
@@ -192,7 +281,7 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
                         target = target,
                         catatan = catatan,
                         tajwid = tajwid if tajwid != "null" and tajwid in TAHSIN_STATUS_LIST else None,
-                        kelancaran = tajwid if tajwid != "null" and tajwid in TAHSIN_STATUS_LIST else None,
+                        kelancaran = kelancaran if kelancaran != "null" and kelancaran in TAHSIN_STATUS_LIST else None,
                     )
                 )
                 if teachers:
@@ -206,7 +295,7 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
             app="TILAWAH",
             message=f"berhasil menambahkan banyak data tilawah"
         )
-        messages.success(self.request, "Input nilai berhasil!")
+        messages.success(self.request, "Input tilawah berhasil!")
         return redirect(reverse("tahfidz:tilawah-list"))
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:

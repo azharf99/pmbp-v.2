@@ -35,7 +35,57 @@
   <div class="flex justify-center m-2 gap-2 text-balance text-center">
     <a href="{% url 'tahfidz:tilawah-quick-create' %}"><p class="p-1 px-2 bg-blue-500 text-white rounded-md font-semibold">&#128195; Buat Cepat</p></a>
     <a href="{% url 'tahfidz:tilawah-create' %}"><p class="p-1 px-2 bg-lime-500 text-white rounded-md font-semibold">&#128195; Buat Manual (Lemot)</p></a>
+    <a href="{% url 'tahfidz:tilawah-quick-fill' %}?date={{date}}"><p class="p-1 px-2 bg-fuchsia-500 text-white rounded-md font-semibold">&#128195; Isi Cepat (Belum Tercatat)</p></a>
   </div>
+
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6">
+
+  <div class="bg-white dark:bg-gray-800 mx-4 my-2 p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+    <div>
+        <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Target Tilawah Hari Ini</p>
+        <h3 class="text-xl font-bold text-green-500 dark:text-gray-100 mt-1">{{student_above_target}} santri tercapai</h3>
+        <h4 class="text-sm text-green-500 font-medium dark:text-gray-400 mt-1">
+          {% for class_ in every_class_target %}
+          {{class_.santri__student_class__short_class_name}}: {{class_.total}}
+          {% endfor %}
+        </h4>
+    </div>
+    <div class="p-3 bg-cyan-100 dark:bg-cyan-900 rounded-full text-cyan-600 dark:text-cyan-300">
+        <i data-lucide="book-check" class="w-8 h-8"></i>
+    </div>
+  </div>
+  <div class="bg-white dark:bg-gray-800 mx-4 my-2 p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform duration-200 hover:scale-105">
+    <div>
+        <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Target Tilawah Hari Ini</p>
+        <h3 class="text-xl font-bold text-red-500 dark:text-gray-100 mt-1">{{student_below_target}} santri tidak tercapai</h3>
+        <h4 class="text-sm text-red-500 font-medium dark:text-gray-400 mt-1">
+          {% for class_ in every_class_target_false %}
+          {{class_.santri__student_class__short_class_name}}: {{class_.total}}
+          {% endfor %}
+        </h4>
+    </div>
+    <div class="p-3 bg-red-100 dark:bg-red-900 rounded-full text-red-600 dark:text-red-300">
+        <i data-lucide="book-open" class="w-8 h-8"></i>
+    </div>
+  </div>
+
+  </section>
+<div class="p-2 flex justify-center items-center">
+  <form action="" method="get" class="flex justify-center items-center flex-wrap">
+    <label for="class_id"></label>
+    <select name="class_id" id="class_id" class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
+      <option value selected>---Pilih Kelas---</option>
+      {% for class_ in classes %}
+      <option value="{{class_.id}}" {% if class_id == class_.id %} selected {% endif %}>{{class_.short_class_name}}</option>
+      {% endfor %}
+    </select>
+    <label for="date"></label>
+    <input type="date" name="date" id="date" {% if date %} value="{{date}}" {% endif %} class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
+    <label for="student_name"></label>
+    <input type="text" placeholder="Nama Santri" name="student_name" id="student_name" {% if student_name %} value="{{student_name}}" {% endif %} class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
+    <input type="submit" value="Cari Data" class="p-2 m-1 rounded-lg text-white bg-indigo-500 text-xs cursor-pointer">
+  </form>
+</div>
 
   <div class="grid grid-cols-1">
     <!-- Analytics Table -->
@@ -114,4 +164,12 @@
   
 
 </main>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    lucide.createIcons();
+  });
+</script>
+
 {% endblock content %}

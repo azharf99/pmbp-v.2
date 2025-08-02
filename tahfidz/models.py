@@ -64,6 +64,10 @@ class Tilawah(models.Model):
         return reverse("tahfidz:tilawah-create")
     
     class Meta:
+        unique_together = (
+            ('tanggal', 'santri'),
+            ('tanggal', 'santri', 'semester', 'academic_year'),
+        )
         ordering = ["-tanggal", "santri"]
         verbose_name = _("Tilawah")
         verbose_name_plural = _("Tilawah")

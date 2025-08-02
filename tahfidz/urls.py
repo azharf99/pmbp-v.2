@@ -1,5 +1,5 @@
 from django.urls import path
-from tahfidz.views import TahfidzIndexView, TahfidzCreateView, TahfidzDetailView, TahfidzUpdateView, TahfidzDeleteView, \
+from tahfidz.views import QuickFillUnsubmittedTilawahView, TahfidzIndexView, TahfidzCreateView, TahfidzDetailView, TahfidzUpdateView, TahfidzDeleteView, \
                             TahfidzQuickUploadView, TahfidzQuickCSVUploadView, TilawahCreateView, TilawahDeleteView, \
                             TilawahDetailView, TilawahIndexView, TilawahQuickUploadView, TilawahUpdateView
 app_name = "tahfidz"
@@ -13,6 +13,7 @@ urlpatterns = [
     path("update/<int:pk>/", TahfidzUpdateView.as_view(), name="tahfidz-update"),
     path("delete/<int:pk>/", TahfidzDeleteView.as_view(), name="tahfidz-delete"),
     path("tilawah/", TilawahIndexView.as_view(), name="tilawah-list"),
+    path("tilawah/quick-fill/", QuickFillUnsubmittedTilawahView.as_view(), name="tilawah-quick-fill"),
     path("tilawah/create/", TilawahCreateView.as_view(), name="tilawah-create"),
     path("tilawah/quick-create/", TilawahQuickUploadView.as_view(), name="tilawah-quick-create"),
     path("tilawah/detail/<int:pk>/", TilawahDetailView.as_view(), name="tilawah-detail"),
