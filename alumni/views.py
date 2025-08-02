@@ -139,68 +139,6 @@ class AlumniQuickUploadView(GeneralAuthPermissionMixin, CreateView):
         send_WA_create_update_delete(self.request.user.teacher.phone, 'mengimpor dari excel', 'data alumni', 'alumni/')
         return HttpResponseRedirect(self.get_success_url())
     
-
-class AlumniCSVQuickUploadView(GeneralAuthPermissionMixin, CreateView):
-    model = File
-    form_class = FileForm
-    template_name = 'alumni/files_form.html'
-    permission_required = 'alumni.add_alumni'
-    form_name = "Import CSV Alumni"
-
-
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        self.object = form.save(commit=False)
-        df = read_csv(self.object.file, na_filter=False, dtype={"NIS": str, "NISN": str, "HP/WA": str, "HP ORANG TUA": str})
-        row, _ = df.shape
-        try:
-            for i in range(row):
-                Alumni.objects.update_or_create(
-                    nis = df.iloc[i, 0],
-                    defaults=dict(
-                        nis = df.iloc[i, 0],
-                        nisn = df.iloc[i, 1],
-                        name = df.iloc[i, 2],
-                        group = df.iloc[i, 3],
-                        birth_place = df.iloc[i, 4],
-                        birth_date = df.iloc[i, 5],
-                        gender = df.iloc[i, 6],
-                        address = df.iloc[i, 7],
-                        city = df.iloc[i, 8],
-                        province = df.iloc[i, 9],
-                        state = df.iloc[i, 10],
-                        phone = df.iloc[i, 11],
-                        last_class = df.iloc[i, 12],
-                        graduate_year = df.iloc[i, 13],
-                        undergraduate_department = df.iloc[i, 14],
-                        undergraduate_university = df.iloc[i, 15],
-                        undergraduate_university_entrance = df.iloc[i, 16],
-                        postgraduate_department = df.iloc[i, 17],
-                        postgraduate_university = df.iloc[i, 18],
-                        postgraduate_university_entrance = df.iloc[i, 19],
-                        doctoral_department = df.iloc[i, 20],
-                        doctoral_university = df.iloc[i, 21],
-                        doctoral_university_entrance = df.iloc[i, 22],
-                        job = df.iloc[i, 23],
-                        company_name = df.iloc[i, 24],
-                        married = df.iloc[i, 25],
-                        father_name = df.iloc[i, 26],
-                        mother_name = df.iloc[i, 27],
-                        family_phone = df.iloc[i, 28],
-                        photo = df.iloc[i, 29],
-                    )
-                )
-        except:
-            messages.error(self.request, "Data pada Excel TIDAK SESUAI FORMAT! Mohon sesuaikan dengan format yang ada. Hubungi Administrator jika kesulitan.")
-            return HttpResponseRedirect(reverse("alumni:alumni-quick-upload-csv"))
-        UserLog.objects.create(
-            user = self.request.user.teacher,
-            action_flag = "CREATE",
-            app = "ALUMNI",
-            message = f"berhasil impor data csv alumni"
-        )
-        messages.success(self.request, "Selamat, Impor data CSV alumni berhasil!")
-        send_WA_create_update_delete(self.request.user.teacher.phone, 'mengimpor dari csv', 'data alumni', 'alumni/')
-        return HttpResponseRedirect(self.get_success_url())
     
     
 class AlumniDetailView(GeneralAuthPermissionMixin, DetailView):
@@ -219,7 +157,7 @@ class AlumniUpdateView(GeneralFormValidateMixin, UpdateView):
 
 class AlumniDeleteView(GeneralFormDeleteMixin):
     model = Alumni
-    success_url = reverse_lazy("alumni:alumni-index")
+    success_url = reverse_lazy("alumni:alumni-list")
     app_name = 'Alumni'
     type_url = 'alumni/'
     permission_required = 'alumni.delete_alumni'

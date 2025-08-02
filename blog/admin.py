@@ -13,6 +13,9 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ('title', 'content')
     prepopulated_fields = {'slug': ('title',)}
 
+    def tag_list(self, obj):
+        return u", ".join(o.name for o in obj.tags.all())
+
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('post', 'author', 'active', 'created_at')

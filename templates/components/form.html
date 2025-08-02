@@ -9,7 +9,7 @@
       <p class="text-2xl">
         &triangleright;
       </p>
-      <a href="{% url 'class-list' %}">Class List</a>
+      <a href="{% url form_name|lower|add:'-list' %}">{{form_name}} List</a>
       <p class="text-2xl">
         &triangleright;
       </p>
@@ -24,7 +24,11 @@
               {% csrf_token %}
               {% for field in form %}
                   <div class="flex flex-col">
-                      {{ field.errors }}
+                      {% if field.errors %}
+                        <p class="italic text-xs p-2 text-red-500" id="{{ field.auto_id }}_helptext">
+                          {{ field.errors }}
+                        </p>
+                      {% endif %}
                       {{ field.label_tag }} {{ field }}
                       {% if field.help_text %}
                         <p class="italic text-xs p-2" id="{{ field.auto_id }}_helptext">
@@ -46,28 +50,14 @@
   </main>
 
   {% include 'loader.html' %}
-
-  <script src="{% static 'js/jquery.min.js' %}"></script>
-  <script src="{% static 'js/selectize.min.js' %}"></script>
-  <link rel="stylesheet" href="{% static 'css/selectize.bootstrap3.min.css' %}"/>
-    <script>
-        // $(document).ready(function () {
-        //     $('#id_members').selectize({
-        //         sortField: 'text',
-        //         delimiter: "-",
-        //         maxItems: 80,
-        //     });
-        // });
-        $(document).ready(function () {
-            $('#id_teacher').selectize({
-                sortField: 'text',
-                
-                maxItems: 5,
-            });
-        });
-    </script>
-    {% if form_name == "Create" %}
-
-    {% endif %}
+  {% load static %}
+  <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+  <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tags = document.getElementById('id_tags');
+      tags.classList.add('rounded-md', 'text-black', 'px-2', 'py-1', 'border-2', 'border-blue-500', 'dark:border-none', 'shadow-lg');
+    });
+  </script>
   
 {% endblock content %}

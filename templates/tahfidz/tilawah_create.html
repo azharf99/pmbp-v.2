@@ -9,7 +9,7 @@
       <p class="text-2xl">
         &triangleright;
       </p>
-      <a href="{% url 'tahfidz:tilawah-index' %}">Tilawah List</a>
+      <a href="{% url 'tahfidz:tilawah-list' %}">Tilawah List</a>
       <p class="text-2xl">
         &triangleright;
       </p>
@@ -33,7 +33,7 @@
             <span class="sr-only">Info</span>
             <div>
               <span class="font-medium">Success!</span> {{message.message}}
-              <p class="m-2">Silahkan lihat hasilnya <a href="{% url 'tahfidz:tilawah-index' %}" class="p-1 rounded-md bg-green-500 text-white font-bold">di sini</a></p>
+              <p class="m-2">Silahkan lihat hasilnya <a href="{% url 'tahfidz:tilawah-list' %}" class="p-1 rounded-md bg-green-500 text-white font-bold">di sini</a></p>
             </div>
           </div>
           {% else %}

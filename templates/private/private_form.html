@@ -9,7 +9,7 @@
       <p class="text-2xl">
         &triangleright;
       </p>
-      <a href="{% url 'private:private-index' %}">Private List</a>
+      <a href="{% url 'private:private-list' %}">Private List</a>
       <p class="text-2xl">
         &triangleright;
       </p>
@@ -32,7 +32,7 @@
             <span class="sr-only">Info</span>
             <div>
               <span class="font-medium">Success!</span> {{message.message}}
-              <p class="m-2">Silahkan lihat hasilnya <a href="{% url 'private:private-index' %}" class="p-1 rounded-md bg-green-500 text-white font-bold">di sini</a></p>
+              <p class="m-2">Silahkan lihat hasilnya <a href="{% url 'private:private-list' %}" class="p-1 rounded-md bg-green-500 text-white font-bold">di sini</a></p>
             </div>
           </div>
           {% else %}
@@ -133,7 +133,7 @@
     //                 const newOption = document.createElement('option');
     //                 newOption.classList.add("bg-green-500", "text-white");
     //                 newOption.value = option.santri;
-    //                 newOption.textContent = `(${option.santri__kelas__nama_kelas}) ${option.santri__nama_siswa}`;
+    //                 newOption.textContent = `(${option.santri__student_class__class_name}) ${option.santri__nama_siswa}`;
     //                 optionGroup1.appendChild(newOption);
     //               });
     //             secondSelect.appendChild(optionGroup1);
@@ -144,7 +144,7 @@
     //             data["ekstra"].forEach((option) => {
     //               const newOption = document.createElement('option');
     //               newOption.value = option.id;
-    //               newOption.textContent = `(${option.kelas__nama_kelas}) ${option.nama_siswa}`;
+    //               newOption.textContent = `(${option.student_class__class_name}) ${option.nama_siswa}`;
     //               optionGroup2.appendChild(newOption);
     //             });
     //             secondSelect.appendChild(optionGroup2);

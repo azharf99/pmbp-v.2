@@ -5,10 +5,10 @@ from academic_calendar.views import AcademicCalendarCreateView, AcademicCalendar
                                     AcademicCalendarQuickCreateView, AcademicCalendarUpdateView
 
 urlpatterns = [
-    path('', AcademicCalendarIndexView.as_view(), name='calendar-list'),
-    path('create/', AcademicCalendarCreateView.as_view(), name='calendar-create'),
-    path('quick-create/', AcademicCalendarQuickCreateView.as_view(), name='calendar-quick-create'),
-    path('detail/<int:pk>/', AcademicCalendarDetailView.as_view(), name='calendar-detail'),
-    path('update/<int:pk>/', AcademicCalendarUpdateView.as_view(), name='calendar-update'),
-    path('delete/<int:pk>/', AcademicCalendarDeleteView.as_view(), name='calendar-delete'),
+    path('', AcademicCalendarIndexView.as_view(), {"site_title": "ACADEMIC CALENDAR LIST - SMA IT AL BINAA"}, name='calendar-list'),
+    path('create/', AcademicCalendarCreateView.as_view(), {"site_title": "CREATE ACADEMIC CALENDAR - SMA IT AL BINAA"}, name='calendar-create'),
+    path('quick-create/', AcademicCalendarQuickCreateView.as_view(), {"site_title": "QUICK CREATE ACADEMIC CALENDAR - SMA IT AL BINAA"}, name='calendar-quick-create'),
+    path('detail/<int:pk>/', AcademicCalendarDetailView.as_view(), {"site_title": "ACADEMIC CALENDAR DETAIL - SMA IT AL BINAA"}, name='calendar-detail'),
+    path('update/<int:pk>/', AcademicCalendarUpdateView.as_view(), {"site_title": "UPDATE ACADEMIC CALENDAR - SMA IT AL BINAA"}, name='calendar-update'),
+    path('delete/<int:pk>/', AcademicCalendarDeleteView.as_view(), {"site_title": "DELETE ACADEMIC CALENDAR - SMA IT AL BINAA"}, name='calendar-delete'),
 ]

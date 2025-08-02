@@ -142,7 +142,7 @@ class TahfidzUpdateView(GeneralFormValidateMixin, UpdateView):
 
 class TahfidzDeleteView(GeneralFormDeleteMixin):
     model = Tahfidz
-    success_url = reverse_lazy("tahfidz:tahfidz-index")
+    success_url = reverse_lazy("tahfidz:tahfidz-list")
     app_name = "Tahfidz"
     type_url = 'tahfidz/'
     permission_required = 'tahfidz.delete_tahfidz'
@@ -207,7 +207,7 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
             message=f"berhasil menambahkan banyak data tilawah"
         )
         messages.success(self.request, "Input nilai berhasil!")
-        return redirect(reverse("tahfidz:tilawah-index"))
+        return redirect(reverse("tahfidz:tilawah-list"))
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -235,7 +235,7 @@ class TilawahUpdateView(GeneralFormValidateMixin, UpdateView):
 
 class TilawahDeleteView(GeneralFormDeleteMixin):
     model = Tilawah
-    success_url = reverse_lazy("tahfidz:tahfidz-index")
+    success_url = reverse_lazy("tahfidz:tahfidz-list")
     app_name = "Tilawah"
     type_url = 'tahfidz/tilawah/'
     permission_required = 'tahfidz.delete_tilawah'

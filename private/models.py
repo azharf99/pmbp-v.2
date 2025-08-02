@@ -23,7 +23,7 @@ class Subject(models.Model):
         return self.nama_pelajaran
 
     def get_absolute_url(self):
-        return reverse("private:subject-index")
+        return reverse("private:subject-list")
     
     class Meta:
         ordering = ["nama_pelajaran"]
@@ -49,7 +49,7 @@ class Group(models.Model):
 
 
     def get_absolute_url(self):
-        return reverse("private:group-index")
+        return reverse("private:group-list")
     
     class Meta:
         ordering = ["nama_kelompok", "pelajaran"]
@@ -79,7 +79,7 @@ class Private(CleanableFileModel):
     file_field_names = ['foto']
 
     def get_absolute_url(self):
-        return reverse("private:private-index")
+        return reverse("private:private-list")
     
     class Meta:
         ordering = ["-tanggal_bimbingan"]

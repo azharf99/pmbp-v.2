@@ -36,7 +36,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'post_list' %}" class="flex items-center p-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200">
+                        <a href="{% url 'post-list' %}" class="flex items-center p-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200">
                             <i data-lucide="log-out" class="w-5 h-5 mr-2"></i>
                             Logout
                         </a>
@@ -98,7 +98,7 @@
             </div>
             {% if notifications_left %}
             <div class="text-center mt-4">
-                <a href="{% url 'post_list' %}" class="text-indigo-600 hover:underline text-sm font-medium dark:text-indigo-400">View All Notifications</a>
+                <a href="{% url 'post-list' %}" class="text-indigo-600 hover:underline text-sm font-medium dark:text-indigo-400">View All Notifications</a>
             </div>
             {% endif %}
 

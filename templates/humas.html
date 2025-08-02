@@ -127,8 +127,8 @@
       </div>
       <div class="hidden lg:flex lg:gap-x-12">
         <a href="{% url 'app-index' %}" class="text-sm font-semibold leading-6 text-gray-100">Beranda</a>
-        <a href="{% url 'alumni:alumni-index' %}" class="text-sm font-semibold leading-6 text-gray-100">Alumni</a>
-        <a href="{% url 'private:private-index' %}" class="text-sm font-semibold leading-6 text-gray-100">Private </a>
+        <a href="{% url 'alumni:alumni-list' %}" class="text-sm font-semibold leading-6 text-gray-100">Alumni</a>
+        <a href="{% url 'private:private-list' %}" class="text-sm font-semibold leading-6 text-gray-100">Private </a>
       </div>
       
       <div class="hidden lg:flex lg:flex-1 lg:justify-end items-center">
@@ -191,7 +191,7 @@
                 class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Beranda</a>
               <a href="{% url 'dashboard' %}"
                 class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Alumni</a>
-              <a href="{% url 'private:private-index' %}"
+              <a href="{% url 'private:private-list' %}"
                 class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50">Private</a>
             </div>
             <div class="py-6">
@@ -277,11 +277,11 @@
         </li>
 
         <li>
-          <a class="transition hover:text-gray-700/75" href="{% url 'alumni:alumni-index' %}">Alumni</a>
+          <a class="transition hover:text-gray-700/75" href="{% url 'alumni:alumni-list' %}">Alumni</a>
         </li>
 
         <li>
-          <a class="transition hover:text-gray-700/75" href="{% url 'private:private-index' %}">Private</a>
+          <a class="transition hover:text-gray-700/75" href="{% url 'private:private-list' %}">Private</a>
         </li>
       </ul>
 

@@ -16,7 +16,7 @@ class AttendanceRecord(models.Model):
 
 
     def get_absolute_url(self):
-        return reverse("attendance-dashboard")
+        return reverse("attendance-list")
     
 
     class Meta:

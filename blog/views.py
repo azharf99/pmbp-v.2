@@ -1,30 +1,67 @@
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+
+from utils.title_active_link import set_headtitle_and_active_link
 from .models import Post, Category, Comment
-from .forms import CommentForm, SignUpForm
+from .forms import CategoryForm, CommentForm, PostForm
 from django.urls import reverse_lazy
 
 class PostListView(ListView):
     model = Post
-    template_name = 'blog/post_list.html'
+    template_name = 'blog/post-list.html'
     context_object_name = 'posts'
     paginate_by = 5
 
     def get_queryset(self):
         return Post.objects.filter(status='published').order_by('-created_at')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.kwargs)
+        return context
 
 class PostCreateView(CreateView):
     model = Post
-    template_name = 'blog/post_form.html'
-    fields = '__all__'
+    template_name = 'components/form.html'
+    form_class = PostForm
+    form_name = 'Post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.kwargs)
+        context.update({'form_name': self.form_name})
+        return context
+    
+class PostUpdateView(UpdateView):
+    model = Post
+    template_name = 'components/form.html'
+    form_class = PostForm
+    form_name = 'Post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.kwargs)
+        context.update({'form_name': self.form_name})
+        return context
+    
+class PostDeleteView(DeleteView):
+    model = Post
+    template_name = 'components/delete.html'
+    success_url = reverse_lazy('post-list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.kwargs)
+        context.update({'form_name': self.form_name})
+        return context
     
 
 class PostDetailView(DetailView):
     model = Post
-    template_name = 'blog/post_detail.html'
+    template_name = 'blog/post-detail.html'
     context_object_name = 'post'
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
@@ -46,7 +83,7 @@ class PostDetailView(DetailView):
         if comment_form.is_valid():
             new_comment = comment_form.save(commit=False)
             new_comment.post = self.object
-            new_comment.author = request.user
+            new_comment.author = request.user.teacher
             new_comment.save()
             return redirect(self.object.get_absolute_url())
         
@@ -55,6 +92,15 @@ class PostDetailView(DetailView):
         return self.render_to_response(context)
 
 class CategoryPostsView(LoginRequiredMixin, ListView):
+    model = Post
+    template_name = 'blog/category.html'
+    context_object_name = 'posts'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+    
+class CategoryPostsDetailView(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'blog/category.html'
     context_object_name = 'posts'
@@ -70,8 +116,32 @@ class CategoryPostsView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['category'] = self.category
         return context
+    
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    model = Category
+    template_name = 'components/form.html'
+    form_class = CategoryForm
+    form_name = 'Category'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.kwargs)
+        context.update({'form_name': self.form_name})
+        return context
 
-class SignUpView(CreateView):
-    form_class = SignUpForm
-    success_url = reverse_lazy('login')
-    template_name = 'registration/signup.html'
+class CategoryUpdateView(LoginRequiredMixin, UpdateView):
+    model = Category
+    template_name = 'components/form.html'
+    form_class = CategoryForm
+    form_name = 'Category'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.kwargs)
+        context.update({'form_name': self.form_name})
+        return context
+
+class CategoryDeleteView(LoginRequiredMixin, DeleteView):
+    model = Category
+    template_name = 'components/delete.html'
+    success_url = reverse_lazy('category-list')

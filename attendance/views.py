@@ -55,7 +55,7 @@ def register_student(request):
                     face_encoding=pickle.dumps(embeddings[0]),
                 )
             )
-            return redirect('attendance-dashboard')
+            return redirect('attendance-list')
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     return render(request, 'attendance/register.html', {"students": students})

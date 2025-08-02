@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from ckeditor_uploader.fields import RichTextUploadingField
 from taggit.managers import TaggableManager
-
+from django.utils.text import slugify
 from users.models import Teacher
 from utils.models import CleanableFileModel
 
@@ -29,7 +29,7 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('blog:category-list')
+        return reverse('category-list')
 
 
 class Post(CleanableFileModel):
@@ -39,10 +39,10 @@ class Post(CleanableFileModel):
     )
     
     title = models.CharField(max_length=255, db_index=True)
-    slug = models.SlugField(max_length=255, unique_for_date='created_at', db_index=True)
+    slug = models.SlugField(max_length=255, unique_for_date='created_at', db_index=True, help_text="Jika tidak diisi, akan otomatis terisi dengan judul")
     content = RichTextUploadingField()
     author = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='blog_posts', db_index=True)
-    category = models.ManyToManyField(Category, related_name='posts', db_index=True)
+    category = models.ManyToManyField(Category, related_name='posts', db_index=True, help_text="Pada PC, Tekan Ctrl untuk memilih lebih dari satu kategori")
     tags = TaggableManager(blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft', db_index=True)
     featured_image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
@@ -60,13 +60,17 @@ class Post(CleanableFileModel):
             models.Index(fields=['author', 'status']),
         ]
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.title
     
     file_field_names = ['featured_image']
 
     def get_absolute_url(self):
-        return reverse('blog:post-detail', args=[self.slug])
+        return reverse('post-detail', args=[self.slug])
     
 
 class Comment(models.Model):
@@ -74,7 +78,7 @@ class Comment(models.Model):
     author = models.ForeignKey(Teacher, on_delete=models.CASCADE, db_index=True)
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
-    active = models.BooleanField(default=False, db_index=True) #For comments moderation
+    active = models.BooleanField(default=True, db_index=True) #For comments moderation
 
     class Meta:
         ordering = ['created_at']

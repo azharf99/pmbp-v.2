@@ -80,7 +80,7 @@ class PrivateUpdateView(GeneralFormValidateMixin, UpdateView):
 
 class PrivateDeleteView(GeneralFormDeleteMixin):
     model = Private
-    success_url = reverse_lazy("private:private-index")
+    success_url = reverse_lazy("private:private-list")
     app_name = 'Private'
     type_url = 'private/'
     permission_required = 'private.delete_private'
@@ -120,7 +120,7 @@ class SubjectUpdateView(GeneralFormValidateMixin, UpdateView):
 
 class SubjectDeleteView(GeneralFormDeleteMixin):
     model = Subject
-    success_url = reverse_lazy("private:subject-index")
+    success_url = reverse_lazy("private:subject-list")
     app_name = "Subject"
     type_url = 'private/'
     slug_url = 'subjects/'
@@ -170,7 +170,7 @@ class GroupQuickUploadView(GeneralAuthPermissionMixin, CreateView):
                 obj.save()
         except:
             messages.error(self.request, "Data pada Excel TIDAK SESUAI FORMAT! Mohon sesuaikan dengan format yang ada. Hubungi Administrator jika kesulitan.")
-            return HttpResponseRedirect(reverse("private:group-index"))
+            return HttpResponseRedirect(reverse("private:group-list"))
         UserLog.objects.create(
             user = self.request.user.teacher,
             action_flag = "CREATE",
@@ -203,7 +203,7 @@ class GroupDeleteView(GeneralFormDeleteMixin):
     type_url = 'private/'
     slug_url = 'groups/'
     permission_required = 'group.delete_group'
-    success_url = reverse_lazy("private:group-index")
+    success_url = reverse_lazy("private:group-list")
 
 
 class GroupGetView(LoginRequiredMixin, DetailView):
@@ -212,8 +212,8 @@ class GroupGetView(LoginRequiredMixin, DetailView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         query = request.GET.get("query")
         if query:
-            data = list(Group.objects.filter(pk=query).values("santri", "santri__nama_siswa", "santri__kelas__nama_kelas"))
-            extra_data = list(Student.objects.select_related("student_class").filter(kelas__nama_kelas__startswith="XII").exclude(pk__in=Group.objects.filter(pk=query).values_list("santri")).values("id", "nama_siswa", "kelas__nama_kelas"))
+            data = list(Group.objects.filter(pk=query).values("santri", "santri__nama_siswa", "santri__student_class__class_name"))
+            extra_data = list(Student.objects.select_related("student_class").filter(student_class__class_name__startswith="XII").exclude(pk__in=Group.objects.filter(pk=query).values_list("santri")).values("id", "nama_siswa", "student_class__class_name"))
             full_data = dict()
             full_data["utama"] = data
             full_data["ekstra"] = extra_data

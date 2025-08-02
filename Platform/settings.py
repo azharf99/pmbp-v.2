@@ -269,6 +269,7 @@ SITE_ID = 1
 
 
 # CKEditor Config
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_CONFIGS = {
     'default': {

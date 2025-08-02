@@ -5,8 +5,8 @@
   <p><small>By {{ post.author }} on {{ post.created_at }}</small></p>
   <div>{{ post.content|safe }}</div>
 
-  <a href="{% url 'post_update' post.slug %}" class="btn btn-primary mt-3">Edit</a>
-  <a href="{% url 'post_delete' post.slug %}" class="btn btn-danger mt-3">Delete</a>
+  <a href="{% url 'post-update' post.slug %}" class="btn btn-primary mt-3">Edit</a>
+  <a href="{% url 'post-delete' post.slug %}" class="btn btn-danger mt-3">Delete</a>
   {# Update comment section to use view context #}
 <section class="comments">
     <h3>Comments ({{ comments.count }})</h3>
@@ -27,7 +27,7 @@
         <h4>Add Comment</h4>
         <form method="post">
             {% csrf_token %}
-            {{ comment_form|crispy }}
+            {{ comment_form.as_p }}
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     {% endif %}

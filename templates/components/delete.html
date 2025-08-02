@@ -2,24 +2,24 @@
 
 {% block content %}
   <main class="p-4 sm:ml-64 overflow-auto">
-    <h1 class="px-2 text-2xl font-bold text-blue-500 dark:text-white">Tilawah Delete</h1>
+    <h1 class="px-2 text-2xl font-bold text-blue-500 dark:text-white">{{form_name}} Delete</h1>
     <!-- Breadcrumb -->
     <div class="flex items-center gap-2">
       <a href="{% url 'dashboard' %}" class="pl-2">Dashboard</a>
       <p class="text-2xl">
         &triangleright;
       </p>
-      <a href="{% url 'tahfidz:tilawah-list' %}">Tilawah List</a>
+      <a href="{% url 'class-list' %}">Class List</a>
       <p class="text-2xl">
         &triangleright;
       </p>
-      <a href="#">Tilawah Delete</a>
+      <a href="#">{{form_name}} Delete</a>
     </div>
     </div>
     <!-- Analytics Card -->
     <div class="mx-2 my-4 flex justify-center">
         <div class="px-4 py-6 flex flex-col justify-center items-center gap-4 bg-white dark:bg-gray-700 shadow-lg md:w-3/4 w-full rounded-md">
-            <h2 class="font-semibold text-xl">Hapus Data Tilawah</h2>
+            <h2 class="font-semibold text-xl">Hapus Data {{form_name}}</h2>
             <form action="" method="post" class="flex flex-col gap-2 items-center md:w-1/2 w-full">
               {% csrf_token %}
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 text-red-500">
