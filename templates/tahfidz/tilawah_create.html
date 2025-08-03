@@ -72,7 +72,7 @@
               <div class="grid grid-cols-1 gap-2">
                 <p class="col-span-2 md:text-center text-fuchsia-500 font-medium">Klik nama santri untuk melihat pencapaian sebelumnya</p>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-6 gap-2" id="student_list">
+              <div class="grid grid-cols-2 md:grid-cols-6 gap-2" id="student_list">
               </div>
               <p class="my-2"><label for="teachers">Pendamping:</label></p>
               <p>
@@ -123,15 +123,20 @@ const studentStatus = ["Hadir", "Sakit", "Telat", "Izin", "Alpa"]
                   studentInput.name = `student${student.nis}`;
                   studentInput.value = student.nis;
                   const studentLabel = document.createElement("label");
-                  studentLabel.className = "my-4 md:my-0 text-xs md:col-span-2 rounded-md dark:text-white px-2 py-1 font-bold text-blue-500 shadow-lg"
+                  studentLabel.className = "my-4 md:my-0 text-xs col-span-2 rounded-md dark:text-white px-2 py-1 font-bold text-blue-500 border-1 shadow-lg"
                   studentLabel.htmlFor = student.nis
 
                   studentLabel.appendChild(studentAnchor)
                   
                   if(student.id !== null){
+                    let prev_data = localStorage.getItem("target");
                     const studentHalamanInput = document.createElement("input");
                     studentHalamanInput.type = "number"
-                    studentHalamanInput.value = target
+                    if(prev_data){
+                      studentHalamanInput.value = prev_data;
+                    } else {
+                      studentHalamanInput.value = target
+                    }
                     studentHalamanInput.required = "true"
                     studentHalamanInput.placeholder = "Halaman"
                     studentHalamanInput.name = `halaman${student.nis}`;
@@ -201,8 +206,11 @@ const studentStatus = ["Hadir", "Sakit", "Telat", "Izin", "Alpa"]
 
   document.getElementById('target').addEventListener('change', function() {
     const semua_halaman = document.getElementsByClassName('halaman');
+    localStorage.setItem("target", this.value);
+    
     for(halaman of semua_halaman){
-      halaman.value = this.value
+      let target_data = localStorage.getItem("target");
+      halaman.value = target_data
     }
   });
 
