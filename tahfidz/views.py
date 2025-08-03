@@ -187,7 +187,7 @@ class TilawahIndexView(GeneralContextMixin, ListView):
         c["student_above_target"] = self.queryset.filter(santri__student_status="Aktif", tercapai=True).count()
         c["student_below_target"] = self.queryset.filter(santri__student_status="Aktif", tercapai=False).count()
         c["every_class_target"] = self.queryset.filter(santri__student_status="Aktif", tercapai=True).values("santri__student_class__short_class_name").annotate(total=Count("tercapai")).order_by().distinct()
-        c["every_class_target_false"] = self.queryset.filter(santri__student_status="Aktif", tercapai=False).values("santri__student_class__short_class_name").annotate(total=Count("tercapai")).order_by().distinct()
+        c["every_class_target_false"] = self.queryset.filter(santri__student_status="Aktif", tercapai=False).values("santri__student_class__short_class_name").annotate(total=Count("tercapai")).order_by("santri__student_class__short_class_name").distinct()
         c["classes"] = Class.objects.filter(category="Putra")
         if class_id:
             c["class_id"] = int(class_id)
