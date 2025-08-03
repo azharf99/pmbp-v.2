@@ -35,7 +35,7 @@ class StudentIndexView(ListView):
         if class_id:
             data = list(Student.objects.select_related('student_class')\
                         .filter(student_status="Aktif", student_class_id=class_id)\
-                        .values("nis", "student_name", "student_class__short_class_name"))
+                        .values("id", "nis", "student_name", "student_class__short_class_name"))
             return JsonResponse(data, safe=False)
         return super().get(request, *args, **kwargs)
 

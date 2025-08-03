@@ -26,6 +26,7 @@
         <table class="w-full mt-4">
           <thead>
             <tr>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">No.</th>
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Nama</th>
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Hadir</th>
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Sakit</th>
@@ -33,6 +34,7 @@
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Izin</th>
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Alpha</th>
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Halaman</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Surat Terakhir</th>
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tercapai</th>
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tajwid</th>
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Kelancaran</th>
@@ -41,6 +43,7 @@
           <tbody>
             {% for tilawah in recap %}
             <tr class="{% if tilawah.latest_tercapai %} bg-green-300 {% else %} bg-red-400 {% endif %}">
+              <td class="p-2 border border-gray-400">{{forloop.counter}}</td>
               <td class="p-2 border border-gray-400">{{tilawah.student_name}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.hadir_count}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.sakit_count}}</td>
@@ -48,6 +51,7 @@
               <td class="p-2 border border-gray-400 text-center">{{tilawah.izin_count}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.alpa_count}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.latest_halaman}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.surat|default:""}} {{tilawah.ayat|default:""}}</td>
               <td class="p-2 border border-gray-400 text-center">{% if tilawah.latest_tercapai %} &check; {% else %} &cross; {% endif %}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.latest_tajwid|default:"-"}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.latest_kelancaran|default:"-"}}</td>
@@ -60,9 +64,9 @@
         <h2 class="my-2 text-center text-xl font-semibold">Detail Data Tilawah</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           <p class="md:text-right text-green-500 font-bold">NAMA SANTRI</p>
-          <p class="md:text-left">{{object.santri.student_name|default:"-"}}</p>
+          <p class="md:text-left">{{object.student_name|default:"-"}}</p>
           <p class="md:text-right text-green-500 font-bold">KELAS</p>
-          <p class="md:text-left">{{object.santri.student_class.short_class_name|default:"-"}}</p>
+          <p class="md:text-left">{{object.student_class.short_class_name|default:"-"}}</p>
         </div>
         <table class="w-full mt-4">
           <thead>
@@ -71,6 +75,7 @@
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Kehadiran</th>
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tercapai</th>
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Halaman</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Surat</th>
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tajwid</th>
               <th class="p-2 border border-gray-400 bg-blue-100 text-black">Kelancaran</th>
             </tr>
@@ -78,10 +83,11 @@
           <tbody>
             {% for tilawah in history %}
             <tr>
-              <td class="p-2 border border-gray-400 text-center">{{tilawah.tanggal|date:"d/m/Y"}}</td>
+              <td class="p-2 border border-gray-400">{{tilawah.tanggal|date:"j F Y"}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.kehadiran}}</td>
               <td class="p-2 border border-gray-400 text-center">{% if object.tercapai %} &check; {% else %} &cross; {% endif %}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.halaman}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.surat|default:""}} {{tilawah.ayat|default:""}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.tajwid|default:"-"}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.kelancaran|default:"-"}}</td>
             </tr>

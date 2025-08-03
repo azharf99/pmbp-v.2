@@ -36,6 +36,7 @@ class TilawahForm(forms.ModelForm):
             "tercapai" : forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "tajwid" : forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "kelancaran" : forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            "ayat_quran" : forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "pendamping" : forms.SelectMultiple(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "target" : forms.NumberInput(attrs={"class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "halaman" : forms.NumberInput(attrs={"class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),

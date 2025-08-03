@@ -81,7 +81,7 @@
       {% endfor %}
     </select>
     <label for="date"></label>
-    <input type="date" name="date" id="date" {% if date %} value="{{date}}" {% endif %} class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
+    <input type="date" placeholder="Tanggal" name="date" id="date" {% if date %} value="{{date}}" {% endif %} class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
     <label for="student_name"></label>
     <input type="text" placeholder="Nama Santri" name="student_name" id="student_name" {% if student_name %} value="{{student_name}}" {% endif %} class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
     <input type="submit" value="Cari Data" class="p-2 m-1 rounded-lg text-white bg-indigo-500 text-xs cursor-pointer">
@@ -103,24 +103,29 @@
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Halaman</th>
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tajwid</th>
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Lancar</th>
+          <th class="p-2 border border-gray-400 bg-blue-100 text-black">Surat</th>
           {% if request.user.is_authenticated %}        
           <th class="p-2 border border-gray-400 bg-blue-100 text-black">Aksi</th>
           {% endif %}
         </thead>
         <tbody>
           {% for object in object_list %}
-          <tr class="{% if object.tercapai and object.halaman >= object.target %} bg-green-500 {% else %}  bg-red-400 {% endif %}">
+          <tr class="{% if object.tercapai and object.kehadiran == 'Hadir' %} bg-green-300 {% else %}  bg-red-400 {% endif %} text-xs">
             <td class="p-2 border border-gray-400 text-center">{{forloop.counter}}</td>
             <td class="p-2 border border-gray-400">{{object.tanggal}}</td>
             <td class="p-2 border border-gray-400">{{object.santri.student_name}}</td>
             <td class="p-2 border border-gray-400">{{object.santri.student_class.short_class_name}}</td>
-            <td class="p-2 border border-gray-400 text-center">{% if object.tercapai %} &check; {% else %} &cross; {% endif %}</td>
+            <td class="p-2 border border-gray-400 text-center">{% if object.tercapai and object.kehadiran == 'Hadir' %} &check; {% elif object.kehadiran != 'Hadir' %} {{object.kehadiran}} {% else %} &cross; {% endif %}</td>
             <td class="p-2 border border-gray-400 text-center">{{object.halaman|default:"-"}}</td>
             <td class="p-2 border border-gray-400 text-center">{{object.tajwid|default:"-"}}</td>
             <td class="p-2 border border-gray-400 text-center">{{object.kelancaran|default:"-"}}</td>
+            <td class="p-2 border border-gray-400 text-center">{{object.surat|default:""}} {{object.ayat|default:"  "}}</td>
             {% if request.user.is_authenticated %}
             <td class="p-2 border border-gray-400">
-              <div class="flex flex-wrap gap-2 justify-center">
+              <div class="flex gap-2 justify-center">
+                <a href="{% url 'tahfidz:tilawah-detail' object.santri.id %}" class="p-1 bg-blue-500 text-white rounded-md">
+                  Detail                                           
+                </a>
                 <a href="{% url 'tahfidz:tilawah-update' object.id %}" class="p-1 bg-lime-500 rounded-md">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
@@ -166,31 +171,9 @@
 
 </main>
 
-<dialog id="favDialog">
-  <form>
-    <p>
-      <label>
-        Favorite animal:
-        <select>
-          <option value="default">Choose…</option>
-          <option>Brine shrimp</option>
-          <option>Red panda</option>
-          <option>Spider monkey</option>
-        </select>
-      </label>
-    </p>
-    <div>
-      <button value="cancel" formmethod="dialog">Cancel</button>
-      <button id="confirmBtn" value="default">Confirm</button>
-    </div>
-  </form>
-</dialog>
-
-
 <script>
   document.addEventListener('DOMContentLoaded', (event) => {
     lucide.createIcons();
-
   });
 </script>
 {% endblock content %}

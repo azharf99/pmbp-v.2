@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db.models.query import QuerySet
 from django.utils import timezone
 from django.db.models import Count, Case, When, IntegerField, Sum, Subquery, OuterRef
 from typing import Any
@@ -271,6 +272,9 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
             tajwid = request.POST.get(f"tajwid{student.nis}")
             kelancaran = request.POST.get(f"kelancaran{student.nis}")
             halaman = request.POST.get(f"halaman{student.nis}", 0)
+            kehadiran = request.POST.get(f"kehadiran{student.nis}", "Hadir")
+            ayat = request.POST.get(f"ayat{student.nis}")
+            surat = request.POST.get(f"surat{student.nis}")
             if nis_santri:
                 object, is_updated = Tilawah.objects.select_related("santri").prefetch_related("pendamping").update_or_create(
                     tanggal = date,
@@ -279,6 +283,9 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
                         tercapai = True if target and int(halaman) >= int(target) else False,
                         halaman = halaman,
                         target = target,
+                        ayat = ayat if ayat else None,
+                        surat = surat if surat else None,
+                        kehadiran = kehadiran,
                         catatan = catatan,
                         tajwid = tajwid if tajwid != "null" and tajwid in TAHSIN_STATUS_LIST else None,
                         kelancaran = kelancaran if kelancaran != "null" and kelancaran in TAHSIN_STATUS_LIST else None,
@@ -311,12 +318,13 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
     
 
 class TilawahDetailView(GeneralAuthPermissionMixin, DetailView):
-    model = Tilawah
+    model = Student
     permission_required = 'tahfidz.view_tilawah'
+    template_name = 'tahfidz/tilawah_detail.html'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
-        c["history"] = Tilawah.objects.filter(santri=self.object.santri).order_by("-tanggal")
+        c["history"] = Tilawah.objects.filter(santri=self.object).order_by("-tanggal")
         return c
 
 

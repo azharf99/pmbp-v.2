@@ -60,7 +60,7 @@
               <p><input required type="date" name="date" id="date" class="w-full rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 shadow-lg my-2"></p>
               
               <p><label for="target">Target Halaman Tilawah Hari Ini:</label></p>
-              <p><input type="number" min="1" max="1000" maxlength="4" name="target" id="target" class="w-full rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 shadow-lg my-2"></p>
+              <p><input type="number" placeholder="Target hari ini" min="1" max="1000" maxlength="4" name="target" id="target" class="w-full rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 shadow-lg my-2"></p>
               
               <p><label for="class_id">Pilih Kelas:</label></p>
               <select name="class_id" id="class_id" class="w-full my-2 rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 shadow-lg" required>
@@ -69,13 +69,10 @@
                 <option value="{{object.id}}" class="dark:bg-black">{{object}}</option>
                 {% endfor %}
               </select>
-              <div class="grid grid-cols-1 md:grid-cols-5 gap-2">
-                <p class="col-span-2 md:text-center">Nama Santri</p>
-                <p class="md:text-center">Halaman</p>
-                <p class="md:text-center">Tajwid</p>
-                <p class="md:text-center">Kelancaran</p>
+              <div class="grid grid-cols-1 gap-2">
+                <p class="col-span-2 md:text-center text-fuchsia-500 font-medium">Klik nama santri untuk melihat pencapaian sebelumnya</p>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-5 gap-2" id="student_list">
+              <div class="grid grid-cols-1 md:grid-cols-6 gap-2" id="student_list">
               </div>
               <p class="my-2"><label for="teachers">Pendamping:</label></p>
               <p>
@@ -106,6 +103,7 @@
 
 <script>
 const tahsinStatus = [null, "Mumtaz", "Jayyid Jiddan", "Jayyid", "Maqbul", "Da'if"]
+const studentStatus = ["Hadir", "Sakit", "Telat", "Izin", "Alpa"]
 
   function getApiUrl(url, studentList){
     const target = document.getElementById("target").value
@@ -115,6 +113,9 @@ const tahsinStatus = [null, "Mumtaz", "Jayyid Jiddan", "Jayyid", "Maqbul", "Da'i
           .then(students => {
               students.forEach((student, index, arr) => {
                   
+                  const studentAnchor = document.createElement("a");
+                  studentAnchor.href = `../detail/${student.id}/`
+                  studentAnchor.innerText = `${index+1}. (${student.student_class__short_class_name}) ${student.student_name}`;
                   const studentInput = document.createElement("input");
                   studentInput.type = "hidden"
                   studentInput.readOnly = true
@@ -122,24 +123,12 @@ const tahsinStatus = [null, "Mumtaz", "Jayyid Jiddan", "Jayyid", "Maqbul", "Da'i
                   studentInput.name = `student${student.nis}`;
                   studentInput.value = student.nis;
                   const studentLabel = document.createElement("label");
-                  studentLabel.className = "my-4 md:my-0 col-span-2 rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 shadow-lg"
+                  studentLabel.className = "my-4 md:my-0 text-xs md:col-span-2 rounded-md dark:text-white px-2 py-1 font-bold text-blue-500 shadow-lg"
                   studentLabel.htmlFor = student.nis
-                  studentLabel.innerText = `${index+1} (${student.student_class__short_class_name}) ${student.student_name}`;
+
+                  studentLabel.appendChild(studentAnchor)
                   
                   if(student.id !== null){
-                    // const wrapperCapaian = document.createElement("div");
-                    // wrapperCapaian.className = "flex justify-center items-center rounded-md text-black dark:text-white border-2 border-blue-500"
-                    // const studentCapaianInput = document.createElement("input");
-                    // studentCapaianInput.type = "checkbox"
-                    // studentCapaianInput.checked = "true"
-                    // studentCapaianInput.htmlFor = student.id
-                    // studentCapaianInput.name = `tercapai${student.nis}`;
-                    // studentCapaianInput.id = student.nis;
-                    // studentCapaianInput.className = "rounded-md text-black dark:text-white border-2 border-blue-500 shadow-lg"
-                    // wrapperCapaian.appendChild(studentCapaianInput)
-                    
-                    // const wrapperHalaman = document.createElement("div");
-                    // wrapperHalaman.className = "flex justify-center items-center"
                     const studentHalamanInput = document.createElement("input");
                     studentHalamanInput.type = "number"
                     studentHalamanInput.value = target
@@ -148,8 +137,18 @@ const tahsinStatus = [null, "Mumtaz", "Jayyid Jiddan", "Jayyid", "Maqbul", "Da'i
                     studentHalamanInput.name = `halaman${student.nis}`;
                     studentHalamanInput.className = "halaman px-4 rounded-md text-black dark:text-white border-2 border-blue-500 shadow-lg text-center"
                     studentHalamanInput.id = `halaman${student.nis}`;
-                    // wrapperHalaman.appendChild(studentHalamanInput)
                     
+                    const studentStatusSelect = document.createElement("select");
+                    studentStatusSelect.className = "px-2 py-1 text-xs rounded-md text-black dark:text-white border-2 border-blue-500 shadow-lg text-center"
+                    studentStatusSelect.name = `kehadiran${student.nis}`;
+                    studentStatusSelect.id = `kehadiran${student.nis}`;
+                    for (let status of studentStatus){
+                      const studentStatusOption = document.createElement("option");
+                      studentStatusOption.innerText = status
+                      studentStatusOption.value = status;
+                      studentStatusSelect.appendChild(studentStatusOption)
+                    }
+
                     const studentTajwidSelect = document.createElement("select");
                     studentTajwidSelect.className = "px-2 py-1 text-xs rounded-md text-black dark:text-white border-2 border-blue-500 shadow-lg text-center"
                     studentTajwidSelect.name = `tajwid${student.nis}`;
@@ -164,7 +163,7 @@ const tahsinStatus = [null, "Mumtaz", "Jayyid Jiddan", "Jayyid", "Maqbul", "Da'i
                       studentTajwidOption.value = status;
                       studentTajwidSelect.appendChild(studentTajwidOption)
                     }
-
+                    
                     const studentKelancaranSelect = document.createElement("select");
                     studentKelancaranSelect.className = "px-2 py-1 text-xs rounded-md text-black dark:text-white border-2 border-blue-500 shadow-lg text-center"
                     studentKelancaranSelect.name = `kelancaran${student.nis}`;
@@ -183,8 +182,7 @@ const tahsinStatus = [null, "Mumtaz", "Jayyid Jiddan", "Jayyid", "Maqbul", "Da'i
   
                     studentList.appendChild(studentLabel);
                     studentList.appendChild(studentInput);
-                    // studentList.appendChild(wrapperCapaian);
-                    // studentList.appendChild(wrapperHalaman);
+                    studentList.appendChild(studentStatusSelect);
                     studentList.appendChild(studentHalamanInput);
                     studentList.appendChild(studentTajwidSelect);
                     studentList.appendChild(studentKelancaranSelect);

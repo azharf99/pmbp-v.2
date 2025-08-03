@@ -4,9 +4,9 @@ from django.utils.translation import gettext as _
 from students.models import Student
 from django.urls import reverse
 from django.utils import timezone
-
 from users.models import Teacher
 from utils.constants import TAHSIN_STATUS_CHOICES
+from utils.surat_quran import QURAN_SURAH
 
 # Create your models here.
 class Tahfidz(models.Model):
@@ -47,6 +47,8 @@ class Tilawah(models.Model):
     tercapai = models.BooleanField(_("Tercapai?"), max_length=10, choices=((True, "True"), (False, "False")), default=True, blank=True, null=True)
     target = models.PositiveBigIntegerField(_("Target Tilawah Hari Ini"), blank=True, null=True)
     halaman = models.PositiveBigIntegerField(_("Halaman"), blank=True, null=True)
+    surat = models.CharField(_("Surat Terakhir"), choices=QURAN_SURAH, max_length=255, blank=True, null=True)
+    ayat = models.CharField(_("Ayat Terakhir"), max_length=255, blank=True, null=True)
     catatan = models.CharField(_("Catatan"), max_length=255, blank=True, null=True)
     pendamping = models.ManyToManyField(Teacher,_("Pendamping"), max_length=255, blank=True)
     tajwid = models.CharField(_("Tajwid"), max_length=255, blank=True, null=True, choices=TAHSIN_STATUS_CHOICES)
