@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.utils import timezone
-from django.db.models import Count
+from django.db.models import Count, Case, When, IntegerField, Sum, Subquery, OuterRef
 from typing import Any
 from django.conf import settings
 from django.core.exceptions import PermissionDenied, BadRequest
@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.forms import BaseModelForm
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from pandas import read_csv, read_excel
 from classes.models import Class
@@ -313,6 +313,62 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
 class TilawahDetailView(GeneralAuthPermissionMixin, DetailView):
     model = Tilawah
     permission_required = 'tahfidz.view_tilawah'
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        c["history"] = Tilawah.objects.filter(santri=self.object.santri).order_by("-tanggal")
+        return c
+
+
+class TilawahClassReportView(GeneralContextMixin, ListView):
+    model = Tilawah
+    queryset = Tilawah.objects.select_related("santri__student_class").prefetch_related("pendamping").filter(santri__student_status="Aktif")
+    paginate_by = 426
+    template_name = "tahfidz/tilawah_detail.html"
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        c = super().get_context_data(**kwargs)
+        class_id = self.request.GET.get("class_id")
+        if not class_id:
+            raise BadRequest("Kelas harus dipilih!")
+        try:
+            class_id = int(class_id)
+        except:
+            raise BadRequest("Kelas tidak valid!")
+        students = Student.objects.filter(student_class=class_id, student_status="Aktif")  # adjust class filter
+
+        latest_tilawah = Tilawah.objects.filter(santri=OuterRef('pk')).order_by('-tanggal')
+
+        recap = students.annotate(
+            hadir_count=Count(Case(When(tilawah__kehadiran="Hadir", then=1), output_field=IntegerField())),
+            sakit_count=Count(Case(When(tilawah__kehadiran="Sakit", then=1), output_field=IntegerField())),
+            telat_count=Count(Case(When(tilawah__kehadiran="Telat", then=1), output_field=IntegerField())),
+            izin_count=Count(Case(When(tilawah__kehadiran="Izin", then=1), output_field=IntegerField())),
+            alpa_count=Count(Case(When(tilawah__kehadiran="Alpa", then=1), output_field=IntegerField())),
+
+            # Get latest tajwid and kelancaran from Tilawah
+            latest_halaman=Subquery(latest_tilawah.values('halaman')[:1]),
+            latest_tercapai=Subquery(latest_tilawah.values('tercapai')[:1]),
+            latest_tajwid=Subquery(latest_tilawah.values('tajwid')[:1]),
+            latest_kelancaran=Subquery(latest_tilawah.values('kelancaran')[:1]),
+        ).values(
+            'student_name',
+            'hadir_count',
+            'sakit_count',
+            'telat_count',
+            'izin_count',
+            'alpa_count',
+            'latest_halaman',
+            'latest_tercapai',
+            'latest_tajwid',
+            'latest_kelancaran'
+        )
+        c["recap"] = recap
+        c["date"] = timezone.now().date()
+        c["class"] = get_object_or_404(Class, pk=class_id)
+        c["type"] = "class_report"
+        return c
+
 
 class TilawahUpdateView(GeneralFormValidateMixin, UpdateView):
     model = Tilawah

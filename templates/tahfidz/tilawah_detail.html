@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <main class="p-4 sm:ml-64 overflow-auto">
+    <h1 class="px-2 text-2xl font-bold text-blue-500 dark:text-white">Tahfidz Detail</h1>
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2">
+      <a href="{% url 'dashboard' %}" class="pl-2">Dashboard</a>
+      <p class="text-2xl">
+        &triangleright;
+      </p>
+      <a href="{% url 'tahfidz:tilawah-list' %}">Tilawah List</a>
+      <p class="text-2xl">
+        &triangleright;
+      </p>
+      <a href="#">Tilawah Detail</a>
+    </div>
+
+
+    <div class="grid grid-cols-1">
+      <!-- Analytics Table -->
+      <div class="p-4 mx-2 my-4 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
+        {% if type == "class_report" %}
+        <h2 class="my-2 text-center text-xl font-semibold">Laporan Tilawah Kelas {{class}}</h2>
+        
+        <table class="w-full mt-4">
+          <thead>
+            <tr>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Nama</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Hadir</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Sakit</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Telat</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Izin</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Alpha</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Halaman</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tercapai</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tajwid</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Kelancaran</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for tilawah in recap %}
+            <tr class="{% if tilawah.latest_tercapai %} bg-green-300 {% else %} bg-red-400 {% endif %}">
+              <td class="p-2 border border-gray-400">{{tilawah.student_name}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.hadir_count}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.sakit_count}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.telat_count}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.izin_count}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.alpa_count}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.latest_halaman}}</td>
+              <td class="p-2 border border-gray-400 text-center">{% if tilawah.latest_tercapai %} &check; {% else %} &cross; {% endif %}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.latest_tajwid|default:"-"}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.latest_kelancaran|default:"-"}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        {% else %}
+        <h2 class="my-2 text-center text-xl font-semibold">Detail Data Tilawah</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <p class="md:text-right text-green-500 font-bold">NAMA SANTRI</p>
+          <p class="md:text-left">{{object.santri.student_name|default:"-"}}</p>
+          <p class="md:text-right text-green-500 font-bold">KELAS</p>
+          <p class="md:text-left">{{object.santri.student_class.short_class_name|default:"-"}}</p>
+        </div>
+        <table class="w-full mt-4">
+          <thead>
+            <tr>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tanggal</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Kehadiran</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tercapai</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Halaman</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Tajwid</th>
+              <th class="p-2 border border-gray-400 bg-blue-100 text-black">Kelancaran</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for tilawah in history %}
+            <tr>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.tanggal|date:"d/m/Y"}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.kehadiran}}</td>
+              <td class="p-2 border border-gray-400 text-center">{% if object.tercapai %} &check; {% else %} &cross; {% endif %}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.halaman}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.tajwid|default:"-"}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.kelancaran|default:"-"}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+      </div>
+
+    </div>
+
+  </main>
+
+{% endblock content %}

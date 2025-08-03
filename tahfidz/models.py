@@ -43,6 +43,7 @@ class Tahfidz(models.Model):
 class Tilawah(models.Model):
     tanggal = models.DateField(_("Tanggal"), default=timezone.datetime.now)
     santri = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name=_("Santri"))
+    kehadiran = models.CharField(_("Kehadiran"), max_length=10, choices=(("Hadir", "Hadir"), ("Sakit", "Sakit"), ("Telat", "Telat"), ("Izin", "Izin"), ("Alpa", "Alpa")), default="Hadir", blank=True, null=True)
     tercapai = models.BooleanField(_("Tercapai?"), max_length=10, choices=((True, "True"), (False, "False")), default=True, blank=True, null=True)
     target = models.PositiveBigIntegerField(_("Target Tilawah Hari Ini"), blank=True, null=True)
     halaman = models.PositiveBigIntegerField(_("Halaman"), blank=True, null=True)

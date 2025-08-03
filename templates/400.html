@@ -5,8 +5,8 @@
         <div class="flex flex-col justify-center items-center">
             <h1 style="font-size: 200px;">&#x1F595;</h1>
             <p class="text-center">Bad Request - 400</p>
-            <h2 class="text-2xl text-center text-balance">Upss, ada gerak-gerik mencurigakan!</h2>
-            <h2 class="text-2xl text-center text-balance">Anda bukan hacker, kan?!</h2>
+            <h2 class="text-2xl text-center text-balance">Upss, Permintaan Anda tidak benar!</h2>
+            <h2 class="text-2xl text-center text-balance">Jika bingung, hubungi Admin</h2>
             <div class="flex gap-4 my-2">
                 <a href="{{request.META.HTTP_REFERER}}" class="p-2 rounded-md bg-yellow-600 my-4 text-white">&#x1F448; Go Back</a>
                 <a href="{% url 'app-index' %}" class="p-2 rounded-md bg-red-500 my-4 text-white">&#x1F3E0; Home</a>

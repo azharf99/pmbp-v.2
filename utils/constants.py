@@ -75,7 +75,7 @@ STATUS_CHOICES = (
 
 
 TAHSIN_STATUS_CHOICES = (
-    (None, "----Pilih Nilai Tahsin Tajwid----"),
+    (None, "----Pilih Nilai Tahsin----"),
     ("Mumtaz", _("Mumtaz")),
     ("Jayyid Jiddan", _("Jayyid Jiddan")),
     ("Jayyid", _("Jayyid")),

@@ -35,7 +35,8 @@
   <div class="flex justify-center m-2 gap-2 text-balance text-center">
     <a href="{% url 'tahfidz:tilawah-quick-create' %}"><p class="p-1 px-2 bg-blue-500 text-white rounded-md font-semibold">&#128195; Buat Cepat</p></a>
     <a href="{% url 'tahfidz:tilawah-create' %}"><p class="p-1 px-2 bg-lime-500 text-white rounded-md font-semibold">&#128195; Buat Manual (Lemot)</p></a>
-    <a href="{% url 'tahfidz:tilawah-quick-fill' %}?date={{date}}"><p class="p-1 px-2 bg-fuchsia-500 text-white rounded-md font-semibold">&#128195; Isi Cepat (Belum Tercatat)</p></a>
+    <a href="{% url 'tahfidz:tilawah-quick-fill' %}?date={{date}}"><p class="p-1 px-2 bg-fuchsia-500 text-white rounded-md font-semibold">&#128195; Isi Cepat (Yg Belum Tercatat)</p></a>
+    <a href="{% url 'tahfidz:tilawah-class-report' %}?class_id={{class_id}}" id="class_recap"><p class="p-1 px-2 bg-yellow-500 text-white rounded-md font-semibold">&#128195; Laporan Kelas</p></a>
   </div>
 
   <section class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6">
@@ -165,11 +166,31 @@
 
 </main>
 
+<dialog id="favDialog">
+  <form>
+    <p>
+      <label>
+        Favorite animal:
+        <select>
+          <option value="default">Choose…</option>
+          <option>Brine shrimp</option>
+          <option>Red panda</option>
+          <option>Spider monkey</option>
+        </select>
+      </label>
+    </p>
+    <div>
+      <button value="cancel" formmethod="dialog">Cancel</button>
+      <button id="confirmBtn" value="default">Confirm</button>
+    </div>
+  </form>
+</dialog>
+
 
 <script>
   document.addEventListener('DOMContentLoaded', (event) => {
     lucide.createIcons();
+
   });
 </script>
-
 {% endblock content %}
