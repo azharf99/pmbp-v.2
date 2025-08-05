@@ -202,7 +202,11 @@
                     <!-- Activity Card 1 -->
                     <div class="carousel-slide-item box-border h-auto flex justify-center items-center flex-shrink-0 relative p-4">
                         <div class="bg-blue-50 p-8 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 w-full max-w-[400px] mx-auto dark:bg-gray-900 dark:border-gray-700">
-                            <img src="{{extracurricular.logo.url}}" alt="Students playing basketball" class="rounded-lg mb-6 w-full h-48 object-cover">
+                            {% if extracurricular.logo %}
+                            <img src="{{extracurricular.logo.url}}" alt="{{extracurricular.name}}" class="rounded-lg mb-6 w-full h-48 object-cover">
+                            {% else %}
+                            <img src="https://placehold.co/600x400?text=Hello" alt="{{extracurricular.name}}" class="rounded-lg mb-6 w-full h-48 object-cover">
+                            {% endif %}
                             <h3 class="text-2xl font-semibold text-blue-700 mb-3 dark:text-blue-300">{{extracurricular.name}}</h3>
                             <p class="text-gray-600 text-xs mb-4 dark:text-gray-400">
                                 {{extracurricular.description|truncatechars:50}}
