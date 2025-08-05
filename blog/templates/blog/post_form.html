@@ -1,7 +1,33 @@
-{% extends 'blog/base.html' %}
+{% extends 'components/home-base.html' %}
 {% block content %}
-{{ form.as_p }}
+
+<article class="flex flex-col justify-center items-center my-10 rounded-2xl dark:bg-gray-800 p-4 bg-white w-full md:w-3/4 mx-auto">
+
+    <form method="post" enctype="multipart/form-data" class="flex flex-col gap-2 md:w-3/4 w-full">
+        {% csrf_token %}
+        {{ form.media }}
+        {% csrf_token %}
+              {% for field in form %}
+                  <div class="flex flex-col">
+                      {% if field.errors %}
+                        <p class="italic text-xs p-2 text-red-500" id="{{ field.auto_id }}_helptext">
+                          {{ field.errors }}
+                        </p>
+                      {% endif %}
+                      {{ field.label_tag }} {{ field }}
+                      {% if field.help_text %}
+                        <p class="italic text-xs p-2" id="{{ field.auto_id }}_helptext">
+                          {{ field.help_text|safe }}
+                        </p>
+                      {% endif %}
+                  </div>
+              {% endfor %}
+        <input type="submit" id="submit" value="Input Data" class="text-white p-2 bg-blue-500 rounded-md cursor-pointer hover:bg-fuchsia-500 my-4">
+
+    </form>
+</article>
 {% load static %}
-<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
-<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+
 {% endblock %}

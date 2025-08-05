@@ -45,7 +45,7 @@ class Post(CleanableFileModel):
     category = models.ManyToManyField(Category, related_name='posts', db_index=True, help_text="Pada PC, Tekan Ctrl untuk memilih lebih dari satu kategori")
     tags = TaggableManager(blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft', db_index=True)
-    featured_image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
+    featured_image = models.ImageField(upload_to='blog_images/', default='no-image.png')
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -61,7 +61,7 @@ class Post(CleanableFileModel):
         ]
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
     def __str__(self):

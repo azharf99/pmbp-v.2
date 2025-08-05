@@ -37,7 +37,6 @@ class PostCreateView(CreateView):
     
 class PostUpdateView(UpdateView):
     model = Post
-    template_name = 'components/form.html'
     form_class = PostForm
     form_name = 'Post'
 
@@ -49,8 +48,9 @@ class PostUpdateView(UpdateView):
     
 class PostDeleteView(DeleteView):
     model = Post
-    template_name = 'components/delete.html'
     success_url = reverse_lazy('post-list')
+    form_name = 'Post'
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -40,7 +40,7 @@ class PostForm(forms.ModelForm):
             'title': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             'status': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             'author': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
-            'category': forms.SelectMultiple(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            'category': forms.SelectMultiple(attrs={"size": "10", "class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             'content': CKEditorUploadingWidget(),
         }
 
@@ -48,3 +48,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('body',)
+        labels = {
+            'body' : "Komentar"
+        }
+        widgets = {
+            'body': forms.Textarea(attrs={"placeholder": "Kirim komentar disini!", "class": "max-w-80 rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+        }

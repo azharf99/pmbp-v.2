@@ -1,128 +1,7 @@
+{% extends 'components/home-base.html' %}
+
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{site_title|default:"SMAS IT AL BINAA"}}</title>
-  <meta content="Pengembangan Minat, Bakat dan Pembinaan Prestasi SMAS IT Al Binaa" name="description" />
-  <meta
-  content="SMA IT Al Binaa, SMAS IT Al Binaa, SMAIT AL Binaa, SMAS IT AL BINAA, AL BINAA, albinaa"
-  name="keywords" />
-  <meta name="theme-color" content="#89c4ec" />
-  <link rel="canonical" href="https://smait.albinaa.sch.id/" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="SMAS IT AL BINAA" />
-  <meta property="og:url" content="https://smait.albinaa.sch.id/" />
-  <meta property="og:site_name" content="SMAS IT AL BINAA IBS" />
-  <link rel="icon" type="image/png" href="{% static '/icon/favicon-96x96.png' %}" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="{% static '/icon/favicon.svg' %}" />
-  <link rel="shortcut icon" href="{% static '/icon/favicon.ico' %}" />
-  <link rel="apple-touch-icon" sizes="180x180" href="{% static '/icon/apple-touch-icon.png' %}" />
-  <meta name="apple-mobile-web-app-title" content="SMA IT AL BINAA" />
-
-    <!-- Google Tag Manager (noscript) - Placed immediately after opening body tag -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
-    <!-- End Google Tag Manager -->
-    <!-- Tailwind CSS CDN -->
-    <link rel="stylesheet" href="{% static 'css/build-fix.css' %}">
-    <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .hero-section {
-            background: linear-gradient(to right, rgba(29, 78, 216, 0.8), rgba(124, 58, 237, 0.8)), url('https://smait.albinaa.sch.id/static/images/albinaa-drone-view.jpg');
-            background-size: cover;
-            background-position: center;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        /* Custom animations for hero section */
-        @keyframes fade-in-down {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fade-in-up {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .animate-fade-in-down { animation: fade-in-down 1s ease-out forwards; }
-        .animate-fade-in-up { animation: fade-in-up 1s ease-out forwards; }
-        .animate-fade-in { animation: fade-in 1s ease-out forwards; }
-    </style>
-</head>
-<body class="bg-slate-50 text-slate-700 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300">
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
-    <!-- Navigation Bar -->
-    <nav class="bg-white shadow-lg py-4 px-6 md:px-10 sticky top-0 z-50 rounded-b-lg dark:bg-gray-800 dark:shadow-xl transition-colors duration-300">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-blue-800 rounded-md p-2 hover:bg-blue-50 transition-colors dark:text-blue-400 dark:hover:bg-gray-700">SMAS IT AL BINAA</a>
-            <div class="hidden md:flex space-x-8 items-center">
-                <a href="#home" class="text-gray-700 hover:text-blue-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-blue-400">Home</a>
-                <a href="#about" class="text-gray-700 hover:text-blue-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-blue-400">About Us</a>
-                <a href="#courses" class="text-gray-700 hover:text-blue-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-blue-400">Courses</a>
-                <a href="#extracurriculars" class="text-gray-700 hover:text-blue-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-blue-400">Extracurriculars</a>
-                <a href="#facilities" class="text-gray-700 hover:text-blue-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-blue-400">Facilities</a>
-                <a href="#teachers" class="text-gray-700 hover:text-blue-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-blue-400">Teachers</a>
-                <a href="#news" class="text-gray-700 hover:text-blue-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-blue-400">News</a>
-                <a href="#contact" class="text-gray-700 hover:text-blue-600 font-medium transition-colors dark:text-gray-300 dark:hover:text-blue-400">Contact</a>
-                <!-- Dark Mode Toggle -->
-                <button id="theme-toggle" class="ml-4 p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-300 focus:outline-none">
-                    <!-- Sun Icon (Light Mode) -->
-                    <svg id="sun-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.325 6.675l-.707-.707M6.707 6.707l-.707-.707m10.61 0l-.707.707m-10.61 0l-.707.707M18 12a6 6 0 11-12 0 6 6 0 0112 0z"></path>
-                    </svg>
-                    <!-- Moon Icon (Dark Mode) -->
-                    <svg id="moon-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                    </svg>
-                </button>
-            </div>
-            <!-- Mobile Menu Button -->
-            <div class="flex items-center md:hidden">
-                <!-- Dark Mode Toggle for Mobile -->
-                <button id="theme-toggle-mobile" class="mr-4 p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-300 focus:outline-none">
-                    <!-- Sun Icon (Light Mode) -->
-                    <svg id="sun-icon-mobile" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.325 6.675l-.707-.707M6.707 6.707l-.707-.707m10.61 0l-.707.707m-10.61 0l-.707.707M18 12a6 6 0 11-12 0 6 6 0 0112 0z"></path>
-                    </svg>
-                    <!-- Moon Icon (Dark Mode) -->
-                    <svg id="moon-icon-mobile" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                    </svg>
-                </button>
-                <button id="mobile-menu-button" class="text-gray-700 focus:outline-none focus:text-blue-600 dark:text-gray-300 dark:focus:text-blue-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                </button>
-            </div>
-        </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden hidden mt-4 space-y-2 bg-white dark:bg-gray-800 rounded-md py-2 px-4 transition-colors duration-300">
-            <a href="#home" class="block text-gray-700 hover:bg-blue-50 px-4 py-2 rounded-md transition-colors dark:text-gray-300 dark:hover:bg-gray-700">Home</a>
-            <a href="#about" class="block text-gray-700 hover:bg-blue-50 px-4 py-2 rounded-md transition-colors dark:text-gray-300 dark:hover:bg-gray-700">About Us</a>
-            <a href="#courses" class="block text-gray-700 hover:bg-blue-50 px-4 py-2 rounded-md transition-colors dark:text-gray-300 dark:hover:bg-gray-700">Courses</a>
-            <a href="#extracurriculars" class="block text-gray-700 hover:bg-blue-50 px-4 py-2 rounded-md transition-colors dark:text-gray-300 dark:hover:bg-gray-700">Extracurriculars</a>
-            <a href="#facilities" class="block text-gray-700 hover:bg-blue-50 px-4 py-2 rounded-md transition-colors dark:text-gray-300 dark:hover:bg-gray-700">Facilities</a>
-            <a href="#teachers" class="block text-gray-700 hover:bg-blue-50 px-4 py-2 rounded-md transition-colors dark:text-gray-300 dark:hover:bg-gray-700">Teachers</a>
-            <a href="#news" class="block text-gray-700 hover:bg-blue-50 px-4 py-2 rounded-md transition-colors dark:text-gray-300 dark:hover:bg-gray-700">News</a>
-            <a href="#contact" class="block text-gray-700 hover:bg-blue-50 px-4 py-2 rounded-md transition-colors dark:text-gray-300 dark:hover:bg-gray-700">Contact</a>
-        </div>
-    </nav>
+{% block content %}
 
     <!-- Hero Section -->
     <section id="home" class="hero-section flex items-center justify-center text-center h-screen px-4 rounded-b-xl shadow-xl text-white">
@@ -180,6 +59,37 @@
                 <div class="carousel-dots absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10" data-carousel-target="campus-carousel">
                     <!-- Dots will be generated dynamically by JavaScript -->
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest News Section -->
+    <section id="news" class="py-16 px-6 md:px-10 bg-white rounded-xl shadow-lg mx-auto max-w-7xl my-16 dark:bg-gray-800 transition-colors duration-300">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold text-blue-900 mb-12 dark:text-blue-400">Latest News & Events</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for post in news %}
+                <!-- News Article 1 -->
+                <div class="bg-blue-50 p-6 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 dark:bg-gray-900 dark:border-gray-700">
+                    <img src="{{post.featured_image.url}}" alt="{{post.title}}" class="rounded-lg mb-4 w-full h-40 object-cover">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2 dark:text-blue-300"><a href="{% url 'post-detail' post.slug %}">{{post.title}}</a></h3>
+                    <p class="text-gray-500 text-sm mb-3 dark:text-gray-400">{{post.updated_at}}</p>
+                    <p class="text-gray-600 mb-4 dark:text-gray-300">
+                        {{post.content|safe|truncatewords:10}}
+                    </p>
+                    <a href="{% url 'post-detail' post.slug %}" class="text-blue-600 hover:text-blue-800 font-medium dark:text-blue-400 dark:hover:text-blue-300">Read More</a>
+                </div>
+                {% empty%}
+                <div class="flex justify-center">
+                    <p class="text-red-500 text-xl">Sorry, not yet available!</p>
+                </div>
+                <div class="flex justify-center">
+                    <p class="text-red-500 text-xl">Sorry, not yet available!</p>
+                </div>
+                <div class="flex justify-center">
+                    <p class="text-red-500 text-xl">Sorry, not yet available!</p>
+                </div>
+                {% endfor%}
             </div>
         </div>
     </section>
@@ -431,36 +341,7 @@
         </div>
     </section>
 
-    <!-- Latest News Section -->
-    <section id="news" class="py-16 px-6 md:px-10 bg-white rounded-xl shadow-lg mx-auto max-w-7xl my-16 dark:bg-gray-800 transition-colors duration-300">
-        <div class="container mx-auto text-center">
-            <h2 class="text-4xl font-bold text-blue-900 mb-12 dark:text-blue-400">Latest News & Events</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {% for post in news %}
-                <!-- News Article 1 -->
-                <div class="bg-blue-50 p-6 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 dark:bg-gray-900 dark:border-gray-700">
-                    <img src="https://placehold.co/300x200/60a5fa/ffffff?text=Science+Fair" alt="Students presenting at science fair" class="rounded-lg mb-4 w-full h-40 object-cover">
-                    <h3 class="text-xl font-semibold text-blue-700 mb-2 dark:text-blue-300">{{post.title}}</h3>
-                    <p class="text-gray-500 text-sm mb-3 dark:text-gray-400">{{post.updated_at}}</p>
-                    <p class="text-gray-600 mb-4 dark:text-gray-300">
-                        {{post.content}}
-                    </p>
-                    <a href="#" class="text-blue-600 hover:text-blue-800 font-medium dark:text-blue-400 dark:hover:text-blue-300">Read More</a>
-                </div>
-                {% empty%}
-                <div class="flex justify-center">
-                    <p class="text-red-500 text-xl">Sorry, not yet available!</p>
-                </div>
-                <div class="flex justify-center">
-                    <p class="text-red-500 text-xl">Sorry, not yet available!</p>
-                </div>
-                <div class="flex justify-center">
-                    <p class="text-red-500 text-xl">Sorry, not yet available!</p>
-                </div>
-                {% endfor%}
-            </div>
-        </div>
-    </section>
+    
 
     <!-- Contact Section -->
     <section id="contact" class="py-16 px-6 md:px-10 bg-white rounded-xl shadow-lg mx-auto max-w-7xl my-16 dark:bg-gray-800 transition-colors duration-300">
@@ -509,234 +390,4 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-8 px-6 md:px-10 rounded-t-lg dark:bg-gray-950 transition-colors duration-300">
-        <div class="container mx-auto text-center">
-            <p>&copy; 2025 SMAS IT AL BINAA. All rights reserved.</p>
-            <div class="flex justify-center space-x-6 mt-4">
-                <a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-                <a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Dark Mode Toggle Logic
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeToggleBtnMobile = document.getElementById('theme-toggle-mobile');
-        const htmlElement = document.documentElement;
-
-        // Function to set the theme
-        function setTheme(theme) {
-            if (theme === 'dark') {
-                htmlElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-                document.getElementById('sun-icon').classList.add('hidden');
-                document.getElementById('moon-icon').classList.remove('hidden');
-                document.getElementById('sun-icon-mobile').classList.add('hidden');
-                document.getElementById('moon-icon-mobile').classList.remove('hidden');
-            } else {
-                htmlElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-                document.getElementById('sun-icon').classList.remove('hidden');
-                document.getElementById('moon-icon').classList.add('hidden');
-                document.getElementById('sun-icon-mobile').classList.remove('hidden');
-                document.getElementById('moon-icon-mobile').classList.add('hidden');
-            }
-        }
-
-        // Check for saved theme preference on load
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            setTheme(savedTheme);
-        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            // Check for OS preference if no theme is saved
-            setTheme('dark');
-        } else {
-            setTheme('light'); // Default to light if no preference
-        }
-
-        // Event listener for desktop toggle
-        themeToggleBtn.addEventListener('click', () => {
-            if (htmlElement.classList.contains('dark')) {
-                setTheme('light');
-            } else {
-                setTheme('dark');
-            }
-        });
-
-        // Event listener for mobile toggle
-        themeToggleBtnMobile.addEventListener('click', () => {
-            if (htmlElement.classList.contains('dark')) {
-                setTheme('light');
-            } else {
-                setTheme('dark');
-            }
-        });
-
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-
-                // Close mobile menu if open
-                const mobileMenu = document.getElementById('mobile-menu');
-                if (!mobileMenu.classList.contains('hidden')) {
-                    mobileMenu.classList.add('hidden');
-                }
-            });
-        });
-
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // Optional: Add a simple animation for hero section elements on load
-        window.addEventListener('load', () => {
-            const heroTitle = document.querySelector('.hero-section h1');
-            const heroParagraph = document.querySelector('.hero-section p');
-            const heroButton = document.querySelector('.hero-section a');
-
-            heroTitle.style.animation = 'fade-in-down 1s ease-out forwards';
-            heroParagraph.style.animation = 'fade-in-up 1s ease-out forwards 0.3s';
-            heroButton.style.animation = 'fade-in 1s ease-out forwards 0.6s';
-        });
-
-        // Reusable Carousel Functionality
-        function initCarousel(carouselId, getItemsPerSlide) {
-            const carouselContainer = document.getElementById(carouselId);
-            if (!carouselContainer) return;
-
-            const carouselWrapper = carouselContainer.querySelector('.carousel-wrapper');
-            const slides = Array.from(carouselWrapper.children);
-            const totalSlides = slides.length;
-            let currentSlideIndex = 0;
-            let autoSlideInterval;
-
-            const dotsContainer = carouselContainer.querySelector('[data-carousel-target="' + carouselId + '"].carousel-dots');
-            let dots = [];
-
-            function updateCarouselLayout() {
-                const itemsPerSlide = getItemsPerSlide();
-                const totalPages = Math.ceil(totalSlides / itemsPerSlide);
-
-                // Dynamically set min-width for each slide item
-                slides.forEach(slide => {
-                    slide.style.minWidth = `${100 / itemsPerSlide}%`;
-                });
-
-                // Re-generate dots based on new totalPages
-                if (dotsContainer) {
-                    dotsContainer.innerHTML = '';
-                    dots = [];
-                    for (let i = 0; i < totalPages; i++) {
-                        const dot = document.createElement('span');
-                        dot.classList.add('w-3', 'h-3', 'bg-white/50', 'rounded-full', 'cursor-pointer', 'transition-all', 'duration-300', 'ease');
-                        dot.dataset.slideIndex = i;
-                        dot.addEventListener('click', () => {
-                            currentSlideIndex = i;
-                            showSlide();
-                            resetAutoSlide();
-                        });
-                        dotsContainer.appendChild(dot);
-                        dots.push(dot);
-                    }
-                }
-                showSlide(); // Re-render carousel after layout update
-            }
-
-
-            function showSlide() {
-                const itemsPerSlide = getItemsPerSlide();
-                const totalPages = Math.ceil(totalSlides / itemsPerSlide);
-
-                // Ensure currentSlideIndex is within bounds
-                if (currentSlideIndex >= totalPages) {
-                    currentSlideIndex = 0;
-                }
-                if (currentSlideIndex < 0) {
-                    currentSlideIndex = totalPages - 1;
-                }
-
-                // Calculate the offset for the carousel wrapper
-                // This is the key change: move by a percentage of the total width for each 'page'
-                const offset = -currentSlideIndex * (100 / itemsPerSlide);
-                carouselWrapper.style.transform = `translateX(${offset}%)`;
-
-                // Update active dot
-                dots.forEach((dot, index) => {
-                    if (index === currentSlideIndex) {
-                        dot.classList.add('bg-white', 'scale-125'); // Add active styles
-                        dot.classList.remove('bg-white/50'); // Remove inactive style
-                    } else {
-                        dot.classList.remove('bg-white', 'scale-125'); // Remove active styles
-                        dot.classList.add('bg-white/50'); // Add inactive style
-                    }
-                });
-            }
-
-            function changeSlide(direction) {
-                currentSlideIndex += direction;
-                showSlide();
-                resetAutoSlide();
-            }
-
-            function startAutoSlide() {
-                autoSlideInterval = setInterval(() => changeSlide(1), 5000); // Change slide every 5 seconds
-            }
-
-            function resetAutoSlide() {
-                clearInterval(autoSlideInterval);
-                startAutoSlide();
-            }
-
-            // Attach event listeners for arrows
-            const arrows = carouselContainer.querySelectorAll('[data-carousel-target="' + carouselId + '"].carousel-arrow');
-            arrows.forEach(arrow => {
-                arrow.addEventListener('click', () => {
-                    const direction = parseInt(arrow.dataset.carouselDirection);
-                    changeSlide(direction);
-                });
-            });
-
-            // Pause auto-advance on hover
-            carouselContainer.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
-            carouselContainer.addEventListener('mouseleave', () => startAutoSlide());
-
-            // Initial display and start auto-slide
-            updateCarouselLayout(); // Call once to set initial layout and dots
-            startAutoSlide();
-
-            // Update layout on window resize for responsive carousels
-            window.addEventListener('resize', updateCarouselLayout);
-        }
-
-        // Initialize carousels on DOMContentLoaded
-        document.addEventListener('DOMContentLoaded', () => {
-            // Galeri Kegiatan Carousel (always 1 item per slide)
-            initCarousel('campus-carousel', () => 1);
-
-            // Extracurriculars Carousel (responsive items per slide)
-            initCarousel('extracurriculars-carousel', () => {
-                // Determine items per slide based on screen width
-                if (window.innerWidth >= 1024) { // lg breakpoint
-                    return 3;
-                } else if (window.innerWidth >= 768) { // md breakpoint
-                    return 2;
-                } else { // default for small screens
-                    return 1;
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+{% endblock content %}

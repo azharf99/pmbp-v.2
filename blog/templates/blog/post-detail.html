@@ -1,36 +1,40 @@
-{% extends 'blog/base.html' %}
+{% extends 'components/home-base.html' %}
 {% block content %}
-<article>
-  <h1>{{ post.title }}</h1>
-  <p><small>By {{ post.author }} on {{ post.created_at }}</small></p>
-  <div>{{ post.content|safe }}</div>
+<article class="flex flex-col justify-center items-center my-10 rounded-2xl dark:bg-gray-800 p-4 bg-white w-full md:w-3/4 mx-auto">
+  <h1 class="text-2xl">{{ post.title }}</h1>
+  <p><small class="text-xs">By {{ post.author }} on {{ post.created_at }}</small></p>
+  <div class="m-4">{{ post.content|safe }}</div>
+  
+  {% if request.user.is_authenticated %}
+  <div class="flex gap-2 m-4">
+      <p><a href="{% url 'post-update' post.slug %}" class="bg-amber-400 py-1 px-2 text-xs rounded-lg">Edit</a></p>
+      <p><a href="{% url 'post-delete' post.slug %}" class="bg-red-600 text-white py-1 px-2 text-xs rounded-lg">Hapus</a></p>
+  </div>
+  {% endif %}
 
-  <a href="{% url 'post-update' post.slug %}" class="btn btn-primary mt-3">Edit</a>
-  <a href="{% url 'post-delete' post.slug %}" class="btn btn-danger mt-3">Delete</a>
-  {# Update comment section to use view context #}
-<section class="comments">
-    <h3>Comments ({{ comments.count }})</h3>
-    {% for comment in comments %}
-        <div class="comment">
-            <p class="meta">
-                By {{ comment.author }} | {{ comment.created_at|date:"F d, Y" }}
-            </p>
-            <div class="comment-body">
-                {{ comment.body|linebreaks }}
+    <section class="w-full p-4">
+        <h3 class="text-blue-500 my-2">Comments ({{ comments.count }})</h3>
+        {% for comment in comments %}
+            <div class="my-2">
+                <p class="font-medium">
+                    {{ comment.author }}
+                </p>
+                <div class="">
+                    {{ comment.body|linebreaks }}
+                </div>
+                <p class="text-xs mb-3">{{ comment.created_at|timesince }} yang lalu</p>
             </div>
-        </div>
-    {% empty %}
-        <p>No approved comments yet.</p>
-    {% endfor %}
+        {% empty %}
+            <p class="text-red-500 text-xs">No approved comments yet.</p>
+        {% endfor %}
 
-    {% if user.is_authenticated %}
-        <h4>Add Comment</h4>
-        <form method="post">
+        {% if user.is_authenticated %}
+        <form method="post" class="flex flex-wrap items-center gap-4">
             {% csrf_token %}
             {{ comment_form.as_p }}
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="bg-blue-500 py-1 px-2 text-white rounded-2xl">Kirim</button>
         </form>
-    {% endif %}
-</section>
+        {% endif %}
+    </section>
 </article>
 {% endblock %}
