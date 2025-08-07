@@ -1,6 +1,7 @@
 from django.urls import path
 from utils.title_active_link import set_headtitle_and_active_link
 from .views import (
+    PostDayArchiveView,
     PostListView,
     PostCreateView,
     PostUpdateView,
@@ -15,6 +16,11 @@ from .views import (
 
 urlpatterns = [
     path('', PostListView.as_view(), set_headtitle_and_active_link("Blog Post List", "blog"), name='post-list'),
+    path(
+        "<int:year>/<int:month>/<int:day>/",
+        PostDayArchiveView.as_view(month_format="%m"),
+        name="archive_day",
+    ),
     path('create/', PostCreateView.as_view(), set_headtitle_and_active_link("Blog Post Create", "blog"), name='post-create'),
     path('detail/<slug:slug>/', PostDetailView.as_view(), set_headtitle_and_active_link("Blog Post Detail", "blog"), name='post-detail'),
     path('update/<slug:slug>/', PostUpdateView.as_view(), set_headtitle_and_active_link("Blog Post Update", "blog"), name='post-update'),

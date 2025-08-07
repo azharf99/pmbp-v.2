@@ -11,11 +11,15 @@ class ReportForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Example condition: Filter categories based on the user
         extracurricular_data = Extracurricular.objects.prefetch_related("teacher", "members", "members__student_class").filter(teacher=user.teacher)
-        teacher_list = extracurricular_data.values_list("teacher", flat=True).distinct()
+        teacher_id = set()
+        for ekskul in extracurricular_data:
+            data = ekskul.teacher.values_list("id", flat=True)
+            for id in data:
+                teacher_id.add(id)
         member_list = extracurricular_data.values_list("members", flat=True).distinct()
-        if user.teacher.id in teacher_list:
+        if user.teacher.id in teacher_id:
             self.fields['extracurricular'].queryset = extracurricular_data
-            self.fields['teacher'].queryset = Teacher.objects.select_related("user").filter(pk__in=teacher_list)
+            self.fields['teacher'].queryset = Teacher.objects.select_related("user").filter(pk__in=teacher_id)
             self.fields['students'].queryset = Student.objects.select_related('student_class').filter(student_status="Aktif", pk__in=member_list)
 
 

@@ -1,4 +1,5 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic.dates import DayArchiveView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -22,6 +23,12 @@ class PostListView(ListView):
         context = super().get_context_data(**kwargs)
         context.update(self.kwargs)
         return context
+    
+
+class PostDayArchiveView(DayArchiveView):
+    queryset = Post.objects.all()
+    date_field = "created_at"
+    allow_future = True
 
 class PostCreateView(CreateView):
     model = Post
