@@ -101,7 +101,8 @@ class DashboardView(ListView):
         if self.request.user.is_authenticated:
             context["notifications"] = list(Notification.objects.filter(teacher=self.request.user.teacher))
             context["notifications_left"] = [notif for notif in context["notifications"] if notif.is_read==False]
-        context["academic_calendars"] = AcademicCalendar.objects.filter(event_end_date__gte=timezone.now().date()).order_by("event_date")
+        context["academic_calendars"] = AcademicCalendar.objects.filter(Q(event_date__gte=timezone.now().date())|
+                                                                        Q(event_end_date__gte=timezone.now().date())).order_by("event_date")
         return context
 
 class InactiveReportView(ListView):
