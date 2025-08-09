@@ -6,6 +6,7 @@ from django.views.generic import TemplateView, ListView
 from django.utils import timezone
 from django.utils.dates import MONTHS
 from django.db.models import Count, Case, When, Value
+from academic_calendar.models import AcademicCalendar
 from blog.models import Post
 from extracurriculars.models import Extracurricular
 from galleries.models import Gallery
@@ -27,6 +28,7 @@ class SMAITHomeWiew(ListView):
         context["extracurriculars"] = Extracurricular.objects.filter(status="Aktif")
         context["teachers"] = Teacher.objects.exclude(id__in=["31", "112", "110", "35", "113", "111"]).filter(status="Aktif", photo__isnull=False, gender="L")
         context["news"] = Post.objects.all()[:20]
+        context["academic_calendars"] = AcademicCalendar.objects.filter(event_end_date__gte=timezone.now().date()).order_by("event_date")[:6]
         return context
 
 class CurrationListView(TemplateView):

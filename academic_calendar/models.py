@@ -9,6 +9,7 @@ from utils.constants import COURSE_CATEGORY_CHOICES
 class AcademicCalendar(models.Model):
     event_name = models.CharField(_("Nama Event"), max_length=50)
     event_date = models.DateField(_("Tanggal Event"))
+    event_end_date = models.DateField(_("Tanggal Berakhir Event"), null=True, blank=True)
     event_notes = models.CharField(_("Deskripsi"), max_length=1000, blank=True, null=True)
     category = models.CharField(_("Kategori"), max_length=50, blank=True, null=True)
     type = models.CharField(_("Tipe"), max_length=20, choices=[("putra", "Putra"), ("putri", "Putri")], default="putra")

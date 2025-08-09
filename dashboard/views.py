@@ -3,6 +3,7 @@ from django.db.models import Count, QuerySet, Q
 from django.http import HttpRequest, HttpResponse
 from django.views.generic import ListView
 from django.utils import timezone
+from academic_calendar.models import AcademicCalendar
 from alumni.models import Alumni
 from classes.models import Class
 from courses.models import Subject as CourseSubject
@@ -100,6 +101,7 @@ class DashboardView(ListView):
         if self.request.user.is_authenticated:
             context["notifications"] = list(Notification.objects.filter(teacher=self.request.user.teacher))
             context["notifications_left"] = [notif for notif in context["notifications"] if notif.is_read==False]
+        context["academic_calendars"] = AcademicCalendar.objects.filter(event_end_date__gte=timezone.now().date()).order_by("event_date")
         return context
 
 class InactiveReportView(ListView):

@@ -43,6 +43,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('class/', include('classes.urls')),
     path('blog/', include('blog.urls')),
+    path('calendar/', include('academic_calendar.urls')),
     path('course/', include('courses.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('device/', device_webhook, name='device-status'),
