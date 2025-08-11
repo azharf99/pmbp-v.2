@@ -360,18 +360,6 @@ document.addEventListener("DOMContentLoaded", (e)=>{
                 surat_option.value = temp[0]["ayat"]
               }
             }
-            // if(target_surat_options){
-              //   for(surat_option of target_surat_options){
-                //   let nomor_surat = localStorage.getItem("nomor_surat");
-            //     console.log(nomor_surat == surat_option.value)
-            //     if(surat_option.value === nomor_surat){
-            //       surat_option.selected = "true"
-            //     }
-            //     else{
-            //       surat_option.selected = "false"
-            //     }
-            //   }
-            // }
           })
         }else if(prod && prod.id == "prod"){
           const apiUrl = `https://smait.albinaa.sch.id/tahfidz/target/?date_query=${dateValue}`;
@@ -379,12 +367,24 @@ document.addEventListener("DOMContentLoaded", (e)=>{
             .then(response => response.json())
             .then(target => {
               let temp = target
-              if(target !== null){
+              if(temp.length > 0){
                 target_surat.value = `${temp[0]["nama_surat"]}:${temp[0]["ayat"]}`
-  
+    
                 localStorage.setItem("nama_surat", temp[0]["nama_surat"]);
                 localStorage.setItem("nomor_surat", temp[0]["nomor_surat"]);
                 localStorage.setItem("ayat", temp[0]["ayat"]);
+                const target_surat_options = document.getElementsByClassName('target_surat');
+                const target_surat_selected = document.getElementsByClassName(`surat${temp[0]["nomor_surat"]}`);
+                const target_ayat_selected = document.getElementsByClassName(`ayat`);
+                for(surat_option of target_surat_options){
+                  surat_option.selected = "false"
+                }
+                for(surat_option of target_surat_selected){
+                  surat_option.selected = "true"
+                }
+                for(surat_option of target_ayat_selected){
+                  surat_option.value = temp[0]["ayat"]
+                }
               }
             })
       }
