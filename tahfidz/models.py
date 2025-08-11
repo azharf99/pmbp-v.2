@@ -81,7 +81,7 @@ class Tilawah(models.Model):
     target = models.PositiveBigIntegerField(_("Target Tilawah Hari Ini"), blank=True, null=True)
     target_tilawah = models.ForeignKey(Target, on_delete=models.CASCADE, verbose_name=_("Target"), blank=True, null=True)
     halaman = models.PositiveBigIntegerField(_("Halaman"), blank=True, null=True)
-    surat = models.PositiveBigIntegerField(_("Surat Terakhir"), choices=QURAN_SURAH, max_length=255, blank=True, null=True)
+    surat = models.PositiveBigIntegerField(_("Surat Terakhir"), choices=QURAN_SURAH, blank=True, null=True)
     ayat = models.PositiveBigIntegerField(_("Ayat Terakhir"), blank=True, null=True)
     catatan = models.CharField(_("Catatan"), max_length=255, blank=True, null=True)
     pendamping = models.ManyToManyField(Teacher,_("Pendamping"), max_length=255, blank=True)
