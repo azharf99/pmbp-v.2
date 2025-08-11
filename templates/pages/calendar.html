@@ -1,0 +1,95 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{site_title}}</title>
+  <link rel="stylesheet" href="{% static 'css/build-fix.css' %}">
+  <script src="{% static 'js/index.global.min.js' %}"></script>
+  <style>
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        padding-top: 60px;
+        left: 0; top: 0;
+        width: 100%; height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+        background: white;
+        margin: auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 400px;
+        position: relative;
+    }
+    .modal-close {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+</style>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const calendarEl = document.getElementById('calendar')
+      const modal = document.getElementById('eventModal');
+      const closeBtn = document.querySelector('.modal-close');
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: '/calendar/events/',
+        eventClick: function (info) {
+            info.jsEvent.preventDefault(); // prevent navigation
+            document.getElementById('modalTitle').innerText = info.event.title;
+            document.getElementById('modalStart').innerText = info.event.startStr;
+            document.getElementById('modalEnd').innerText = info.event.endStr || info.event.startStr;
+            document.getElementById('modalDescription').innerText = info.event.extendedProps.description || "No description.";
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+      })
+      calendar.render()
+
+
+      closeBtn.onclick = function () {
+        modal.classList.remove("flex");
+        modal.classList.add("hidden");
+      };
+      window.onclick = function (event) {
+        if (event.target === modal) {
+          modal.classList.remove("flex");
+            modal.classList.add("hidden");
+          }
+      };
+
+
+    })
+
+
+  </script>
+
+</head>
+<body>
+
+  <h1 class="text-2xl font-bold mb-6">Academic Calendar</h1>
+<div id="calendar" class="bg-white shadow-lg p-4 rounded-xl"></div>
+
+<!-- Event Detail Modal -->
+<div id="eventModal" class="hidden p-4 fixed inset-0 bg-gray-300 bg-opacity-50 items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
+        <button class="modal-close absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl">&times;</button>
+        <h2 id="modalTitle" class="text-xl font-bold mb-4"></h2>
+        <p class="mb-2"><strong>Start:</strong> <span id="modalStart"></span></p>
+        <p class="mb-2"><strong>End:</strong> <span id="modalEnd"></span></p>
+        <p id="modalDescription" class="text-gray-700 mt-4"></p>
+    </div>
+</div>
+</body>
+</html>

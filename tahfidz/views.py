@@ -8,7 +8,7 @@ from django.core.exceptions import PermissionDenied, BadRequest
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.forms import BaseModelForm
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from pandas import read_csv, read_excel
@@ -17,12 +17,13 @@ from files.forms import FileForm
 from files.models import File
 from users.models import Teacher
 from utils.constants import TAHSIN_STATUS_LIST
+from utils.surat_quran import QURAN_SURAH
 from utils_humas.mixins import GeneralAuthPermissionMixin, GeneralContextMixin, GeneralFormDeleteMixin, GeneralFormValidateMixin
 from students.models import Student
-from tahfidz.models import Tahfidz, Tilawah
+from tahfidz.models import Tahfidz, Target, Tilawah
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from tahfidz.forms import TahfidzForm, TilawahForm
+from tahfidz.forms import TahfidzForm, TargetForm, TilawahForm
 from userlog.models import UserLog
 from utils.whatsapp_albinaa import send_WA_create_update_delete
 from numpy import int8
@@ -265,27 +266,33 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
         catatan = request.POST.get("catatan")
         if not date or not class_id or not target:
             return HttpResponseBadRequest("Tanggal atau Kelas atau Target tidak boleh kosong!")
+        try:
+            date = datetime.strptime(date, "%Y-%m-%d").date()
+        except:
+            raise BadRequest("Tanggal tidak valid!")
         teachers = request.POST.getlist("teachers")
         students = Student.objects.select_related("student_class").filter(student_status="Aktif", student_class_id=class_id)
+        target_tilawah = get_object_or_404(Target, tanggal=date)
         for student in students:
             nis_santri = request.POST.get(f"student{student.nis}")
             tajwid = request.POST.get(f"tajwid{student.nis}")
             kelancaran = request.POST.get(f"kelancaran{student.nis}")
             halaman = request.POST.get(f"halaman{student.nis}", 0)
             kehadiran = request.POST.get(f"kehadiran{student.nis}", "Hadir")
-            ayat = request.POST.get(f"ayat{student.nis}")
-            surat = request.POST.get(f"surat{student.nis}")
+            ayat = request.POST.get(f"ayat{student.nis}", 0)
+            surat = request.POST.get(f"surat{student.nis}", 1)
             if nis_santri:
                 object, is_updated = Tilawah.objects.select_related("santri").prefetch_related("pendamping").update_or_create(
                     tanggal = date,
                     santri = student,
                     defaults=dict(
-                        tercapai = True if target and int(halaman) >= int(target) else False,
+                        tercapai = True if target and int(halaman) >= int(target) and int(surat) >= int(target_tilawah.nomor_surat) and int(ayat) >= int(target_tilawah.ayat) else False,
                         halaman = halaman,
                         target = target,
                         ayat = ayat if ayat else None,
                         surat = surat if surat else None,
                         kehadiran = kehadiran,
+                        target_tilawah = target_tilawah,
                         catatan = catatan,
                         tajwid = tajwid if tajwid != "null" and tajwid in TAHSIN_STATUS_LIST else None,
                         kelancaran = kelancaran if kelancaran != "null" and kelancaran in TAHSIN_STATUS_LIST else None,
@@ -313,6 +320,68 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
             context["debug"] = "debug"
         else:
             context["debug"] = "prod"
+
+        return context
+
+class TargetListView(ListView):
+    model = Target
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        date_query = request.GET.get("date_query")
+        query = request.GET.get("query")
+        if date_query:
+            try:
+                date_query = datetime.strptime(date_query, "%Y-%m-%d").date()
+            except:
+                raise BadRequest("Tanggal tidak valid!")
+            data = list(Target.objects.filter(tanggal=date_query).values("tanggal", "nomor_surat", "nama_surat", "ayat"))
+            return JsonResponse(data, safe=False)
+        elif query == "surah":
+            surah = list({id: name} for (id, name) in QURAN_SURAH)
+            return JsonResponse(surah, safe=False)
+        return super().get(request, *args, **kwargs)
+    
+class TargetQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    model = Target
+    form_class = FileForm
+    template_name = 'components/form.html'
+    permission_required = 'tahfidz.add_target'
+    form_name = "Tahfidz"
+    form_link = "Tahfidz:Tilawah"
+
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        self.object = form.save(commit=False)
+        df = read_excel(self.object.file, na_filter=False)
+        row, _ = df.shape
+        try:
+            for i in range(row):
+                if df.iloc[i, 1]:
+                    Target.objects.update_or_create(
+                        tanggal = df.iloc[i, 1],
+                        defaults=dict(
+                            nomor_surat = df.iloc[i, 2],
+                            nama_surat = df.iloc[i, 3],
+                            ayat = df.iloc[i, 4],
+                        )
+                    )
+        except Exception as e:
+            messages.error(self.request, f"Error: {e}.")
+            return HttpResponseRedirect(reverse("tahfidz:target-upload"))
+
+        UserLog.objects.create(
+            user=self.request.user.teacher,
+            action_flag="CREATE",
+            app="TARGET",
+            message=f"berhasil menambahkan banyak data target tilawah"
+        )
+        messages.success(self.request, "Input target tilawah berhasil!")
+        return redirect(reverse("tahfidz:tilawah-list"))
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["form_name"] = self.form_name
+        context["form_link"] = self.form_link
 
         return context
     

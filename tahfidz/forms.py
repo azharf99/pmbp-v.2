@@ -4,7 +4,7 @@ from django.core.files.base import File
 from django.db.models.base import Model
 from django.forms.utils import ErrorList
 from students.models import Student
-from tahfidz.models import Tahfidz, Tilawah
+from tahfidz.models import Tahfidz, Target, Tilawah
 from users.models import Teacher
 
 class TahfidzForm(forms.ModelForm):
@@ -36,10 +36,31 @@ class TilawahForm(forms.ModelForm):
             "tercapai" : forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "tajwid" : forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "kelancaran" : forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
-            "ayat_quran" : forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            "ayat" : forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            "surat" : forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "pendamping" : forms.SelectMultiple(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "target" : forms.NumberInput(attrs={"class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            "target_tilawah" : forms.Select(attrs={"class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "halaman" : forms.NumberInput(attrs={"class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            "catatan" : forms.TextInput(attrs={"class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            "semester" : forms.TextInput(attrs={"class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            "academic_year" : forms.TextInput(attrs={"class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+        }
+        labels = {
+            "surat" : "Nomor Surat Terakhir",
+        }
+
+
+class TargetForm(forms.ModelForm):
+
+    class Meta:
+        model = Target
+        fields = '__all__'
+        widgets = {
+            "tanggal" : forms.DateInput(attrs={"type": "date", "class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            "nomor_surat" : forms.NumberInput(attrs={"min": "1", "max": "114", "class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            "nama_surat" : forms.TextInput(attrs={"class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
+            "ayat" : forms.NumberInput(attrs={"min": "1", "max": "300", "class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "catatan" : forms.TextInput(attrs={"class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "semester" : forms.TextInput(attrs={"class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),
             "academic_year" : forms.TextInput(attrs={"class": "rounded-md text-black dark:text-white px-2 py-1 border-2 border-blue-500 dark:border-none shadow-lg"}),

@@ -119,7 +119,7 @@
             <td class="p-2 border border-gray-400 text-center">{{object.halaman|default:"-"}}</td>
             <td class="p-2 border border-gray-400 text-center">{{object.tajwid|default:"-"}}</td>
             <td class="p-2 border border-gray-400 text-center">{{object.kelancaran|default:"-"}}</td>
-            <td class="p-2 border border-gray-400 text-center">{{object.surat|default:""}} {{object.ayat|default:"  "}}</td>
+            <td class="p-2 border border-gray-400 text-center">{{object.get_surat_display|default:""}} {{object.ayat|default:"  "}}</td>
             {% if request.user.is_authenticated %}
             <td class="p-2 border border-gray-400">
               <div class="flex gap-2 justify-center">

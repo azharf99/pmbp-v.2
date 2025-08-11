@@ -5,12 +5,13 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from academic_calendar.forms import AcademicCalendarForm
-from utils.mixins import BaseAuthorizedModelView
+from utils.mixins import BaseLoginAndPermissionRequiredView, TitleView
 from .models import AcademicCalendar
 
-class AcademicCalendarIndexView(ListView):
+class AcademicCalendarIndexView(TitleView, ListView):
     model = AcademicCalendar
-    template_name = "pages/list.html"
+    template_name = "pages/calendar.html"
+    title_of_table = "Kalender Akademik"
     
 class AcademicCalendarEventView(ListView):
     model = AcademicCalendar
@@ -23,11 +24,12 @@ class AcademicCalendarEventView(ListView):
         } for event in self.get_queryset()]
         return JsonResponse(data, safe=False)
 
-class AcademicCalendarDetailView(BaseAuthorizedModelView, DetailView):
+class AcademicCalendarDetailView(BaseLoginAndPermissionRequiredView, DetailView):
     model = AcademicCalendar
+    permission_required = 'academic_calendar.view_academiccalendar'
 
 
-class AcademicCalendarCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class AcademicCalendarCreateView(BaseLoginAndPermissionRequiredView, CreateView):
     model = AcademicCalendar
     form_class = AcademicCalendarForm
     template_name = 'nilai/score_form.html'
@@ -36,21 +38,22 @@ class AcademicCalendarCreateView(LoginRequiredMixin, PermissionRequiredMixin, Cr
     template_name = 'components/form.html'
     form_name = "Calendar"
 
-class AcademicCalendarQuickCreateView(BaseAuthorizedModelView, CreateView):
+class AcademicCalendarQuickCreateView(BaseLoginAndPermissionRequiredView, CreateView):
     model = AcademicCalendar
     fields = '__all__'
     template_name = 'nilai/score_form.html'
     success_url = reverse_lazy('calendar-list')
     permission_required = 'academic_calendar.add_academiccalendar'
 
-class AcademicCalendarUpdateView(BaseAuthorizedModelView, UpdateView):
+class AcademicCalendarUpdateView(BaseLoginAndPermissionRequiredView, UpdateView):
     model = AcademicCalendar
-    fields = '__all__'
-    template_name = 'nilai/score_form.html'
+    form_class = AcademicCalendarForm
+    template_name = 'components/form.html'
     success_url = reverse_lazy('calendar-list')
     permission_required = 'academic_calendar.change_academiccalendar'
+    form_name = "Calendar"
     
-class AcademicCalendarDeleteView(BaseAuthorizedModelView, DeleteView):
+class AcademicCalendarDeleteView(BaseLoginAndPermissionRequiredView, DeleteView):
     model = AcademicCalendar
     success_url = reverse_lazy('calendar-list')
     permission_required = 'academic_calendar.delete_academiccalendar'
