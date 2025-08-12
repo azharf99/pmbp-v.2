@@ -107,7 +107,10 @@ class Tilawah(models.Model):
             except:
                 pass
 
-            self.tercapai = self.halaman >= self.target and self.surat >= self.target_tilawah.nomor_surat and self.ayat >= self.target_tilawah.ayat
+            if self.surat > self.target_tilawah.nomor_surat:
+                self.tercapai = self.halaman >= self.target and self.surat > self.target_tilawah.nomor_surat
+            else:
+                self.tercapai = self.halaman >= self.target and self.surat == self.target_tilawah.nomor_surat and self.ayat >= self.target_tilawah.ayat
 
         elif self.halaman and self.target:
             try:
@@ -123,7 +126,10 @@ class Tilawah(models.Model):
                 self.ayat = int(self.ayat)
             except:
                 pass
-            self.tercapai = self.surat >= self.target_tilawah.nomor_surat and self.ayat >= self.target_tilawah.ayat
+            if self.surat > self.target_tilawah.nomor_surat:
+                self.tercapai = self.surat > self.target_tilawah.nomor_surat
+            else:
+                self.tercapai = self.surat == self.target_tilawah.nomor_surat and self.ayat >= self.target_tilawah.ayat
         return super().save(**kwargs)
     
 
