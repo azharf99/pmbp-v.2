@@ -16,7 +16,8 @@ from classes.models import Class
 from files.forms import FileForm
 from files.models import File
 from users.models import Teacher
-from utils.constants import TAHSIN_STATUS_LIST
+from utils.constants import QURAN_SURAH_DICT, TAHSIN_STATUS_LIST
+from utils.mixins import GeneralDownloadExcelView
 from utils.surat_quran import QURAN_SURAH
 from utils_humas.mixins import GeneralAuthPermissionMixin, GeneralContextMixin, GeneralFormDeleteMixin, GeneralFormValidateMixin
 from students.models import Student
@@ -27,6 +28,8 @@ from tahfidz.forms import TahfidzForm, TargetForm, TilawahForm
 from userlog.models import UserLog
 from utils.whatsapp_albinaa import send_WA_create_update_delete
 from numpy import int8
+
+from utils_piket.mixins import ModelDownloadExcelView
 
 
 # Tahfidz Controllers
@@ -215,6 +218,7 @@ class QuickFillUnsubmittedTilawahView(GeneralContextMixin, ListView):
                 raise BadRequest("Tanggal tidak valid!")
         else:
             date = timezone.now().date()
+        target_tilawah = get_object_or_404(Target, tanggal=date)
         for class_ in classes:
             students = Student.objects.select_related("student_class").filter(student_status="Aktif", student_class=class_)
             for student in students:
@@ -228,6 +232,9 @@ class QuickFillUnsubmittedTilawahView(GeneralContextMixin, ListView):
                         catatan = "",
                         tajwid = None,
                         kelancaran = None,
+                        target_tilawah = target_tilawah,
+                        surat = 1,
+                        ayat = 0,
                     )
                 )
         
@@ -394,6 +401,8 @@ class TilawahDetailView(GeneralAuthPermissionMixin, DetailView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
         c["history"] = Tilawah.objects.filter(santri=self.object).order_by("-tanggal")
+        obj = self.get_object()
+        c["student_id"] = obj.id
         return c
 
 
@@ -424,6 +433,8 @@ class TilawahClassReportView(GeneralContextMixin, ListView):
             alpa_count=Count(Case(When(tilawah__kehadiran="Alpa", then=1), output_field=IntegerField())),
 
             # Get latest tajwid and kelancaran from Tilawah
+            latest_surat=Subquery(latest_tilawah.values('surat')[:1]),
+            latest_ayat=Subquery(latest_tilawah.values('ayat')[:1]),
             latest_halaman=Subquery(latest_tilawah.values('halaman')[:1]),
             latest_tercapai=Subquery(latest_tilawah.values('tercapai')[:1]),
             latest_tajwid=Subquery(latest_tilawah.values('tajwid')[:1]),
@@ -435,6 +446,8 @@ class TilawahClassReportView(GeneralContextMixin, ListView):
             'telat_count',
             'izin_count',
             'alpa_count',
+            'latest_surat',
+            'latest_ayat',
             'latest_halaman',
             'latest_tercapai',
             'latest_tajwid',
@@ -444,6 +457,7 @@ class TilawahClassReportView(GeneralContextMixin, ListView):
         c["date"] = timezone.now().date()
         c["class"] = get_object_or_404(Class, pk=class_id)
         c["type"] = "class_report"
+        c["class_id"] = class_id
         return c
 
 
@@ -461,3 +475,22 @@ class TilawahDeleteView(GeneralFormDeleteMixin):
     app_name = "Tilawah"
     type_url = 'tahfidz/tilawah/'
     permission_required = 'tahfidz.delete_tilawah'
+
+
+class TilawahDownloadExcelView(ModelDownloadExcelView):
+    app_name = 'Tilawah'
+    menu_name = 'Tilawah'
+    permission_required = 'tahfidz.view_tilawah'
+    template_name = 'alumni/download.html'
+    header_names = ['No', 'NIS', 'Nama', 'Kelas', 'Tercapai', 'Target Halaman', 'Halaman', 'Surat', 'Ayat', 'Tajwid', "Kelancaran", "Keterangan"]
+    filename = 'Data Tilawah SMA IT Al Binaa.xlsx'
+    queryset = Tilawah.objects.select_related("santri", "target_tilawah").prefetch_related("pendamping").all()
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        class_id = request.GET.get("class_id")
+        student_id = request.GET.get("student_id")
+        if class_id:
+            self.queryset = self.queryset.filter(santri__student_class_id=class_id)
+        elif student_id:
+            self.queryset = self.queryset.filter(santri__id=student_id)
+        return super().get(request, *args, **kwargs)

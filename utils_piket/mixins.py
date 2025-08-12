@@ -309,6 +309,12 @@ class ModelDownloadExcelView(BaseAuthorizedModelView):
         workbook = Workbook(buffer)
         worksheet = workbook.add_worksheet()
         worksheet.write_row(0, 0, self.header_names)
+        tercapai_format = workbook.add_format({
+            "fg_color": "green",
+        })
+        tidak_tercapai_format = workbook.add_format({
+            "fg_color": "red",
+        })
         row = 1
         for data in (self.queryset or [{"data": "Error!"}]):
             if self.menu_name == 'class':
@@ -330,6 +336,14 @@ class ModelDownloadExcelView(BaseAuthorizedModelView):
             elif self.menu_name == 'user':
                 worksheet.write_row(row, 0, [row, data.username, 'Albinaa2004', data.password, data.email, f"{data.is_staff}", f"{data.is_active}",
                                          f'{data.is_superuser}', f"{data.date_joined}", f"{data.last_login}"])
+            elif self.menu_name == 'Tilawah':
+                if data.tercapai:
+                    worksheet.write_row(row, 0, [row, data.santri.nis, data.santri.student_name, data.santri.student_class.class_name, data.tercapai, data.target, data.halaman, data.surat, data.ayat,
+                                         data.tajwid, data.kelancaran, data.catatan], cell_format=tercapai_format)
+                else:
+                    worksheet.write_row(row, 0, [row, data.santri.nis, data.santri.student_name, data.santri.student_class.class_name, data.tercapai, data.target, data.halaman, data.surat, data.ayat,
+                                         data.tajwid, data.kelancaran, data.catatan], cell_format=tidak_tercapai_format)
+
             row += 1
         worksheet.autofit()
         workbook.close()

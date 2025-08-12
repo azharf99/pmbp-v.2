@@ -22,6 +22,9 @@
       <div class="p-4 mx-2 my-4 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
         {% if type == "class_report" %}
         <h2 class="my-2 text-center text-xl font-semibold">Laporan Tilawah Kelas {{class}}</h2>
+        <div class="flex justify-center">
+          <a href="{% url 'tahfidz:tilawah-download' %}?class_id={{class_id}}"><p class="p-1 px-2 bg-green-500 text-white rounded-md font-semibold">&downarrow; Download Tilawah Kelas {{class}}</p></a>
+        </div>
         
         <table class="w-full mt-4">
           <thead>
@@ -41,6 +44,7 @@
             </tr>
           </thead>
           <tbody>
+            {% load timetable_tags %}
             {% for tilawah in recap %}
             <tr class="{% if tilawah.latest_tercapai %} bg-green-300 {% else %} bg-red-400 {% endif %}">
               <td class="p-2 border border-gray-400">{{forloop.counter}}</td>
@@ -50,8 +54,8 @@
               <td class="p-2 border border-gray-400 text-center">{{tilawah.telat_count}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.izin_count}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.alpa_count}}</td>
-              <td class="p-2 border border-gray-400 text-center">{{tilawah.latest_halaman}}</td>
-              <td class="p-2 border border-gray-400 text-center">{{tilawah.surat|default:""}} {{tilawah.ayat|default:""}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.latest_halaman|default:"-"}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah|get_quran_name:tilawah.latest_surat|default:"-"}}:{{tilawah.latest_ayat|default:"-"}}</td>
               <td class="p-2 border border-gray-400 text-center">{% if tilawah.latest_tercapai %} &check; {% else %} &cross; {% endif %}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.latest_tajwid|default:"-"}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.latest_kelancaran|default:"-"}}</td>
@@ -61,6 +65,9 @@
         </table>
 
         {% else %}
+        <div class="flex justify-center">
+          <a href="{% url 'tahfidz:tilawah-download' %}?student_id={{student_id}}"><p class="p-1 px-2 bg-green-500 text-white rounded-md font-semibold">&downarrow; Download Tilawah Santri</p></a>
+        </div>
         <h2 class="my-2 text-center text-xl font-semibold">Detail Data Tilawah</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           <p class="md:text-right text-green-500 font-bold">NAMA SANTRI</p>
@@ -85,9 +92,9 @@
             <tr>
               <td class="p-2 border border-gray-400">{{tilawah.tanggal|date:"j F Y"}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.kehadiran}}</td>
-              <td class="p-2 border border-gray-400 text-center">{% if object.tercapai %} &check; {% else %} &cross; {% endif %}</td>
+              <td class="p-2 border border-gray-400 text-center">{% if tilawah.tercapai %} &check; {% else %} &cross; {% endif %}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.halaman}}</td>
-              <td class="p-2 border border-gray-400 text-center">{{tilawah.surat|default:""}} {{tilawah.ayat|default:""}}</td>
+              <td class="p-2 border border-gray-400 text-center">{{tilawah.get_surat_display|default:""}}:{{tilawah.ayat|default:""}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.tajwid|default:"-"}}</td>
               <td class="p-2 border border-gray-400 text-center">{{tilawah.kelancaran|default:"-"}}</td>
             </tr>
