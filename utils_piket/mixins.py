@@ -239,12 +239,16 @@ class BaseModelUploadView(BaseAuthorizedModelView, FormView):
                         )
                         start_id += 1
                 case "ReporterSchedule":
+                    if df.iloc[i, 3]:
+                        teacher = get_object_or_404(Teacher, id=df.iloc[i, 3])
+                    else:
+                        teacher = None
                     model_name.objects.update_or_create(
                         pk = df.iloc[i, 0],
                         defaults={
                             "schedule_day": df.iloc[i, 1],
                             "schedule_time": df.iloc[i, 2],
-                            "reporter_id": df.iloc[i, 3] or None,
+                            "reporter": teacher,
                             "time_start": df.iloc[i, 4],
                             "time_end": df.iloc[i, 5],
                             "type": df.iloc[i, 6],
