@@ -1,6 +1,5 @@
 # views.py
 from typing import Any
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
@@ -13,7 +12,7 @@ class AcademicCalendarIndexView(TitleView, ListView):
     template_name = "pages/calendar.html"
     title_of_table = "Kalender Akademik"
     
-class AcademicCalendarEventView(ListView):
+class AcademicCalendarEventView(TitleView, ListView):
     model = AcademicCalendar
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -32,28 +31,38 @@ class AcademicCalendarDetailView(BaseLoginAndPermissionRequiredView, DetailView)
 class AcademicCalendarCreateView(BaseLoginAndPermissionRequiredView, CreateView):
     model = AcademicCalendar
     form_class = AcademicCalendarForm
-    template_name = 'nilai/score_form.html'
     success_url = reverse_lazy('calendar-list')
     permission_required = 'academic_calendar.add_academiccalendar'
-    template_name = 'components/form.html'
+    template_name = 'pages/form.html'
     form_name = "Calendar"
+    form_link = "Calendar"
+    link_name = "Calendar"
 
 class AcademicCalendarQuickCreateView(BaseLoginAndPermissionRequiredView, CreateView):
     model = AcademicCalendar
     fields = '__all__'
-    template_name = 'nilai/score_form.html'
+    template_name = 'pages/form.html'
+    form_name = "Calendar"
+    form_link = "Calendar"
+    link_name = "Calendar"
     success_url = reverse_lazy('calendar-list')
     permission_required = 'academic_calendar.add_academiccalendar'
 
 class AcademicCalendarUpdateView(BaseLoginAndPermissionRequiredView, UpdateView):
     model = AcademicCalendar
     form_class = AcademicCalendarForm
-    template_name = 'components/form.html'
+    template_name = 'pages/form.html'
     success_url = reverse_lazy('calendar-list')
     permission_required = 'academic_calendar.change_academiccalendar'
     form_name = "Calendar"
+    form_link = "Calendar"
+    link_name = "Calendar"
     
 class AcademicCalendarDeleteView(BaseLoginAndPermissionRequiredView, DeleteView):
     model = AcademicCalendar
     success_url = reverse_lazy('calendar-list')
+    template_name = 'pages/delete.html'
     permission_required = 'academic_calendar.delete_academiccalendar'
+    form_name = "Calendar"
+    form_link = "Calendar"
+    link_name = "Calendar"

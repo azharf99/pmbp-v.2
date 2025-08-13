@@ -46,7 +46,6 @@ class ReportPutriQuickCreateViewV3(QuickReportMixin):
     permission_required = 'reports.add_report'
     type = "putri"
     class_name = [name.short_class_name for name in Class.objects.filter(category="Putri")]
-
     queryset = Report.objects.select_related("schedule__schedule_course__course", "schedule__schedule_course__teacher", "schedule__schedule_time", "schedule__schedule_class", "schedule__teacher", "subtitute_teacher", "reporter")
 
 

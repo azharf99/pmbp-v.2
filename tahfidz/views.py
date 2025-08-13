@@ -351,7 +351,7 @@ class TargetListView(ListView):
 class TargetQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Target
     form_class = FileForm
-    template_name = 'components/form.html'
+    template_name = 'pages/form.html'
     permission_required = 'tahfidz.add_target'
     form_name = "Tahfidz"
     form_link = "Tahfidz:Tilawah"

@@ -2,24 +2,24 @@
 {% load static %}
 {% block content %}
   <main class="p-4 sm:ml-64 overflow-auto">
-    <h1 class="px-2 text-2xl font-bold text-blue-500 dark:text-white">{{form_name}} Form</h1>
+    <h1 class="px-2 text-2xl font-bold text-blue-500 dark:text-white">{{form_name|title}} Form</h1>
     <!-- Breadcrumb -->
     <div class="flex items-center gap-2">
       <a href="{% url 'dashboard' %}" class="pl-2">Dashboard</a>
       <p class="text-2xl">
         &triangleright;
       </p>
-      <a href="{% url form_link|lower|add:'-list' %}">{{form_link|title}} List</a>
+      <a href="{% url form_link|lower|add:'-list' %}">{{link_name|title}} List</a>
       <p class="text-2xl">
         &triangleright;
       </p>
-      <a href="#">{{form_name}} Form</a>
+      <a href="#">{{link_name|title}} Form</a>
     </div>
     <!-- Analytics Card -->
     <div class="mx-2 my-4 flex justify-center">
       <div class="px-4 py-6 flex flex-col justify-center items-center gap-4 bg-white dark:bg-gray-700 shadow-lg md:w-3/4 w-full rounded-md">
         {% include 'components/messages.html' %}
-          <h2 class="font-semibold text-xl">{{form_name}} Data</h2>
+          <h2 class="font-semibold text-xl">{{form_name|title}} Data</h2>
           <form action="" method="post" enctype="multipart/form-data" class="flex flex-col gap-2 md:w-3/4 w-full">
               {% csrf_token %}
               {% for field in form %}

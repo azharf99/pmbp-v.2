@@ -32,7 +32,7 @@ class PostDayArchiveView(DayArchiveView):
 
 class PostCreateView(CreateView):
     model = Post
-    template_name = 'components/form.html'
+    template_name = 'pages/form.html'
     form_class = PostForm
     form_name = 'Post'
 
@@ -126,7 +126,7 @@ class CategoryPostsDetailView(LoginRequiredMixin, DetailView):
     
 class CategoryCreateView(LoginRequiredMixin, CreateView):
     model = Category
-    template_name = 'components/form.html'
+    template_name = 'pages/form.html'
     form_class = CategoryForm
     form_name = 'Category'
     
@@ -138,7 +138,7 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
 
 class CategoryUpdateView(LoginRequiredMixin, UpdateView):
     model = Category
-    template_name = 'components/form.html'
+    template_name = 'pages/form.html'
     form_class = CategoryForm
     form_name = 'Category'
 
@@ -150,5 +150,5 @@ class CategoryUpdateView(LoginRequiredMixin, UpdateView):
 
 class CategoryDeleteView(LoginRequiredMixin, DeleteView):
     model = Category
-    template_name = 'components/delete.html'
+    template_name = 'pages/delete.html'
     success_url = reverse_lazy('category-list')
