@@ -14,7 +14,9 @@
 # next.js
 /.next/
 /out/
-LOAD DATA/
+PMBP_DATA/
+PIKET_DATA/
+HUMAS_DATA/
 
 # production
 /build
