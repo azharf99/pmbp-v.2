@@ -32,7 +32,7 @@ class PostDayArchiveView(DayArchiveView):
 
 class PostCreateView(CreateView):
     model = Post
-    template_name = 'pages/form.html'
+    template_name = 'blog/post_form.html'
     form_class = PostForm
     form_name = 'Post'
 
