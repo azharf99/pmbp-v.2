@@ -96,7 +96,7 @@
                 <div class="flex flex-wrap gap-2 justify-center">
                   {% if request.user.is_superuser %}
                     <a href="{% url 'report-download' %}?q={{object.id}}&month={{month}}&year={{year}}" class="p-1 bg-lime-500 rounded-md">
-                      🖨️ Print                                                  
+                      🖨️ Download Excel                                                  
                     </a>
                   {% endif %}
                   </div>
