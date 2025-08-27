@@ -328,7 +328,7 @@ class ModelDownloadExcelView(BaseAuthorizedModelView):
             elif self.menu_name == 'report':
                 subtitute_teacher = f"{data.subtitute_teacher.teacher_name}" if data.subtitute_teacher else ""
                 reporter = f"{data.reporter.teacher_name}" if data.reporter else ""
-                worksheet.write_row(row, 0, [row, f"{data.report_date}", f"{data.report_day}", data.status, data.schedule.schedule_time, f"{data.schedule.schedule_class}", f"{data.schedule.schedule_course.course_name}",
+                worksheet.write_row(row, 0, [row, f"{data.report_date}", f"{data.report_day}", data.status, data.schedule.schedule_time.number, f"{data.schedule.schedule_class}", f"{data.schedule.schedule_course.course.name}",
                                          f"{data.schedule.schedule_course.teacher.teacher_name}", subtitute_teacher, reporter])
             elif self.menu_name == 'schedule':
                 worksheet.write_row(row, 0, [row, f"{data.schedule_day}", f"{data.schedule_time}", data.schedule_class.class_name, data.schedule_course.course_name, 
