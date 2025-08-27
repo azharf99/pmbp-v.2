@@ -1,5 +1,5 @@
 from django.urls import path
-from reports.views import PutriSubmitButtonView, ReportListView, ReportDetailView, ReportDeleteView, ReportDeleteAllView,\
+from reports.views import PutriSubmitButtonView, ReportIndividualView, ReportListView, ReportDetailView, ReportDeleteView, ReportDeleteAllView,\
                          ReportDownloadExcelView, ReportPutriQuickCreateViewV3, ReportUploadView, \
                          ReportQuickCreateViewV3, ReportUpdateViewV3, ReportUpdatePetugasViewV3, SubmitButtonView
 from reports.views_version2 import ReportQuickCreateViewV2, ReportUpdateViewV2, ReportUpdatePetugasView
@@ -8,6 +8,7 @@ from reports.legacy_views import ReportUpdateView
 urlpatterns = [
     path('', ReportListView.as_view(),  {"site_title": "REPORT LIST - PIKET SMA IT AL BINAA"}, "report-list"),
     path("download/", ReportDownloadExcelView.as_view(),  {"site_title": "DOWNLOAD REPORT - PIKET SMA IT AL BINAA"}, "report-download"),
+    path("individual/", ReportIndividualView.as_view(),  {"site_title": "DOWNLOAD INDIVIDUAL REPORT - PIKET SMA IT AL BINAA"}, "report-individual"),
     path("quick-create-v2/", ReportQuickCreateViewV2.as_view(),  {"site_title": "QUICK CREATE REPORT V2 - PIKET SMA IT AL BINAA"}, "report-quick-create-v2"),
     path("quick-create-v3/", ReportQuickCreateViewV3.as_view(),  {"site_title": "QUICK CREATE REPORT V3 - PIKET SMA IT AL BINAA"}, "report-quick-create-v3"),
     path("putri/quick-create-v3/", ReportPutriQuickCreateViewV3.as_view(),  {"site_title": "QUICK CREATE PUTRI REPORT V3 - PIKET SMA IT AL BINAA"}, "report-putri-quick-create-v3"),

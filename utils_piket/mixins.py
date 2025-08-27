@@ -319,7 +319,30 @@ class ModelDownloadExcelView(BaseAuthorizedModelView):
         tidak_tercapai_format = workbook.add_format({
             "fg_color": "red",
         })
-        row = 1
+        row = 2
+        
+        if self.individual:
+            worksheet.write(row, 0, self.teacher)
+            worksheet.write(row, 1, f'{calendar.month_name[self.month]} {self.year}')
+            for tanggal, data in self.queryset.items():
+                worksheet.write(row, 0, row)
+                worksheet.write(row, 1, f"{tanggal}")
+                col = 2
+                for jam in range(1, 10):
+                    if jam in data:
+                        worksheet.write(row, col, data[jam])
+                    else:
+                        worksheet.write(row, col, "-")
+                    col += 1
+                worksheet.write(row, col, data["Sum"])
+                row += 1
+            worksheet.merge_range(row, 0, row, col-1, "TOTAL JAM")
+            worksheet.write(row, col, self.total_jam)
+            worksheet.autofit()
+            workbook.close()
+            buffer.seek(0)
+            return FileResponse(buffer, as_attachment=True, filename=self.filename)
+
         for data in (self.queryset or [{"data": "Error!"}]):
             if self.menu_name == 'class':
                 worksheet.write_row(row, 0, [row, f"{data.class_name}", f"{data.short_class_name}"])
