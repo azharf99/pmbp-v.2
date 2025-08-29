@@ -307,6 +307,7 @@ class ModelDownloadExcelView(BaseAuthorizedModelView):
     header_names = []
     filename = ''
     queryset = None
+    individual = None
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         buffer = BytesIO()
