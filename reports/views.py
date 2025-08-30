@@ -15,6 +15,8 @@ from users.models import Teacher
 from utils_piket.mixins import BaseAuthorizedFormView, BaseModelDateBasedListView, BaseModelDeleteView, BaseModelUploadView, BaseAuthorizedModelView, ModelDownloadExcelView, BaseModelQueryListView, QuickReportMixin, ReportUpdateQuickViewMixin, ReportUpdateReporterMixin, SubmitViewMixins
 from utils_piket.validate_datetime import get_day
 from utils_piket.whatsapp_albinaa import send_whatsapp_group, send_whatsapp_report
+from weasyprint import HTML
+from django.template.loader import render_to_string
 # Create your views here.
     
 class ReportListView(BaseAuthorizedModelView, BaseModelDateBasedListView):
@@ -125,19 +127,20 @@ class ReportDownloadExcelView(ModelDownloadExcelView):
 
     def get(self, request, *args, **kwargs):
         teacher_id = self.request.GET.get('q')
-        month = self.request.GET.get('month', datetime.now().month)
-        year = self.request.GET.get('year', datetime.now().year)
-
-        try:
-            month = int(month)
-            year = int(year)
-        except ValueError:
-            month = datetime.now().month
-            year = datetime.now().year
-
+        date_start = self.request.GET.get('date_start', datetime.now().date())
+        date_end = self.request.GET.get('date_end', datetime.now().date())
+        if isinstance(date_start, str):
+            date_start = datetime.strptime(date_start, '%Y-%m-%d').date()
+        if isinstance(date_end, str):
+            date_end = datetime.strptime(date_end, '%Y-%m-%d').date()
+        
+        if date_start.year != date_end.year or date_start.month != date_end.month:
+            msg.warning(request, "Tanggal awal dan akhir harus berada dalam bulan dan tahun yang sama.")
+            return HttpResponseRedirect(reverse('report-individual'))
+        
+        
         if teacher_id:
-            qs = self.queryset.filter(schedule__schedule_course__teacher=teacher_id, report_date__month=month, report_date__year=year, status="Hadir").order_by('report_date', 'schedule__schedule_time__number')
-            
+            qs = self.queryset.filter(schedule__schedule_course__teacher=teacher_id, report_date__gte=date_start, report_date__lte=date_end, status="Hadir").order_by('report_date', 'schedule__schedule_time__number')
             if qs.exists():
                 data = defaultdict(lambda: {i: 0 for i in range(1, 10)})
 
@@ -147,10 +150,9 @@ class ReportDownloadExcelView(ModelDownloadExcelView):
                     data[report_date][time_number] = 1
                 
                 # hitung jumlah hari dalam bulan
-                last_day = calendar.monthrange(year, month)[1]
                 all_dates = [
-                    date(year, month, day)
-                    for day in range(1, last_day + 1)
+                    date(date_start.year, date_start.month, day)
+                    for day in range(date_start.day, date_end.day + 1)
                 ]
                 
                 # pastikan semua tanggal ada
@@ -166,18 +168,14 @@ class ReportDownloadExcelView(ModelDownloadExcelView):
                 # Hitung total semua jam
                 total_jam = sum(row["Sum"] for row in ordered_data.values())
 
-                for tanggal in ordered_data:
-                    print(f"{tanggal}: {data[tanggal]}")
-
-
                 self.individual = True
                 self.queryset = ordered_data
                 self.teacher = qs.first().schedule.schedule_course.teacher.teacher_name
-                self.month = month
-                self.year = year
+                self.month = date_start.month
+                self.year = date_start.year
                 self.total_jam = total_jam
-                self.header_names = ['No', 'TANGGAL'] + [f'JAM KE-{i}' for i in range(1, 10)] + ['TOTAL JAM']
-                self.filename = f'LAPORAN PIKET INDIVIDUAL {self.teacher} {calendar.month_name[month]} {year}.xlsx'
+                self.header_names = ['TANGGAL'] + [f'JAM KE-{i}' for i in range(1, 10)] + ['TOTAL JAM']
+                self.filename = f'LAPORAN PIKET INDIVIDUAL {self.teacher} {calendar.month_name[date_start.month]} {date_start.year}.xlsx'
             else:
                 msg.warning(request, "Data tidak ditemukan untuk guru yang dipilih.")
                 return HttpResponseRedirect(reverse('report-individual'))
@@ -195,38 +193,111 @@ class ReportIndividualView(BaseAuthorizedModelView, BaseModelQueryListView):
 
     def get_queryset(self):
         teacher_id = self.request.GET.get('q')
-        month = self.request.GET.get('month', datetime.now().month)
-        year = self.request.GET.get('year', datetime.now().year)
+        date_start = self.request.GET.get('date_start', datetime.now().date())
+        date_end = self.request.GET.get('date_end', datetime.now().date())
 
-        try:
-            month = int(month)
-            year = int(year)
-        except ValueError:
-            month = datetime.now().month
-            year = datetime.now().year
+        if isinstance(date_start, str):
+            date_start = datetime.strptime(date_start, '%Y-%m-%d').date()
+        if isinstance(date_end, str):
+            date_end = datetime.strptime(date_end, '%Y-%m-%d').date()
+
+        if isinstance(date_start, str):
+            date_start = datetime.strptime(date_start, '%Y-%m-%d').date()
+        if isinstance(date_end, str):
+            date_end = datetime.strptime(date_end, '%Y-%m-%d').date()
+        
+        if date_start.year != date_end.year or date_start.month != date_end.month:
+            msg.warning(self.request, "Tanggal awal dan akhir harus berada dalam bulan dan tahun yang sama.")
 
         if teacher_id:
-            qs = self.queryset.filter(schedule__schedule_course__teacher=teacher_id, report_date__month=month, report_date__year=year).order_by('report_date', 'schedule__schedule_time__number')
+            qs = self.queryset.filter(schedule__schedule_course__teacher=teacher_id, report_date__gte=date_start, report_date__lte=date_end).order_by('report_date', 'schedule__schedule_time__number')
             return qs
         return self.queryset.none()
     
     def get_context_data(self, **kwargs):
-        month = self.request.GET.get('month', datetime.now().month)
-        year = self.request.GET.get('year', datetime.now().year)
+        date_start = self.request.GET.get('date_start', date(datetime.now().date().year, datetime.now().date().month, 1))
+        date_end = self.request.GET.get('date_end', datetime.now().date())
 
-        try:
-            month = int(month)
-            year = int(year)
-        except ValueError:
-            month = datetime.now().month
-            year = datetime.now().year
-
-        import calendar
-        month_name = calendar.month_name[month]
         c = super().get_context_data(**kwargs)
         c["teachers"] = Teacher.objects.select_related("user").filter(status="Aktif", gender="L").order_by("teacher_name")
-        c["month_name"] = month_name
-        c["month"] = month
-        c["year"] = year
+        c["date_start"] = str(date_start)
+        c["date_end"] = str(date_end)
         return c
+
+
+class ReportDownloadPDFView(ModelDownloadExcelView):
+    menu_name = 'report'
+    permission_required = 'reports.view_report'
+    template_name = 'reports/download.html'
+    queryset = Report.objects.select_related("schedule__schedule_course__course", "schedule__schedule_course__teacher", "schedule__schedule_time", "schedule__schedule_class", "schedule__teacher", "subtitute_teacher", "reporter")
+
+    def get(self, request, *args, **kwargs):
+        teacher_id = self.request.GET.get('q')
+        date_start = self.request.GET.get('date_start', datetime.now().date())
+        date_end = self.request.GET.get('date_end', datetime.now().date())
+        if isinstance(date_start, str):
+            date_start = datetime.strptime(date_start, '%Y-%m-%d').date()
+        if isinstance(date_end, str):
+            date_end = datetime.strptime(date_end, '%Y-%m-%d').date()
         
+        if date_start.year != date_end.year or date_start.month != date_end.month:
+            msg.warning(request, "Tanggal awal dan akhir harus berada dalam bulan dan tahun yang sama.")
+            return HttpResponseRedirect(reverse('report-individual'))
+        
+        
+        if teacher_id:
+            qs = self.queryset.filter(schedule__schedule_course__teacher=teacher_id, report_date__gte=date_start, report_date__lte=date_end, status="Hadir").order_by('report_date', 'schedule__schedule_time__number')
+            if qs.exists():
+                data = defaultdict(lambda: {i: 0 for i in range(1, 10)})
+
+                for report in qs:
+                    report_date = report.report_date
+                    time_number = report.schedule.schedule_time.number
+                    data[report_date][time_number] = 1
+                
+                # hitung jumlah hari dalam bulan
+                all_dates = [
+                    date(date_start.year, date_start.month, day)
+                    for day in range(date_start.day, date_end.day + 1)
+                ]
+                
+                # pastikan semua tanggal ada
+                ordered_data = {}
+                for d in all_dates:
+                    if d not in data:
+                        data[d] = {i: 0 for i in range(1, 10)}
+                        data[d]["Sum"] = 0
+                    else:
+                        data[d]["Sum"] = sum(data[d][i] for i in range(1, 10))
+                    ordered_data[d] = data[d]
+
+                # Hitung total semua jam
+                total_jam = sum(row["Sum"] for row in ordered_data.values())
+
+                self.individual = True
+                self.teacher = qs.first().schedule.schedule_course.teacher.teacher_name
+                self.header_names = ['TANGGAL'] + [f'JAM KE-{i}' for i in range(1, 10)] + ['TOTAL JAM']
+
+                
+                html = render_to_string('jadwal_table_pdf.html', {
+                    'data': ordered_data,
+                    'total_jam': total_jam,
+                    'teacher': self.teacher,
+                    'month': calendar.month_name[date_start.month],
+                    'year': date_start.year,
+                    'header_names': self.header_names,
+                })
+
+                # Generate the PDF
+                pdf = HTML(string=html).write_pdf()
+
+                # Return the response as PDF
+                response = HttpResponse(pdf, content_type='application/pdf')
+                response['Content-Disposition'] = f'attachment; filename="LAPORAN PIKET INDIVIDUAL {self.teacher} {calendar.month_name[date_start.month]} {date_start.year}.pdf"'
+                return response
+            else:
+                msg.warning(request, "Data tidak ditemukan untuk guru yang dipilih.")
+                return HttpResponseRedirect(reverse('report-individual'))
+        else:
+            msg.warning(request, "ID guru harus dipilih.")
+            return HttpResponseRedirect(reverse('report-individual'))

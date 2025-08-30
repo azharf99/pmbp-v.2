@@ -1,0 +1,61 @@
+<html>
+<head>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 20mm;
+        }
+
+        h3{
+            text-align: center;
+            margin: 0.5rem;
+        }
+        h4, h5, h6 {
+            margin: 0.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h3>Rekap Individual Jam Mengajar</h3>
+    <h4>Periode: {{ month }} {{year}}</h4>
+    <h5>Nama Guru : {{ teacher }}</h5>
+    <h5>Total Jam Mengajar : {{ total_jam }}</h5>
+    <table>
+        <thead>
+            <tr>
+                {% for head in header_names %}
+                    <th>{{ head|title }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% load timetable_tags %}
+            {% for row in data %}
+            <tr>
+                <td>{{ row|date:"d-m-Y" }}</td>
+                {% for val in data|get_item:row  %}
+                <td>{{ data|get_item:row|get_item:val }}</td>
+                {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><strong>Total Jam Mengajar:</strong> {{ total_jam }}</p>
+</body>
+</html>

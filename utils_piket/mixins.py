@@ -308,42 +308,51 @@ class ModelDownloadExcelView(BaseAuthorizedModelView):
     filename = ''
     queryset = None
     individual = None
+    teacher = None
+    month = datetime.now().month
+    year = datetime.now().year
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         buffer = BytesIO()
         workbook = Workbook(buffer)
         worksheet = workbook.add_worksheet()
-        worksheet.write_row(0, 0, self.header_names)
         tercapai_format = workbook.add_format({
             "fg_color": "green",
         })
         tidak_tercapai_format = workbook.add_format({
             "fg_color": "red",
         })
-        row = 2
+        border_format = workbook.add_format()
+        border_format.set_border(1)
+        row = 1
         
         if self.individual:
-            worksheet.write(row, 0, self.teacher)
-            worksheet.write(row, 1, f'{calendar.month_name[self.month]} {self.year}')
+            worksheet.write(0, 0, "Nama Guru", border_format)
+            worksheet.merge_range("B1:D1", f": {self.teacher}", border_format)
+            worksheet.write(1, 0, "Bulan", border_format)
+            worksheet.merge_range("B2:D2", f': {calendar.month_name[self.month]} {self.year}', border_format)
+            worksheet.autofit()
+            worksheet.write_row(3,0, self.header_names, border_format)
+            row = 4
             for tanggal, data in self.queryset.items():
-                worksheet.write(row, 0, row)
-                worksheet.write(row, 1, f"{tanggal}")
-                col = 2
+                worksheet.write(row, 0, f"{tanggal}", border_format)
+                col = 1
                 for jam in range(1, 10):
                     if jam in data:
-                        worksheet.write(row, col, data[jam])
+                        worksheet.write(row, col, data[jam], border_format)
                     else:
-                        worksheet.write(row, col, "-")
+                        worksheet.write(row, col, "-",  border_format)
                     col += 1
-                worksheet.write(row, col, data["Sum"])
+                worksheet.write(row, col, data["Sum"], border_format)
                 row += 1
-            worksheet.merge_range(row, 0, row, col-1, "TOTAL JAM")
-            worksheet.write(row, col, self.total_jam)
+            worksheet.merge_range(row, 0, row, col-1, "TOTAL JAM", border_format)
+            worksheet.write(row, col, self.total_jam, border_format)
             worksheet.autofit()
             workbook.close()
             buffer.seek(0)
             return FileResponse(buffer, as_attachment=True, filename=self.filename)
 
+        worksheet.write_row(0, 0, self.header_names)
         for data in (self.queryset or [{"data": "Error!"}]):
             if self.menu_name == 'class':
                 worksheet.write_row(row, 0, [row, f"{data.class_name}", f"{data.short_class_name}"])

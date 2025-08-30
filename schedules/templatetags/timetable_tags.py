@@ -10,3 +10,7 @@ def get_item(dictionary, key):
 @register.filter
 def get_quran_name(dictionary, key):
     return QURAN_SURAH_DICT.get(str(key))
+
+@register.filter
+def to(value, end):
+    return range(value, end + 1)
