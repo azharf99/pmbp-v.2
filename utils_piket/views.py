@@ -460,7 +460,7 @@ class ReporterRecapListView(BaseAuthorizedModelView, BaseModelQueryListView):
         # {'Tri Setyo Mardi Utomo, S.Pd': 26, 'Suharyadi, M. Pd., Gr.': 8, 'Alif Rezky, M.Pd.': 16, 'Muh. Halidi, S.Si.': 8, 'Radivan Tiravi': 27, 'Wawanto, S. Si.': 8, 'Dadan Ridwanuloh, M.Si.': 8, 'Arie Afriansyah, Lc.': 18, 'Agus Setiawan, S.T.': 8, 'Syafiq Muhammad Rwenky, B.A.': 10, 'Ahmad Reza Febrianto': 18, 'Aam Hamdani, S.Pd.': 20, 'Rifqi Aqwamuddin, Lc.': 10, 'Hario Sadewo P, S.Pd.': 8, 'Harlan, S. Pd.': 8, 'Firyan Ramdhani, S.Pd.': 8, 'Mohamad Alam Novian, M. Pd.': 8}
 
         for day_key, value_day_count in day_count_in_month.items():
-            data = ReporterSchedule.objects.filter(schedule_day=day_key).exclude(reporter__isnull=True)\
+            data = ReporterSchedule.objects.filter(schedule_day=day_key, type="putra").exclude(reporter__isnull=True)\
                                             .values("reporter__teacher_name")\
                                             .annotate(expected_count=Count("reporter__teacher_name")*value_day_count)\
                                             .distinct().order_by("reporter__teacher_name")
@@ -482,24 +482,24 @@ class ReporterRecapListView(BaseAuthorizedModelView, BaseModelQueryListView):
         result = [{'reporter__teacher_name': name, 'expected_count': count} for name, count in aggregated_counts.items()]
                 
         if date_start and date_end:
-            reports_data = list(Report.objects.filter(report_date__gte=date_start, report_date__lte=date_end)\
+            reports_data = list(Report.objects.filter(report_date__gte=date_start, report_date__lte=date_end, type="putra", is_submitted=True)\
                                     .exclude(reporter__isnull=True).values("reporter__teacher_name")\
                                     .annotate(real_count=Count("reporter__teacher_name")/15)\
                                     .order_by("reporter__teacher_name"))
         
             null_reporter = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
-                                      .filter(report_date__gte=date_start, report_date__lte=date_end, reporter__isnull=True)\
+                                      .filter(report_date__gte=date_start, report_date__lte=date_end, reporter__isnull=True, type="putra", is_submitted=False)\
                                       .exclude(schedule__in=[241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525])\
                                       .values("report_date", "schedule__schedule_day", "schedule__schedule_time")\
                                       .distinct().order_by()
         else:
-            reports_data = list(Report.objects.filter(report_date__month=this_month, report_date__year=this_year)\
+            reports_data = list(Report.objects.filter(report_date__month=this_month, report_date__year=this_year, type="putra", is_submitted=True)\
                                     .exclude(reporter__isnull=True).values("reporter__teacher_name")\
                                     .annotate(real_count=Count("reporter__teacher_name")/15)\
                                     .order_by("reporter__teacher_name"))
             
             null_reporter = Report.objects.select_related("schedule__schedule_course", "schedule__schedule_course__teacher","schedule__schedule_class", "subtitute_teacher")\
-                                      .filter(report_date__month=this_month, report_date__year=this_year, reporter__isnull=True)\
+                                      .filter(report_date__month=this_month, report_date__year=this_year, reporter__isnull=True, type="putra", is_submitted=False)\
                                       .exclude(schedule__in=[241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525])\
                                       .values("schedule__schedule_day", "schedule__schedule_time")\
                                       .distinct().order_by()
@@ -507,7 +507,7 @@ class ReporterRecapListView(BaseAuthorizedModelView, BaseModelQueryListView):
         absen_group_data = []
 
         for obj in null_reporter:
-            data = ReporterSchedule.objects.filter(schedule_day=obj.get("schedule__schedule_day"), schedule_time=obj.get("schedule__schedule_time"))\
+            data = ReporterSchedule.objects.filter(schedule_day=obj.get("schedule__schedule_day"), schedule_time=obj.get("schedule__schedule_time"), type="putra", reporter__isnull=False)\
                                             .values("reporter__teacher_name").annotate(absen_count=Count("reporter__teacher_name")).order_by()
             for obj in data:
                 absen_group_data.append(obj)
