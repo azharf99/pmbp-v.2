@@ -219,7 +219,7 @@ class ReportIndividualView(BaseAuthorizedModelView, BaseModelQueryListView):
         date_end = self.request.GET.get('date_end', datetime.now().date())
 
         c = super().get_context_data(**kwargs)
-        c["teachers"] = Teacher.objects.select_related("user").filter(status="Aktif", gender="L").order_by("teacher_name")
+        c["teachers"] = Teacher.objects.select_related("user").filter(status="Aktif", gender="L", work_area="SMA").order_by("teacher_name")
         c["date_start"] = str(date_start)
         c["date_end"] = str(date_end)
         return c
