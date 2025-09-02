@@ -115,7 +115,7 @@
           </details>
         </li>
 
-        {% if request.user.is_superuser %}
+        {% if request.user.is_authenticated %}
         <li>
           <details class="cursor-pointer group [&_summary::-webkit-details-marker]:hidden">
             <summary
@@ -138,7 +138,7 @@
 
             <ul class="mt-2 space-y-1 px-4">
               
-              {% if request.user.is_superuser %}
+              {% if request.user.is_authenticated %}
               <li>
                 <a href="{% url 'class-create' %}"
                 class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
@@ -216,7 +216,7 @@
             </summary>
 
             <ul class="mt-2 space-y-1 px-4">
-              {% if request.user.is_superuser %}
+              {% if request.user.is_authenticated %}
               <li>
                 <a href="{% url 'schedule-create' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Create Schedule
@@ -268,7 +268,7 @@
                   Dashboard
                 </a>
               </li>
-              {% if request.user.is_authenticated and request.user.is_superuser %}
+              {% if request.user.is_authenticated and request.user.is_authenticated %}
               <li>
                 <a href="{% url 'alumni:alumni-create' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Input Alumni
@@ -318,7 +318,7 @@
                   Daftar Galeri
                 </a>
               </li>
-              {% if request.user.is_superuser %}
+              {% if request.user.is_authenticated %}
               <li>
                 <a href="{% url 'galleries:gallery-create' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Buat Gallery
@@ -349,7 +349,7 @@
             </summary>
 
             <ul class="mt-2 space-y-1 px-4">
-              {% if request.user.is_authenticated or request.user.is_superuser %}
+              {% if request.user.is_authenticated or request.user.is_authenticated %}
               <li>
                 <a href="{% url 'private:private-create' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Input Private
@@ -396,7 +396,7 @@
             </summary>
 
             <ul class="mt-2 space-y-1 px-4">
-              {% if request.user.is_superuser %}
+              {% if request.user.is_authenticated %}
               <li>
                 <a href="{% url 'tahfidz:tahfidz-create' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Input Tahfidz
@@ -442,7 +442,7 @@
             </summary>
 
             <ul class="mt-2 space-y-1 px-4">
-              {% if request.user.is_superuser %}
+              {% if request.user.is_authenticated %}
               <li>
                 <a href="{% url 'tahfidz:tilawah-create' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Input Tilawah
@@ -483,7 +483,7 @@
             </summary>
 
             <ul class="mt-2 space-y-1 px-4">
-              {% if request.user.is_superuser %}
+              {% if request.user.is_authenticated %}
               <li>
                 <a href="{% url 'private:subject-create' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Input Mapel Privat
@@ -558,7 +558,7 @@
               {% endfor %}
               {% endif %}
               
-              {% if request.user.is_superuser %}
+              {% if request.user.is_authenticated %}
               <li>
                 <a href="{% url 'extracurricular-create' %}"
                 class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
@@ -681,7 +681,7 @@
                   Progres Nilai Ekskul
                 </a>
               </li>
-              {% if request.user.is_superuser %}
+              {% if request.user.is_authenticated %}
               <li>
                 <a href="{% url 'nilai-syncronize' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Sync with AIS
@@ -770,7 +770,7 @@
             <ul class="mt-2 space-y-1 px-4">
               <p class="cursor-text text-sm text-indigo-500 dark:text-white">Prestasi</p>
               
-              {% if request.user.is_superuser %}
+              {% if request.user.is_authenticated %}
               <li>
                 <a href="{% url 'prestasi-create' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Input Prestasi
@@ -800,7 +800,7 @@
               </li>
               <hr>
               <p class="cursor-text text-sm text-indigo-500 dark:text-white">Program Prestasi</p>
-              {% if request.user.is_superuser %}
+              {% if request.user.is_authenticated %}
               <li>
                 <a href="{% url 'program-prestasi-create' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Input Program Prestasi
@@ -817,7 +817,7 @@
                   Download Program Prestasi
                 </a>
               </li>
-              {% if request.user.is_superuser %}
+              {% if request.user.is_authenticated %}
               <li>
                 <a href="{% url 'prestasi-syncronize' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Sync with AIS
@@ -848,7 +848,7 @@
             </summary>
 
             <ul class="mt-2 space-y-1 px-4">
-              {% if request.user.is_superuser %}
+              {% if request.user.is_authenticated %}
               <li>
                 <a href="{% url 'olympiad-field-create' %}"  class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-900 dark:text-slate-200 hover:bg-indigo-200 hover:text-gray-700">
                   Input Bidang
@@ -877,7 +877,7 @@
         </li>
       
 
-        {% if request.user.is_superuser %}
+        {% if request.user.is_authenticated %}
         <li>
           <details class="cursor-pointer group [&_summary::-webkit-details-marker]:hidden">
             <summary

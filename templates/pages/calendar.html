@@ -51,6 +51,8 @@
             document.getElementById('modalStart').innerText = info.event.startStr;
             document.getElementById('modalEnd').innerText = info.event.endStr || info.event.startStr;
             document.getElementById('modalDescription').innerText = info.event.extendedProps.description || "No description.";
+            document.getElementById('update').href = 'update/' + info.event.id || "";
+            document.getElementById('delete').href = 'delete/' + info.event.id || "";
             modal.classList.remove("hidden");
             modal.classList.add("flex");
         }
@@ -78,8 +80,13 @@
 </head>
 <body>
 
-  <h1 class="text-2xl font-bold mb-6">Academic Calendar</h1>
-<div id="calendar" class="bg-white shadow-lg p-4 rounded-xl"></div>
+  <h1 class="text-2xl font-bold mb-6 text-center m-4">{{title_for_display}}</h1>
+  {% if request.user.is_authenticated %}
+  <div class="flex justify-center m-2 gap-2 text-balance text-center">
+    <a href="{% url 'calendar-create' %}"><p class="p-1 px-2 bg-blue-500 text-white rounded-md font-semibold">&#128195; Buat Baru</p></a>
+  </div>
+  {% endif %}
+  <div id="calendar" class="bg-white shadow-lg p-4 rounded-xl"></div>
 
 <!-- Event Detail Modal -->
 <div id="eventModal" class="hidden p-4 fixed inset-0 bg-gray-300 bg-opacity-50 items-center justify-center z-50">
@@ -89,6 +96,11 @@
         <p class="mb-2"><strong>Start:</strong> <span id="modalStart"></span></p>
         <p class="mb-2"><strong>End:</strong> <span id="modalEnd"></span></p>
         <p id="modalDescription" class="text-gray-700 mt-4"></p>
+        {% if request.user.is_authenticated %}
+        <hr class="my-4">
+        <a id="update" class="p-2 bg-green-500 rounded-md">Edit</a>
+        <a id="delete" class="p-2 bg-red-500 rounded-md">Hapus</a>
+        {% endif %}
     </div>
 </div>
 </body>

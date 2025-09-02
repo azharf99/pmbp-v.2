@@ -71,18 +71,12 @@ class SendSuccessMessageLogAndWhatsapp:
 
 class TitleView(View):
     title_of_table = ''
-    form_link = ''
-    link_name = ''
-    form_name = ''
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """Shared method to enrich context data."""
         context = super().get_context_data(**kwargs)
         title_for_display = self.kwargs.get("site_title", "").split(" - ")[0]
         context.update(self.kwargs)
-        context.update({"form_name": title_for_display})
-        context.update({"form_link": self.form_link})
-        context.update({"link_name": self.link_name})
         context.update({"title_of_table": self.title_of_table})
         context.update({"title_for_display": title_for_display})
         return context
@@ -160,7 +154,7 @@ class BaseLoginAndPermissionFormView(BaseLoginAndPermissionRequiredView, LinkVie
 
 
 # KELAS DEFAULT UNTUK HALAMAN FORM DELETE
-class BaseLoginAndPermissionModelDeleteView(BaseLoginAndPermissionRequiredView, DeleteView):
+class BaseLoginAndPermissionModelDeleteView(BaseLoginAndPermissionRequiredView, LinkView, DeleteView):
     """Base view for DeleteView."""
     success_message: str = "Data berhasil dihapus!"
 
