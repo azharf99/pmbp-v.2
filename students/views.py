@@ -389,7 +389,7 @@ class StudentPrivateView(ListView):
     template_name = "students/student_private_list.html"
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Student.objects.prefetch_related("student_class")
+        return Student.objects.prefetch_related("student_class").filter(student_status="Aktif", student_class__class_name__startswith="XII").order_by("student_class__class_name", "student_name")
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)
@@ -416,7 +416,7 @@ class StudentPrivateView(ListView):
     
 class DownloadPrivateListView(ListView):
     model = Student
-    queryset = Student.objects.filter(student_status="Aktif")
+    queryset = Student.objects.filter(student_status="Aktif", student_class__class_name__startswith="XII")
 
     
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:

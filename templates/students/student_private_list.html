@@ -86,8 +86,8 @@
           {% for object in filtered_object_list %}
           <tr>
             <td class="p-2 border border-gray-400 text-center">{{forloop.counter}}</td>
-            <td class="p-2 border border-gray-400">{{object.nama_siswa}}</td>
-            <td class="p-2 border border-gray-400 text-center">{{object.kelas.nama_kelas|default:"-"}}</td>
+            <td class="p-2 border border-gray-400">{{object.student_name}}</td>
+            <td class="p-2 border border-gray-400 text-center">{{object.student_class|default:"-"}}</td>
             <td class="p-2 border border-gray-400 text-end">
               {% for obj in object.filtered_private_set.all %}
                 <p>{{obj.pelajaran}} ({{obj.tanggal_bimbingan|date:"j F Y"}})</p>

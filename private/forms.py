@@ -43,11 +43,11 @@ class PrivateCreateForm(forms.ModelForm):
             # student_list = group.values_list("santri", flat=True).distinct()
             self.fields['pembimbing'].queryset = Teacher.objects.filter(pk__in=teacher_list)
             # self.fields['kehadiran_santri'].queryset = Student.objects.filter(pk__in=student_list)
-            self.fields['kehadiran_santri'].queryset = Student.objects.select_related('student_class').filter(student_class__class_name__startswith="XII")
+            self.fields['kehadiran_santri'].queryset = Student.objects.select_related('student_class').filter(student_status="Aktif", student_class__class_name__startswith="XII")
             self.fields['kelompok'].queryset = group
             self.fields['pelajaran'].queryset = subjects
         else:
-            self.fields['kehadiran_santri'].queryset = Student.objects.select_related('student_class').filter(student_class__class_name__startswith="XII")
+            self.fields['kehadiran_santri'].queryset = Student.objects.select_related('student_class').filter(student_status="Aktif", student_class__class_name__startswith="XII")
 
 
     
@@ -78,10 +78,10 @@ class PrivateUpdateForm(forms.ModelForm):
         
         if user.teacher.id in teacher_list:
             self.fields['pembimbing'].queryset = Teacher.objects.filter(pk__in=teacher_list)
-            self.fields['kehadiran_santri'].queryset = Student.objects.select_related('student_class').filter(student_class__class_name__startswith="XII")
+            self.fields['kehadiran_santri'].queryset = Student.objects.select_related('student_class').filter(student_status="Aktif", student_class__class_name__startswith="XII")
             self.fields['pelajaran'].queryset = subjects
         else:
-            self.fields['kehadiran_santri'].queryset = Student.objects.select_related('student_class').filter(student_class__class_name__startswith="XII")
+            self.fields['kehadiran_santri'].queryset = Student.objects.select_related('student_class').filter(student_status="Aktif", student_class__class_name__startswith="XII")
     
     class Meta:
         model = Private
