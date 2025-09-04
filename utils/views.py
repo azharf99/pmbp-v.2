@@ -15,6 +15,8 @@ from olympiads.models import OlympiadReport
 from prestasi.models import Prestasi, ProgramPrestasi
 from raker.models import LaporanPertanggungJawaban, ProgramKerja
 from users.models import Teacher
+from django.contrib.syndication.views import Feed
+from django.urls import reverse
 
 
 class SMAITHomeWiew(ListView):
@@ -253,9 +255,7 @@ class ProkerPMBPView(TemplateView):
         return context
     
 
-from django.contrib.syndication.views import Feed
-from django.urls import reverse
-from .models import Post
+
 
 class LatestPostsFeed(Feed):
     title = "My Blog Updates"

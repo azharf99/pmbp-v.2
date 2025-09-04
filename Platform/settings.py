@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
+    "django.contrib.syndication",
     'academic_calendar',
     'alumni',
     'blog',
@@ -90,7 +91,6 @@ INSTALLED_APPS = [
     # "crispy_bulma",
     # "crispy_tailwind",
     # "crispy_bootstrap4",
-    "django.contrib.syndication",
 ]
 
 
