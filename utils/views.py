@@ -275,7 +275,7 @@ class LatestPostsFeed(Feed):
 
     def item_link(self, item):
         # Make sure your Post model has a get_absolute_url()
-        return reverse("post-detail", args=[item.pk])
+        return reverse("post-detail", args=[item.slug])
 
 
 class LatestPostsAtomFeed(Feed):
@@ -294,7 +294,7 @@ class LatestPostsAtomFeed(Feed):
         return item.content
 
     def item_link(self, item):
-        return reverse("post-detail", args=[item.pk])
+        return reverse("post-detail", args=[item.slug])
 
     # ✅ Atom extra fields
     def item_author_name(self, item):
