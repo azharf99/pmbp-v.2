@@ -16,6 +16,7 @@ from prestasi.models import Prestasi, ProgramPrestasi
 from raker.models import LaporanPertanggungJawaban, ProgramKerja
 from users.models import Teacher
 from django.contrib.syndication.views import Feed
+from django.utils.feedgenerator import Atom1Feed
 from django.urls import reverse
 
 
@@ -274,8 +275,42 @@ class LatestPostsFeed(Feed):
 
     def item_link(self, item):
         # Make sure your Post model has a get_absolute_url()
-        return reverse("post_detail", args=[item.pk])
+        return reverse("post-detail", args=[item.pk])
 
+
+class LatestPostsAtomFeed(Feed):
+    feed_type = Atom1Feed
+    title = "My Blog Updates (Atom)"
+    link = "/atom/"
+    subtitle = "Latest posts from my blog"
+
+    def items(self):
+        return Post.objects.order_by("-created_at")[:10]
+
+    def item_title(self, item):
+        return item.title
+
+    def item_description(self, item):
+        return item.content
+
+    def item_link(self, item):
+        return reverse("post-detail", args=[item.pk])
+
+    # ✅ Atom extra fields
+    def item_author_name(self, item):
+        # assuming Post has a ForeignKey to User
+        return item.author.teacher_name if hasattr(item.author, "teacher_name") else "Unknown Author"
+
+    def item_author_email(self, item):
+        return item.author.email if hasattr(item.author, "email") else None
+
+    def item_pubdate(self, item):
+        # publication date
+        return item.created_at
+
+    def item_updateddate(self, item):
+        # use updated_at if you track edits
+        return getattr(item, "updated_at", item.created_at)
 
 
 # class LPJPMBPView(TemplateView):
