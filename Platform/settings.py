@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     # "crispy_bulma",
     # "crispy_tailwind",
     # "crispy_bootstrap4",
+    "django.contrib.syndication",
 ]
 
 

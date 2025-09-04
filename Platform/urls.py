@@ -24,7 +24,7 @@ from django.contrib.flatpages.views import flatpage
 from django.views.generic import ListView
 from dashboard.views import HomeView, HumasDashboardView
 from galleries.models import Gallery
-from utils.views import ProkerPMBPView, SMAITHomeWiew
+from utils.views import LatestPostsFeed, ProkerPMBPView, SMAITHomeWiew
 from utils_piket.menu_link import export_home_kwargs
 from utils_piket.views import DashboardListView, ReporterRecapDownloadExcelView, ReporterRecapListView, TeacherAbsenceDetailDownloadExcelView, TeacherAbsenceDownloadExcelView, TeacherAbsenceListView, TeacherPutriRecapListView, TeacherRecapDetailView, TeacherRecapDownloadExcelView, TeacherRecapListView, device_webhook, message_webhook, tracking_webhook
 from .sitemaps import StaticViewSitemap
@@ -85,6 +85,8 @@ urlpatterns = [
     path("pmbp/proker/delete/<int:pk>/", ProgramKerjaDeleteView.as_view(), name="proker-delete"),
     path('pmbp/olympiads/', include('olympiads.urls')),
     path('pmbp/projects/', include('projects.urls')),
+
+    path("rss/", LatestPostsFeed(), name="post_feed"),
 
     path('dashboard/', include('dashboard.urls')),
     path('notifications/', include('notifications.urls')),

@@ -251,6 +251,31 @@ class ProkerPMBPView(TemplateView):
         context["tahun_ajaran_lalu"] = settings.TAHUN_AJARAN_LALU
         
         return context
+    
+
+from django.contrib.syndication.views import Feed
+from django.urls import reverse
+from .models import Post
+
+class LatestPostsFeed(Feed):
+    title = "My Blog Updates"
+    link = "/rss/"
+    description = "Latest posts from my blog"
+
+    def items(self):
+        # Return the latest 10 posts
+        return Post.objects.order_by("-created_at")[:10]
+
+    def item_title(self, item):
+        return item.title
+
+    def item_description(self, item):
+        return item.content  # or item.excerpt if you have one
+
+    def item_link(self, item):
+        # Make sure your Post model has a get_absolute_url()
+        return reverse("post_detail", args=[item.pk])
+
 
 
 # class LPJPMBPView(TemplateView):
