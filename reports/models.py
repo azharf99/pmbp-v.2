@@ -85,7 +85,7 @@ class NonTeacherReport(models.Model):
     class Meta:
         unique_together = (
             ('report_date', 'teacher', 'schedule_time'),
-            ('report_date', 'teacher', 'type', 'semester', 'academic_year'),
+            ('report_date', 'teacher', 'schedule_time', 'type', 'semester', 'academic_year'),
         )
         ordering = ["-report_date", "schedule_time", "teacher__teacher_name"]
         verbose_name = _("Non Teacher Report")

@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib import messages as django_messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import User, Group
+from django.core.exceptions import PermissionDenied
 from django.db import IntegrityError
 from django.db.models import Q, Model, Count
 from django.db.models.query import QuerySet
@@ -67,6 +68,17 @@ class SendSuccessMessageLogAndWhatsapp:
                 message=self.custom_message if self.custom_message else f"berhasil {self.action_flag} data {self.app} {self.object_name}"
         )
         send_WA_create_update_delete(self.teacher_phone or '085701570100', self.action_flag, f'{self.app} {self.object_name}', f'{self.app_link}/', f'detail/{self.object_name.id}/')
+
+
+class UserRestrictedView(View):
+    user_granted = ''
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if not request.user.username == self.user_granted:
+            if request.user.is_superuser:
+                return super().dispatch(request, *args, **kwargs)
+            raise PermissionDenied("Anda tidak memiliki akses ke halaman ini.")
+        return super().dispatch(request, *args, **kwargs)
 
 
 class TitleView(View):

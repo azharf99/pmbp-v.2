@@ -32,10 +32,17 @@
     </style>
 </head>
 <body>
+    {% if type == 'non-teacher' %}
+    <h3>Rekap Jam Kehadiran Individual Non Pengajar</h3>
+    <h4>Periode: {{ month }} {{year}}</h4>
+    <h5>Nama : {{ teacher }}</h5>
+    <h5>Total Jam Hadir : {{ total_jam }}</h5>
+    {% else %}
     <h3>Rekap Individual Jam Mengajar</h3>
     <h4>Periode: {{ month }} {{year}}</h4>
     <h5>Nama Guru : {{ teacher }}</h5>
     <h5>Total Jam Mengajar : {{ total_jam }}</h5>
+    {% endif %}
     <table>
         <thead>
             <tr>
@@ -56,6 +63,10 @@
             {% endfor %}
         </tbody>
     </table>
+    {% if type == 'non-teacher' %}
+    <p><strong>Total Jam Hadir:</strong> {{ total_jam }}</p>
+    {% else %}
     <p><strong>Total Jam Mengajar:</strong> {{ total_jam }}</p>
+    {% endif %}
 </body>
 </html>

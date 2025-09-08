@@ -10,9 +10,9 @@ from classes.models import Class
 from reports.models import NonTeacherReport, Report
 from typing import Any
 from django.urls import reverse, reverse_lazy
-from schedules.models import ReporterSchedule
+from schedules.models import Period, ReporterSchedule
 from users.models import Teacher
-from utils.mixins import BaseLoginAndPermissionFormView, BaseLoginAndPermissionModelDeleteView, ListViewWithTableAndSearch
+from utils.mixins import BaseLoginAndPermissionFormView, BaseLoginAndPermissionModelDeleteView, ListViewWithTableAndSearch, UserRestrictedView
 from utils_piket.mixins import BaseAuthorizedFormView, BaseModelDateBasedListView, BaseModelDeleteView, BaseModelUploadView, BaseAuthorizedModelView, ModelDownloadExcelView, BaseModelQueryListView, QuickReportMixin, ReportUpdateQuickViewMixin, ReportUpdateReporterMixin, SubmitViewMixins
 from utils_piket.validate_datetime import get_day
 from utils_piket.whatsapp_albinaa import send_whatsapp_group, send_whatsapp_report
@@ -304,7 +304,8 @@ class ReportDownloadPDFView(ModelDownloadExcelView):
             return HttpResponseRedirect(reverse('report-individual'))
 
 
-class NonTeacherReportListView(ListViewWithTableAndSearch):
+class NonTeacherReportListView(UserRestrictedView, ListViewWithTableAndSearch):
+    user_granted = 'al_ghozali'
     model = NonTeacherReport
     # template_name = 'pages/list-with-table.html'
     table_column_names = ['No', 'Tanggal', 'Nama', 'Jam ke-', 'Status', 'Aksi']
@@ -316,13 +317,14 @@ class NonTeacherReportListView(ListViewWithTableAndSearch):
         'report-non-teacher-individual',
     ]
 
-class NonTeacherReportDetailView(DetailView):
+class NonTeacherReportDetailView(UserRestrictedView, DetailView):
+    user_granted = 'al_ghozali'
     model = NonTeacherReport
 
-class NonTeacherReportCreateView(BaseLoginAndPermissionFormView, CreateView):
+class NonTeacherReportCreateView(UserRestrictedView, BaseLoginAndPermissionFormView, CreateView):
+    user_granted = 'al_ghozali'
     model = NonTeacherReport
     form_class = NonTeacherReportForm
-    template_name = 'pages/form.html'
     permission_required = 'reports.add_nonteacherreport'
     links = [
         'report-non-teacher-list',
@@ -332,7 +334,32 @@ class NonTeacherReportCreateView(BaseLoginAndPermissionFormView, CreateView):
         'report-non-teacher-individual',
     ]
 
-class NonTeacherReportUpdateView(BaseLoginAndPermissionFormView, UpdateView):
+    def post(self, request, *args, **kwargs):
+        data = request.POST.copy()
+        report_date = data.get('date')
+        teachers = list(Teacher.objects.select_related("user").filter(status="Aktif", gender="L", work_area="SMA-Non Guru").order_by("teacher_name").values_list('id', flat=True))
+        periods = list(Period.objects.filter(type="Putra").order_by("number").values_list('id', flat=True))
+        for teacher_id in teachers:
+            for time_index in periods:
+                NonTeacherReport.objects.update_or_create(
+                    teacher_id=teacher_id,
+                    report_date=report_date,
+                    schedule_time_id=time_index,
+                    defaults={
+                        'status': data.get(f'status_{time_index}_{teacher_id}'),
+                    }
+                )
+        return HttpResponseRedirect(reverse('report-non-teacher-list'))
+
+    def get_context_data(self, **kwargs):
+        c = super().get_context_data(**kwargs)
+        c["teachers"] = Teacher.objects.select_related("user").filter(status="Aktif", gender="L", work_area="SMA-Non Guru").order_by("teacher_name")
+        c["times"] = [i.id for i in Period.objects.filter(type="Putra").order_by("number")]
+        c["today"] = str(datetime.now().date())
+        return c
+
+class NonTeacherReportUpdateView(UserRestrictedView, BaseLoginAndPermissionFormView, UpdateView):
+    user_granted = 'al_ghozali'
     model = NonTeacherReport
     form_class = NonTeacherReportForm
     template_name = 'pages/form.html'
@@ -346,7 +373,8 @@ class NonTeacherReportUpdateView(BaseLoginAndPermissionFormView, UpdateView):
     ]
 
 
-class NonTeacherReportDeleteView(BaseLoginAndPermissionModelDeleteView):
+class NonTeacherReportDeleteView(UserRestrictedView, BaseLoginAndPermissionModelDeleteView):
+    user_granted = 'al_ghozali'
     model = NonTeacherReport
     permission_required = 'reports.delete_nonteacherreport'
     template_name ='pages/delete.html'
@@ -359,7 +387,8 @@ class NonTeacherReportDeleteView(BaseLoginAndPermissionModelDeleteView):
     ]
 
 
-class ReportNonTeacherIndividualView(BaseAuthorizedModelView, BaseModelQueryListView):
+class ReportNonTeacherIndividualView(UserRestrictedView, BaseAuthorizedModelView, BaseModelQueryListView):
+    user_granted = 'al_ghozali'
     model = NonTeacherReport
     menu_name = 'report'
     permission_required = 'reports.view_nonteacherreport'
@@ -402,7 +431,8 @@ class ReportNonTeacherIndividualView(BaseAuthorizedModelView, BaseModelQueryList
         return c
 
 
-class ReportNonTeacherDownloadPDFView(ModelDownloadExcelView):
+class ReportNonTeacherDownloadPDFView(UserRestrictedView, ModelDownloadExcelView):
+    user_granted = 'al_ghozali'
     menu_name = 'report'
     permission_required = 'reports.view_nonteacherreport'
     template_name = 'reports/download.html'
@@ -463,6 +493,7 @@ class ReportNonTeacherDownloadPDFView(ModelDownloadExcelView):
                     'month': calendar.month_name[date_start.month],
                     'year': date_start.year,
                     'header_names': self.header_names,
+                    'type': 'non-teacher',
                 })
 
                 # Generate the PDF
