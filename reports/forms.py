@@ -3,8 +3,9 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms import ModelChoiceField, ModelForm
 from django.http import Http404
-from reports.models import Report
+from reports.models import NonTeacherReport, Report
 from schedules.models import Schedule
+from users.models import Teacher
 from utils.constants import SCHEDULE_TIME
 from utils.validate_datetime import validate_date, validate_time, get_day
 
@@ -123,3 +124,24 @@ class SubmitForm(forms.Form):
             }
         ),
     )
+
+
+
+class NonTeacherReportForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Optimize related queries
+        self.fields['teacher'].queryset = Teacher.objects.select_related("user").filter(status="Aktif", gender="L", work_area = "SMA-Non Guru")
+
+        
+    class Meta:
+        model = NonTeacherReport
+        fields = ['teacher', 'report_date', 'schedule_time', 'status', 'notes']
+        widgets = {
+            'teacher': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 shadow-lg"}),
+            'report_date': forms.DateInput(attrs={"type":"date", "class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 shadow-lg"}),
+            'report_day': forms.TextInput(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 shadow-lg"}),
+            'schedule_time': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 shadow-lg"}),
+            'status': forms.Select(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 shadow-lg"}),
+            'notes': forms.Textarea(attrs={"class": "rounded-md text-black px-2 py-1 border-2 border-blue-500 shadow-lg"}),
+        }

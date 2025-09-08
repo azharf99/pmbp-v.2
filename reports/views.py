@@ -4,14 +4,15 @@ from datetime import date, datetime
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages as msg
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.views.generic import CreateView, DetailView, FormView
-from reports.forms import ReportFormV2, SubmitForm
+from django.views.generic import CreateView, DetailView, FormView, ListView, UpdateView, DeleteView
+from reports.forms import NonTeacherReportForm, ReportFormV2, SubmitForm
 from classes.models import Class
-from reports.models import Report
+from reports.models import NonTeacherReport, Report
 from typing import Any
 from django.urls import reverse, reverse_lazy
 from schedules.models import ReporterSchedule
 from users.models import Teacher
+from utils.mixins import BaseLoginAndPermissionFormView, BaseLoginAndPermissionModelDeleteView, ListViewWithTableAndSearch
 from utils_piket.mixins import BaseAuthorizedFormView, BaseModelDateBasedListView, BaseModelDeleteView, BaseModelUploadView, BaseAuthorizedModelView, ModelDownloadExcelView, BaseModelQueryListView, QuickReportMixin, ReportUpdateQuickViewMixin, ReportUpdateReporterMixin, SubmitViewMixins
 from utils_piket.validate_datetime import get_day
 from utils_piket.whatsapp_albinaa import send_whatsapp_group, send_whatsapp_report
@@ -301,3 +302,179 @@ class ReportDownloadPDFView(ModelDownloadExcelView):
         else:
             msg.warning(request, "ID guru harus dipilih.")
             return HttpResponseRedirect(reverse('report-individual'))
+
+
+class NonTeacherReportListView(ListViewWithTableAndSearch):
+    model = NonTeacherReport
+    # template_name = 'pages/list-with-table.html'
+    table_column_names = ['No', 'Tanggal', 'Nama', 'Jam ke-', 'Status', 'Aksi']
+    links = [
+        'report-non-teacher-list',
+        'report-non-teacher-detail',
+        'report-non-teacher-update',
+        'report-non-teacher-delete',
+        'report-non-teacher-individual',
+    ]
+
+class NonTeacherReportDetailView(DetailView):
+    model = NonTeacherReport
+
+class NonTeacherReportCreateView(BaseLoginAndPermissionFormView, CreateView):
+    model = NonTeacherReport
+    form_class = NonTeacherReportForm
+    template_name = 'pages/form.html'
+    permission_required = 'reports.add_nonteacherreport'
+    links = [
+        'report-non-teacher-list',
+        'report-non-teacher-detail',
+        'report-non-teacher-update',
+        'report-non-teacher-delete',
+        'report-non-teacher-individual',
+    ]
+
+class NonTeacherReportUpdateView(BaseLoginAndPermissionFormView, UpdateView):
+    model = NonTeacherReport
+    form_class = NonTeacherReportForm
+    template_name = 'pages/form.html'
+    permission_required = 'reports.change_nonteacherreport'
+    links = [
+        'report-non-teacher-list',
+        'report-non-teacher-detail',
+        'report-non-teacher-update',
+        'report-non-teacher-delete',
+        'report-non-teacher-individual',
+    ]
+
+
+class NonTeacherReportDeleteView(BaseLoginAndPermissionModelDeleteView):
+    model = NonTeacherReport
+    permission_required = 'reports.delete_nonteacherreport'
+    template_name ='pages/delete.html'
+    links = [
+        'report-non-teacher-list',
+        'report-non-teacher-detail',
+        'report-non-teacher-update',
+        'report-non-teacher-delete',
+        'report-non-teacher-individual',
+    ]
+
+
+class ReportNonTeacherIndividualView(BaseAuthorizedModelView, BaseModelQueryListView):
+    model = NonTeacherReport
+    menu_name = 'report'
+    permission_required = 'reports.view_nonteacherreport'
+    template_name = 'reports/report_individual.html'
+    queryset = NonTeacherReport.objects.select_related("teacher", "schedule_time").all()
+    paginate_by = 50
+
+    def get_queryset(self):
+        teacher_id = self.request.GET.get('q')
+        date_start = self.request.GET.get('date_start', datetime.now().date())
+        date_end = self.request.GET.get('date_end', datetime.now().date())
+
+        if isinstance(date_start, str):
+            date_start = datetime.strptime(date_start, '%Y-%m-%d').date()
+        if isinstance(date_end, str):
+            date_end = datetime.strptime(date_end, '%Y-%m-%d').date()
+
+        if isinstance(date_start, str):
+            date_start = datetime.strptime(date_start, '%Y-%m-%d').date()
+        if isinstance(date_end, str):
+            date_end = datetime.strptime(date_end, '%Y-%m-%d').date()
+        
+        if date_start.year != date_end.year or date_start.month != date_end.month:
+            msg.warning(self.request, "Tanggal awal dan akhir harus berada dalam bulan dan tahun yang sama.")
+
+        if teacher_id:
+            qs = self.queryset.filter(teacher=teacher_id, report_date__gte=date_start, report_date__lte=date_end).order_by('report_date', 'schedule_time__number')
+            return qs
+        return self.queryset.none()
+    
+    def get_context_data(self, **kwargs):
+        date_start = self.request.GET.get('date_start', date(datetime.now().date().year, datetime.now().date().month, 1))
+        date_end = self.request.GET.get('date_end', datetime.now().date())
+
+        c = super().get_context_data(**kwargs)
+        c["teachers"] = Teacher.objects.select_related("user").filter(status="Aktif", gender="L", work_area="SMA-Non Guru").order_by("teacher_name")
+        c["date_start"] = str(date_start)
+        c["date_end"] = str(date_end)
+        c["type"] = "non-teacher"
+        return c
+
+
+class ReportNonTeacherDownloadPDFView(ModelDownloadExcelView):
+    menu_name = 'report'
+    permission_required = 'reports.view_nonteacherreport'
+    template_name = 'reports/download.html'
+    queryset = NonTeacherReport.objects.select_related("teacher", "schedule_time").all()
+
+    def get(self, request, *args, **kwargs):
+        teacher_id = self.request.GET.get('q')
+        date_start = self.request.GET.get('date_start', datetime.now().date())
+        date_end = self.request.GET.get('date_end', datetime.now().date())
+        if isinstance(date_start, str):
+            date_start = datetime.strptime(date_start, '%Y-%m-%d').date()
+        if isinstance(date_end, str):
+            date_end = datetime.strptime(date_end, '%Y-%m-%d').date()
+        
+        if date_start.year != date_end.year or date_start.month != date_end.month:
+            msg.warning(request, "Tanggal awal dan akhir harus berada dalam bulan dan tahun yang sama.")
+            return HttpResponseRedirect(reverse('report-non-teacher-individual'))
+        
+        
+        if teacher_id:
+            qs = self.queryset.filter(teacher=teacher_id, report_date__gte=date_start, report_date__lte=date_end, status="Hadir").order_by('report_date', 'schedule_time__number')
+            if qs.exists():
+                data = defaultdict(lambda: {i: 0 for i in range(1, 10)})
+
+                for report in qs:
+                    report_date = report.report_date
+                    time_number = report.schedule_time.number
+                    data[report_date][time_number] = 1
+                
+                # hitung jumlah hari dalam bulan
+                all_dates = [
+                    date(date_start.year, date_start.month, day)
+                    for day in range(date_start.day, date_end.day + 1)
+                ]
+                
+                # pastikan semua tanggal ada
+                ordered_data = {}
+                for d in all_dates:
+                    if d not in data:
+                        data[d] = {i: 0 for i in range(1, 10)}
+                        data[d]["Sum"] = 0
+                    else:
+                        data[d]["Sum"] = sum(data[d][i] for i in range(1, 10))
+                    ordered_data[d] = data[d]
+
+                # Hitung total semua jam
+                total_jam = sum(row["Sum"] for row in ordered_data.values())
+
+                self.individual = True
+                self.teacher = qs.first().teacher.teacher_name
+                self.header_names = ['TANGGAL'] + [f'JAM KE-{i}' for i in range(1, 10)] + ['TOTAL JAM']
+
+                
+                html = render_to_string('jadwal_table_pdf.html', {
+                    'data': ordered_data,
+                    'total_jam': total_jam,
+                    'teacher': self.teacher,
+                    'month': calendar.month_name[date_start.month],
+                    'year': date_start.year,
+                    'header_names': self.header_names,
+                })
+
+                # Generate the PDF
+                pdf = HTML(string=html).write_pdf()
+
+                # Return the response as PDF
+                response = HttpResponse(pdf, content_type='application/pdf')
+                response['Content-Disposition'] = f'attachment; filename="LAPORAN NON PENGAJAR KELAS {self.teacher} {calendar.month_name[date_start.month]} {date_start.year}.pdf"'
+                return response
+            else:
+                msg.warning(request, "Data tidak ditemukan untuk guru yang dipilih.")
+                return HttpResponseRedirect(reverse('report-non-teacher-individual'))
+        else:
+            msg.warning(request, "ID guru harus dipilih.")
+            return HttpResponseRedirect(reverse('report-non-teacher-individual'))

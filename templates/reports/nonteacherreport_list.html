@@ -1,0 +1,11 @@
+{% extends 'pages/list-with-table.html' %}
+
+{% block data %}
+
+<td class="p-2 border border-gray-400">{{forloop.counter}}</td>
+<td class="p-2 border border-gray-400">{{object.report_date}}</td>
+<td class="p-2 border border-gray-400 text-center">{{object.teacher}}</td>
+<td class="p-2 border border-gray-400 text-center">{{object.schedule_time}}</td>
+<td class="p-2 border border-gray-400 text-center">{{object.status}}</td>
+
+{% endblock %}

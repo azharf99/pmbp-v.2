@@ -1,0 +1,17 @@
+{% if page_obj %}
+    <div class="flex mx-2 justify-center gap-2">
+      <span class="step-links">
+          {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="p-1 text-blue-500 bg-gray-100 rounded-md">&laquo; prev</a>
+          {% endif %}
+    
+          <span class="">
+            page {{page_obj.number}} of {{page_obj.paginator.num_pages}}.
+          </span>
+            
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="p-1 text-blue-500 bg-gray-100 rounded-md">next &raquo;</a>
+          {% endif %}
+      </span>
+    </div>
+  {% endif %}

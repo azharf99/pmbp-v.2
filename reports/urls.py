@@ -1,15 +1,12 @@
 from django.urls import path
-from reports.views import PutriSubmitButtonView, ReportDownloadPDFView, ReportIndividualView, ReportListView, ReportDetailView, ReportDeleteView, ReportDeleteAllView,\
-                         ReportDownloadExcelView, ReportPutriQuickCreateViewV3, ReportUploadView, \
+from reports.views import NonTeacherReportCreateView, NonTeacherReportDeleteView, NonTeacherReportDetailView, NonTeacherReportListView, NonTeacherReportUpdateView, PutriSubmitButtonView, ReportDownloadPDFView, ReportIndividualView, ReportListView, ReportDetailView, ReportDeleteView, ReportDeleteAllView,\
+                         ReportDownloadExcelView, ReportNonTeacherDownloadPDFView, ReportNonTeacherIndividualView, ReportPutriQuickCreateViewV3, ReportUploadView, \
                          ReportQuickCreateViewV3, ReportUpdateViewV3, ReportUpdatePetugasViewV3, SubmitButtonView
 from reports.views_version2 import ReportQuickCreateViewV2, ReportUpdateViewV2, ReportUpdatePetugasView
 from reports.legacy_views import ReportUpdateView
 
 urlpatterns = [
     path('', ReportListView.as_view(),  {"site_title": "REPORT LIST - PIKET SMA IT AL BINAA"}, "report-list"),
-    path("download/", ReportDownloadExcelView.as_view(),  {"site_title": "DOWNLOAD REPORT - PIKET SMA IT AL BINAA"}, "report-download"),
-    path("pdf/", ReportDownloadPDFView.as_view(),  {"site_title": "DOWNLOAD REPORT PDF - PIKET SMA IT AL BINAA"}, "report-pdf"),
-    path("individual/", ReportIndividualView.as_view(),  {"site_title": "DOWNLOAD INDIVIDUAL REPORT - PIKET SMA IT AL BINAA"}, "report-individual"),
     path("quick-create-v2/", ReportQuickCreateViewV2.as_view(),  {"site_title": "QUICK CREATE REPORT V2 - PIKET SMA IT AL BINAA"}, "report-quick-create-v2"),
     path("quick-create-v3/", ReportQuickCreateViewV3.as_view(),  {"site_title": "QUICK CREATE REPORT V3 - PIKET SMA IT AL BINAA"}, "report-quick-create-v3"),
     path("putri/quick-create-v3/", ReportPutriQuickCreateViewV3.as_view(),  {"site_title": "QUICK CREATE PUTRI REPORT V3 - PIKET SMA IT AL BINAA"}, "report-putri-quick-create-v3"),
@@ -24,4 +21,21 @@ urlpatterns = [
     path("update-v3/<int:pk>/", ReportUpdateViewV3.as_view(),  {"site_title": "UPDATE REPORT - PIKET SMA IT AL BINAA"}, "report-update-v3"),
     path("delete/<int:pk>/", ReportDeleteView.as_view(),  {"site_title": "DELETE REPORT - PIKET SMA IT AL BINAA"}, "report-delete"),
     path("delete-all/", ReportDeleteAllView.as_view(),  {"site_title": "DELETE REPORT - PIKET SMA IT AL BINAA"}, "report-delete-all"),
+
+    path("download/", ReportDownloadExcelView.as_view(),  {"site_title": "DOWNLOAD REPORT - PIKET SMA IT AL BINAA"}, "report-download"),
+    path("pdf/", ReportDownloadPDFView.as_view(),  {"site_title": "DOWNLOAD REPORT PDF - PIKET SMA IT AL BINAA"}, "report-pdf"),
+
+    path("individual/", ReportIndividualView.as_view(),  {"site_title": "DOWNLOAD INDIVIDUAL REPORT - PIKET SMA IT AL BINAA"}, "report-individual"),
+    path("individual/non-teacher/", ReportNonTeacherIndividualView.as_view(),  {"site_title": "DOWNLOAD INDIVIDUAL REPORT - PIKET SMA IT AL BINAA"}, "report-non-teacher-individual"),
+    
+
+    
+    path("non-teacher-list/", NonTeacherReportListView.as_view(),  {"site_title": "LIST REPORT NON TEACHER - PIKET SMA IT AL BINAA"}, "report-non-teacher-list"),
+    path("non-teacher/create/", NonTeacherReportCreateView.as_view(),  {"site_title": "QUICK CREATE REPORT NON TEACHER - PIKET SMA IT AL BINAA"}, "report-non-teacher-create"),
+    path("non-teacher/detail/<int:pk>/", NonTeacherReportDetailView.as_view(),  {"site_title": "DETAIL REPORT NON TEACHER - PIKET SMA IT AL BINAA"}, "report-non-teacher-detail"),
+    path("non-teacher/update/<int:pk>/", NonTeacherReportUpdateView.as_view(),  {"site_title": "UPDATE REPORT NON TEACHER - PIKET SMA IT AL BINAA"}, "report-non-teacher-update"),
+    path("non-teacher/delete/<int:pk>/", NonTeacherReportDeleteView.as_view(),  {"site_title": "DELETE REPORT NON TEACHER - PIKET SMA IT AL BINAA"}, "report-non-teacher-delete"),
+    
+    path("non-teacher/download", NonTeacherReportListView.as_view(),  {"site_title": "LIST REPORT NON TEACHER - PIKET SMA IT AL BINAA"}, "report-non-teacher-download"),
+    path("non-teacher/pdf", ReportNonTeacherDownloadPDFView.as_view(),  {"site_title": "LIST REPORT NON TEACHER - PIKET SMA IT AL BINAA"}, "report-non-teacher-pdf"),
 ]
