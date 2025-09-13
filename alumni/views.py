@@ -7,6 +7,7 @@ from django.db.models import Q, Count
 from django.urls import reverse, reverse_lazy
 from files.forms import FileForm
 from files.models import File
+from utils.mixins import BaseLoginAndPermissionFormView, BaseLoginAndPermissionModelDeleteView, BaseLoginAndPermissionRequiredView, ListViewWithTableAndSearch
 from utils_humas.mixins import GeneralAuthPermissionMixin, GeneralContextMixin, GeneralDownloadExcelView, GeneralFormDeleteMixin, GeneralFormValidateMixin
 from alumni.models import Alumni
 from alumni.forms import AlumniForm
@@ -38,13 +39,13 @@ class AlumniDashboardView(ListView):
         return c
 
 
-class AlumniIndexView(GeneralContextMixin, ListView):
+class AlumniIndexView(ListViewWithTableAndSearch):
     model = Alumni
     paginate_by = 50
 
 
 
-class AlumniSearchView(GeneralContextMixin, ListView):
+class AlumniSearchView(ListViewWithTableAndSearch):
     model = Alumni
     template_name = 'alumni/alumni_search.html'
 
@@ -70,20 +71,22 @@ class AlumniSearchView(GeneralContextMixin, ListView):
         return self.render_to_response(context)
 
 
-class AlumniCreateView(GeneralFormValidateMixin, CreateView):
+class AlumniCreateView(BaseLoginAndPermissionFormView, CreateView):
     model = Alumni
     form_class = AlumniForm
-    form_name = "Create"
+    form_name = "Create" 
     app_name = "Alumni"
     type_url = 'alumni/'
     permission_required = 'alumni.add_alumni'
     
 
-class AlumniQuickUploadView(GeneralAuthPermissionMixin, CreateView):
+class AlumniQuickUploadView(BaseLoginAndPermissionFormView, CreateView):
     model = File
     form_class = FileForm
     permission_required = 'alumni.add_alumni'
     form_name = "Import Excel Alumni"
+    template_name = 'pages/form.html'
+    links = ['alumni:alumni-list', 'alumni:alumni-detail', 'alumni:alumni-update', 'alumni:alumni-delete', 'alumni:alumni-quick-upload']
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         self.object = form.save(commit=False)
@@ -141,12 +144,12 @@ class AlumniQuickUploadView(GeneralAuthPermissionMixin, CreateView):
     
     
     
-class AlumniDetailView(GeneralAuthPermissionMixin, DetailView):
+class AlumniDetailView(BaseLoginAndPermissionRequiredView, DetailView):
     model = Alumni
     permission_required = 'alumni.view_alumni'
 
 
-class AlumniUpdateView(GeneralFormValidateMixin, UpdateView):
+class AlumniUpdateView(BaseLoginAndPermissionFormView, UpdateView):
     model = Alumni
     form_class = AlumniForm
     app_name = "Alumni"
@@ -155,7 +158,7 @@ class AlumniUpdateView(GeneralFormValidateMixin, UpdateView):
     permission_required = 'alumni.change_alumni'
 
 
-class AlumniDeleteView(GeneralFormDeleteMixin):
+class AlumniDeleteView(BaseLoginAndPermissionModelDeleteView):
     model = Alumni
     success_url = reverse_lazy("alumni:alumni-list")
     app_name = 'Alumni'
