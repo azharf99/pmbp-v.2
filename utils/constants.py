@@ -71,6 +71,7 @@ STATUS_CHOICES = (
     ("Izin", _("Izin")),
     ("Sakit", _("Sakit")),
     ("Tanpa Keterangan", _("Tanpa Keterangan")),
+    ("Off", _("Off")),
 )
 
 
