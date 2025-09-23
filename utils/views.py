@@ -157,11 +157,18 @@ class LPJPMBPView(TemplateView):
                                                                     .order_by('report_date__year', 'report_date__month')\
                                                                     .distinct()
         
-        olympiad_reports_recap = OlympiadReport.objects.filter(report_date__gte=settings.TANGGAL_TAHUN_AJARAN, report_date__lte=settings.TANGGAL_TAHUN_AJARAN_END)\
+        olympiad_reports_recap_now = OlympiadReport.objects.filter(report_date__gte=settings.TANGGAL_TAHUN_AJARAN, report_date__lte=settings.TANGGAL_TAHUN_AJARAN_END)\
                                                                     .values('field_name__field_name')\
                                                                     .annotate(count=Count('field_name'))\
                                                                     .order_by()\
                                                                     .distinct()
+        olympiad_reports_recap_prev = OlympiadReport.objects.filter(report_date__gte=settings.TANGGAL_TAHUN_AJARAN_LALU, report_date__lte=settings.TANGGAL_TAHUN_AJARAN)\
+                                                                    .values('field_name__field_name')\
+                                                                    .annotate(count=Count('field_name'))\
+                                                                    .order_by()\
+                                                                    .distinct()
+        
+        olympiad_reports_recap = list(zip(olympiad_reports_recap_prev, olympiad_reports_recap_now))
                                                                     
         olympiad_reports = OlympiadReport.objects.filter(report_date__gte=settings.TANGGAL_TAHUN_AJARAN, report_date__lte=settings.TANGGAL_TAHUN_AJARAN_END)\
                                                                     .values('report_date')
@@ -226,6 +233,7 @@ class LPJPMBPView(TemplateView):
         context["reports_ekskul_recap"] = reports_ekskul_recap
         context["olympiad_reports_recap"] = olympiad_reports_recap
         context["tahun_ajaran"] = settings.TAHUN_AJARAN
+        context["tahun_ajaran_lalu"] = settings.TAHUN_AJARAN_LALU
         
         return context
 
