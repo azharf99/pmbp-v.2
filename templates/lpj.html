@@ -484,25 +484,27 @@
 
     <div class="p-6 pb-16 mx-2 my-2 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
       <p class="text-center font-bold">Rekap Pertemuan Olimpiade T.A. {{tahun_ajaran}}</p>
-      <div class="flex justify-center mb-4 p-4 gap-4">
-        <div class="w-5 bg-green-500"></div>
-        <p class="text-xs">T.A. {{tahun_ajaran_lalu}}</p>
-        <div class="w-5 bg-indigo-500"></div>
-        <p class="text-xs">T.A. {{tahun_ajaran}}</p>
-      </div>
       <div class="flex mb-24">
-        {% for object in olympiad_reports_recap %}
+        {% for object in olympiad_reports_recap_now %}
         <div class="px-4 border-b first:border-l border-gray-600 dark:border-white flex flex-col justify-end items-center relative">
-          <p class="text-xs">{{object.0.count}}</p>
-          <canvas height="{% widthratio object.0.count 5 400 %}px" class="bg-green-500 w-5">
+          <p class="text-xs">{{object.count}}</p>
+          <canvas height="{% widthratio object.count 5 400 %}px" class="bg-indigo-500 w-5">
           </canvas>
-          <p class="absolute translate-y-16 text-xs rotate-45">{{object.0.field_name__field_name}}</p>
+          <p class="absolute translate-y-16 text-xs rotate-45">{{object.field_name__field_name}}</p>
         </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="p-6 pb-16 mx-2 my-2 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-auto">
+      <p class="text-center font-bold">Rekap Pertemuan Olimpiade T.A. {{tahun_ajaran_lalu}}</p>
+      <div class="flex mb-24">
+        {% for object in olympiad_reports_recap_prev %}
         <div class="px-4 border-b first:border-l border-gray-600 dark:border-white flex flex-col justify-end items-center relative">
-          <p class="text-xs">{{object.1.count}}</p>
-          <canvas height="{% widthratio object.1.count 5 400 %}px" class="bg-indigo-500 w-5">
+          <p class="text-xs">{{object.count}}</p>
+          <canvas height="{% widthratio object.count 5 400 %}px" class="bg-green-500 w-5">
           </canvas>
-          <p class="absolute translate-y-16 text-xs rotate-45">{{object.1.field_name__field_name}}</p>
+          <p class="absolute translate-y-16 text-xs rotate-45">{{object.field_name__field_name}}</p>
         </div>
         {% endfor %}
       </div>
