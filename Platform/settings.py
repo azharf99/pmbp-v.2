@@ -267,6 +267,11 @@ if DEBUG:
     ]
 
 SITE_ID = 1
+if DEBUG:
+    SITE_URL = "http://127.0.0.1:8000"
+else:  
+    SITE_URL = "https://smait.albinaa.sch.id/"
+
 
 
 # CKEditor Config
@@ -336,6 +341,13 @@ else:
 # CRISPY_TEMPLATE_PACK = "bulma"
 # CRISPY_TEMPLATE_PACK = "bootstrap4"
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8000",    
+    "http://127.0.0.1:9000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
 
 if not DEBUG:
 
@@ -343,9 +355,6 @@ if not DEBUG:
         "https://smaitalbinaa.pythonanywhere.com",
         "https://pythonanywhere.com",
         "https://smait.albinaa.sch.id",
-        "http://localhost:8080",
-        "http://127.0.0.1:8000",
-        "http://127.0.0.1:9000",
     ]
 
     CORS_ALLOW_METHODS = (

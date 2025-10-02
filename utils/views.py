@@ -271,53 +271,86 @@ class LatestPostsFeed(Feed):
     description = "Latest posts from my blog"
 
     def items(self):
-        # Return the latest 10 posts
-        return Post.objects.order_by("-created_at")[:10]
+        return Post.objects.filter(status="published").order_by("-created_at")[:10]
 
     def item_title(self, item):
         return item.title
 
+    # def item_description(self, item):
+    #     return item.content  # or item.excerpt if you have one
     def item_description(self, item):
-        return item.content  # or item.excerpt if you have one
+        # Include the image + excerpt
+        img_url = settings.SITE_URL + item.featured_image.url if item.featured_image else ""
+        return f'<p><img src="{img_url}" alt="{item.title}" /></p>{item.content}'
 
     def item_link(self, item):
         # Make sure your Post model has a get_absolute_url()
         return reverse("post-detail", args=[item.slug])
+    
+    def item_enclosures(self, item):
+        if item.featured_image:
+            return [settings.SITE_URL + item.featured_image.url]
+        return []
+
+
+class ImageAtom1Feed(Atom1Feed):
+    """
+    Custom Atom feed with media:content support for images
+    """
+    def add_item_elements(self, handler, item):
+        super().add_item_elements(handler, item)
+
+        # Add <link rel="enclosure" ...> for the featured image
+        if item.get("image_url"):
+            handler.addQuickElement("link", "",
+                {"rel": "enclosure", "href": item["image_url"], "type": "image/jpeg"}
+            )
+
+            # Or alternatively add <media:content>
+            handler.startElement("media:content", {
+                "url": item["image_url"],
+                "medium": "image",
+            })
+            handler.endElement("media:content")
 
 
 class LatestPostsAtomFeed(Feed):
-    feed_type = Atom1Feed
+    feed_type = ImageAtom1Feed
     title = "My Blog Updates (Atom)"
     link = "/atom/"
     subtitle = "Latest posts from my blog"
 
     def items(self):
-        return Post.objects.order_by("-created_at")[:10]
+        return Post.objects.filter(status="published").order_by("-created_at")[:10]
 
     def item_title(self, item):
         return item.title
 
     def item_description(self, item):
-        return item.content
+        img_url = settings.SITE_URL + item.featured_image.url if item.featured_image else ""
+        return f'<p><img src="{img_url}" alt="{item.title}" /></p>{item.content}'
 
     def item_link(self, item):
         return reverse("post-detail", args=[item.slug])
 
-    # ✅ Atom extra fields
+    # Atom extra fields
     def item_author_name(self, item):
-        # assuming Post has a ForeignKey to User
-        return item.author.teacher_name if hasattr(item.author, "teacher_name") else "Unknown Author"
+        return getattr(item.author, "teacher_name", "Unknown Author")
 
     def item_author_email(self, item):
-        return item.author.email if hasattr(item.author, "email") else None
+        return getattr(item.author, "email", None)
 
     def item_pubdate(self, item):
-        # publication date
         return item.created_at
 
     def item_updateddate(self, item):
-        # use updated_at if you track edits
         return getattr(item, "updated_at", item.created_at)
+
+    def item_extra_kwargs(self, item):
+        """Pass image URL down to custom feed generator"""
+        if item.featured_image:
+            return {"image_url": settings.SITE_URL + item.featured_image.url}
+        return {}
 
 
 # class LPJPMBPView(TemplateView):
