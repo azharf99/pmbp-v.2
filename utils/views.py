@@ -288,7 +288,8 @@ class LatestPostsFeed(Feed):
         return reverse("post-detail", args=[item.slug])
     
     def item_enclosures(self, item):
-        if item.featured_image:
+        """Return image URL so feed includes <enclosure>"""
+        if item.featured_image and hasattr(item.featured_image, "url"):
             return [settings.SITE_URL + item.featured_image.url]
         return []
 
