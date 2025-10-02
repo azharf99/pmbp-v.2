@@ -18,7 +18,9 @@ from users.models import Teacher
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Atom1Feed
 from django.urls import reverse
-
+from django.utils.feedgenerator import Enclosure
+import mimetypes
+import os
 
 class SMAITHomeWiew(ListView):
     model = Prestasi
@@ -268,7 +270,7 @@ class ProkerPMBPView(TemplateView):
 class LatestPostsFeed(Feed):
     title = "My Blog Updates"
     link = "/rss/"
-    description = "Latest posts from my blog"
+    description = "Latest posts from my SMA IT AL BINAA"
 
     def items(self):
         return Post.objects.filter(status="published").order_by("-created_at")[:10]
@@ -276,43 +278,64 @@ class LatestPostsFeed(Feed):
     def item_title(self, item):
         return item.title
 
-    # def item_description(self, item):
-    #     return item.content  # or item.excerpt if you have one
     def item_description(self, item):
-        # Include the image + excerpt
-        img_url = settings.SITE_URL + item.featured_image.url if item.featured_image else ""
+        # embed image in the HTML description (readers that parse HTML will show it)
+        img_url = ""
+        img = item.featured_image
+        if img and hasattr(img, "url"):
+            img_url = settings.SITE_URL.rstrip("/") + img.url
+        elif img:
+            # fallback if field is stored as a raw string
+            img_url = settings.SITE_URL.rstrip("/") + settings.MEDIA_URL + str(img).lstrip("/")
+
         return f'<p><img src="{img_url}" alt="{item.title}" /></p>{item.content}'
 
     def item_link(self, item):
-        # Make sure your Post model has a get_absolute_url()
         return reverse("post-detail", args=[item.slug])
-    
+
     def item_enclosures(self, item):
-        """Return image URL so feed includes <enclosure>"""
-        if item.featured_image and hasattr(item.featured_image, "url"):
-            return [settings.SITE_URL + item.featured_image.url]
-        return []
+        """Return a list of django.utils.feedgenerator.Enclosure objects."""
+        img = item.featured_image
+        if not img:
+            return []
+
+        # Resolve absolute URL
+        if hasattr(img, "url"):
+            url = settings.SITE_URL.rstrip("/") + img.url
+        else:
+            url = settings.SITE_URL.rstrip("/") + settings.MEDIA_URL + str(img).lstrip("/")
+
+        # Try to determine length (file size). Works for local files and when size is available.
+        length = "0"
+        if hasattr(img, "size") and img.size:
+            length = str(img.size)
+        elif hasattr(img, "path") and os.path.exists(img.path):
+            length = str(os.path.getsize(img.path))
+
+        # Guess MIME type based on URL/filename
+        mime_type, _ = mimetypes.guess_type(url)
+        if not mime_type:
+            mime_type = "image/jpeg"
+
+        return [Enclosure(url, length, mime_type)]
 
 
 class ImageAtom1Feed(Atom1Feed):
     """
-    Custom Atom feed with media:content support for images
+    Custom Atom feed with <link rel="enclosure"> for images.
     """
     def add_item_elements(self, handler, item):
         super().add_item_elements(handler, item)
 
-        # Add <link rel="enclosure" ...> for the featured image
-        if item.get("image_url"):
-            handler.addQuickElement("link", "",
-                {"rel": "enclosure", "href": item["image_url"], "type": "image/jpeg"}
-            )
+        image_url = item.get("image_url")
+        image_length = item.get("image_length", "0")
+        image_type = item.get("image_type", "image/jpeg")
 
-            # Or alternatively add <media:content>
-            handler.startElement("media:content", {
-                "url": item["image_url"],
-                "medium": "image",
-            })
-            handler.endElement("media:content")
+        if image_url:
+            handler.addQuickElement(
+                "link", "",
+                {"rel": "enclosure", "href": image_url, "length": image_length, "type": image_type}
+            )
 
 
 class LatestPostsAtomFeed(Feed):
@@ -328,13 +351,18 @@ class LatestPostsAtomFeed(Feed):
         return item.title
 
     def item_description(self, item):
-        img_url = settings.SITE_URL + item.featured_image.url if item.featured_image else ""
+        img_url = ""
+        img = item.featured_image
+        if img and hasattr(img, "url"):
+            img_url = settings.SITE_URL.rstrip("/") + img.url
+        elif img:
+            img_url = settings.SITE_URL.rstrip("/") + settings.MEDIA_URL + str(img).lstrip("/")
+
         return f'<p><img src="{img_url}" alt="{item.title}" /></p>{item.content}'
 
     def item_link(self, item):
         return reverse("post-detail", args=[item.slug])
 
-    # Atom extra fields
     def item_author_name(self, item):
         return getattr(item.author, "teacher_name", "Unknown Author")
 
@@ -348,10 +376,35 @@ class LatestPostsAtomFeed(Feed):
         return getattr(item, "updated_at", item.created_at)
 
     def item_extra_kwargs(self, item):
-        """Pass image URL down to custom feed generator"""
-        if item.featured_image:
-            return {"image_url": settings.SITE_URL + item.featured_image.url}
-        return {}
+        """
+        Pass extra fields (image URL, size, type) to ImageAtom1Feed
+        so it can add <link rel="enclosure">
+        """
+        img = item.featured_image
+        if not img:
+            return {}
+
+        if hasattr(img, "url"):
+            url = settings.SITE_URL.rstrip("/") + img.url
+        else:
+            url = settings.SITE_URL.rstrip("/") + settings.MEDIA_URL + str(img).lstrip("/")
+
+        # length (try to get file size if possible)
+        length = "0"
+        if hasattr(img, "size") and img.size:
+            length = str(img.size)
+        elif hasattr(img, "path") and os.path.exists(img.path):
+            length = str(os.path.getsize(img.path))
+
+        mime_type, _ = mimetypes.guess_type(url)
+        if not mime_type:
+            mime_type = "image/jpeg"
+
+        return {
+            "image_url": url,
+            "image_length": length,
+            "image_type": mime_type,
+        }
 
 
 # class LPJPMBPView(TemplateView):
