@@ -274,8 +274,8 @@ class PrivatePrintView(LoginRequiredMixin, ListView):
         month = self.request.GET.get("month")
         year = self.request.GET.get("year")
         if month and year:
-            return Private.objects.prefetch_related("kehadiran_santri", "kelompok__santri", "pembimbing", "pelajaran__pembimbing", "kelompok__pelajaran").filter(tanggal_bimbingan__month=month, tanggal_bimbingan__year=year).values("pembimbing__nama_guru").annotate(dcount=Count("pelajaran"))
-        return Private.objects.prefetch_related("kehadiran_santri", "kelompok__santri", "pembimbing", "pelajaran__pembimbing", "kelompok__pelajaran").filter(tanggal_bimbingan__month=timezone.now().month, tanggal_bimbingan__year=timezone.now().year).values("pembimbing__nama_guru").annotate(dcount=Count("pelajaran"))
+            return Private.objects.prefetch_related("kehadiran_santri", "kelompok__santri", "pembimbing", "pelajaran__pembimbing", "kelompok__pelajaran").filter(tanggal_bimbingan__month=month, tanggal_bimbingan__year=year).values("pembimbing__teacher_name").annotate(dcount=Count("pelajaran"))
+        return Private.objects.prefetch_related("kehadiran_santri", "kelompok__santri", "pembimbing", "pelajaran__pembimbing", "kelompok__pelajaran").filter(tanggal_bimbingan__month=timezone.now().month, tanggal_bimbingan__year=timezone.now().year).values("pembimbing__teacher_name").annotate(dcount=Count("pelajaran"))
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         c = super().get_context_data(**kwargs)

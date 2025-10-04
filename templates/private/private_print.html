@@ -46,7 +46,7 @@
           {% for object in object_list %}
           <tr>
             <td class="p-2 border border-gray-400 text-center">{{forloop.counter}}</td>
-            <td class="p-2 border border-gray-400">{{object.pembimbing__nama_guru|default:"-"}}</td>
+            <td class="p-2 border border-gray-400">{{object.pembimbing__teacher_name|default:"-"}}</td>
             <td class="p-2 border border-gray-400 text-center">{{object.dcount|default:0}}</td>
           </tr>
           {% endfor %}
