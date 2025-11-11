@@ -280,7 +280,7 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
         teachers = request.POST.getlist("teachers")
         students = Student.objects.select_related("student_class").filter(student_status="Aktif", student_class_id=class_id)
         random_nomor_surat = random.randint(1, 114)
-        target_tilawah = Target.objects.get_or_create(
+        target_tilawah, is_created = Target.objects.get_or_create(
             tanggal = date,
             defaults=dict(
                 nomor_surat = random_nomor_surat,
