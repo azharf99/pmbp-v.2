@@ -392,5 +392,16 @@ document.addEventListener("DOMContentLoaded", (e)=>{
   });
 
 </script>
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/selectize.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/selectize.bootstrap3.min.css' %}"/>
+  <script>
+      $(document).ready(function () {
+          $('#teachers').selectize({
+              sortField: 'text',
+              maxItems: 2,
+          });
+      });
+  </script>
   
 {% endblock content %}
