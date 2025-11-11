@@ -28,8 +28,8 @@ from tahfidz.forms import TahfidzForm, TargetForm, TilawahForm
 from userlog.models import UserLog
 from utils.whatsapp_albinaa import send_WA_create_update_delete
 from numpy import int8
-
 from utils_piket.mixins import ModelDownloadExcelView
+import random
 
 
 # Tahfidz Controllers
@@ -282,9 +282,9 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
         target_tilawah = Target.objects.get_or_create(
             tanggal = date,
             defaults=dict(
-                nomor_surat = 1,
-                nama_surat = QURAN_SURAH_DICT.get(1, "Al-Fatihah"),
-                ayat = 1,
+                nomor_surat = random.randint(1, 114),
+                nama_surat = QURAN_SURAH_DICT.get(f"{random.randint(1, 114)}", "Al-Fatihah"),
+                ayat = random.randint(1, 300),
             )
         )
         for student in students:
