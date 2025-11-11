@@ -279,11 +279,12 @@ class TilawahQuickUploadView(LoginRequiredMixin, PermissionRequiredMixin, Create
             raise BadRequest("Tanggal tidak valid!")
         teachers = request.POST.getlist("teachers")
         students = Student.objects.select_related("student_class").filter(student_status="Aktif", student_class_id=class_id)
+        random_nomor_surat = random.randint(1, 114)
         target_tilawah = Target.objects.get_or_create(
             tanggal = date,
             defaults=dict(
-                nomor_surat = random.randint(1, 114),
-                nama_surat = QURAN_SURAH_DICT.get(f"{random.randint(1, 114)}", "Al-Fatihah"),
+                nomor_surat = random_nomor_surat,
+                nama_surat = QURAN_SURAH_DICT.get(f"{random_nomor_surat}", "Al-Fatihah"),
                 ayat = random.randint(1, 300),
             )
         )
