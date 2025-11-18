@@ -56,7 +56,7 @@ class BaseAuthorizedFormView(BaseAuthorizedModelView):
         return super().form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
-        django_messages.error(self.request, self.error_message)
+        django_messages.error(self.request, form.errors.as_text() or self.error_message)
         return super().form_invalid(form)
 
 

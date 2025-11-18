@@ -132,6 +132,8 @@ class ScheduleSearchView(BaseAuthorizedModelView, BaseModelDateBasedListView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context.update({"search": True})
+        classes = Class.objects.all()
+        context.update({"classes": classes})
         return context
 
 class ScheduleDetailView(BaseAuthorizedModelView, DetailView):

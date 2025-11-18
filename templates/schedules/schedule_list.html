@@ -48,7 +48,7 @@
           <select name="query_class" id="query_class" class="border border-blue-500 rounded-md py-1 m-1 px-2 text-black">
             <option value selected>---Pilih Kelas---</option>
             {% for class in classes %}
-            <option value="{{class.class_name}}" {% if query_class == "{{class.class_name}}" %} selected {% endif %}>{{class.short_class_name}}</option>
+            <option value="{{class.class_name}}" {% if query_class == class.class_name %} selected {% endif %}>{{class.short_class_name}}</option>
             {% endfor %}
           </select>
           <label for="query_day"></label>
