@@ -567,7 +567,6 @@ class SubmitViewMixins(LoginRequiredMixin, PermissionRequiredMixin, FormView):
             is_complete = report.is_complete
             # is_submitted = report.is_submitted
             status = report.status
-            print(f"Report ID: {report.id}, Schedule Time: {schedule_time}, Is Complete: {is_complete}, Status: {status}")
             if schedule_time not in grouped_dict.keys():
                 grouped_dict[schedule_time] = []
                 if not is_complete and status != "Hadir":
@@ -583,8 +582,6 @@ class SubmitViewMixins(LoginRequiredMixin, PermissionRequiredMixin, FormView):
                 grouped_data.append(grouped_dict[time_num])
             else:
                 grouped_data.append([])
-        print(grouped_dict)
-        print(grouped_data)
 
         messages = f'''*[LAPORAN KETIDAKHADIRAN GURU DALAM KBM]*
 *TIM PIKET SMAS IT AL BINAA*
