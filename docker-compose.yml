@@ -6,7 +6,6 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
@@ -16,12 +15,13 @@ services:
 
   # CONTAINER DJANGO
   web:
-    image: azharfa/albinaa-web:latest
+    # image: azharfa/albinaa-web:latest
+    build: .
     container_name: albinaa_web
     restart: always
     # Menjalankan migrasi database otomatis, lalu menyalakan server Gunicorn
     # CATATAN: Ganti "nama_folder_utama.wsgi" dengan nama folder tempat file wsgi.py berada (biasanya sama dengan nama project Django-mu)
-    command: bash -c "python manage.py migrate && gunicorn Platform.wsgi:application --bind 0.0.0.0:8000"
+    command: bash -c "python manage.py migrate && gunicorn Platform.wsgi:application --bind 0.0.0.0:8000 --timeout 120 --workers 2 --threads 4"
     ports:
       - "8002:8000"
     environment:
