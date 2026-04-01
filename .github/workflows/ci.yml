@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ] # Hanya trigger deploy jika push ke branch main
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
