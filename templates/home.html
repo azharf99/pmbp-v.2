@@ -153,7 +153,7 @@
                 {% for object in object_list %}
                 <!-- Course Card 1 -->
                 <div class="bg-white p-8 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl border border-blue-100 dark:bg-gray-800 dark:border-gray-700">
-                    <img src="{{object.photo.url}}" alt="Primary school children in classroom" class="rounded-lg mb-6 w-full h-48 object-cover">
+                    <img src="{% if object.photo %}  {{object.photo.url}} {% else %} https://placehold.co/300x200/60a5fa/ffffff?text=No Image {% endif %}" alt="Primary school children in classroom" class="rounded-lg mb-6 w-full h-48 object-cover">
                     <h3 class="text-xl font-semibold text-blue-700 mb-3 dark:text-blue-300">{{object.awardee}}</h3>
                     <p class="text-gray-600 mb-2 text-sm dark:text-gray-400">
                         {{object.predicate|upper}} {{object.name|upper}} {{object.level|upper}} {{object.year|upper}}

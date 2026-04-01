@@ -1,0 +1,40 @@
+services:
+  # CONTAINER MYSQL 8 (Dengan pembatasan memori)
+  db_mysql:
+    image: mysql:8.0
+    container_name: albinaa_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    # MANTRA AJAIB: Membatasi InnoDB Buffer Pool agar tidak memakan habis RAM VPS-mu
+    command: --innodb-buffer-pool-size=128M --max-connections=50
+
+  # CONTAINER DJANGO
+  web:
+    image: albinaa-web:latest
+    container_name: albinaa_web
+    restart: always
+    # Menjalankan migrasi database otomatis, lalu menyalakan server Gunicorn
+    # CATATAN: Ganti "nama_folder_utama.wsgi" dengan nama folder tempat file wsgi.py berada (biasanya sama dengan nama project Django-mu)
+    command: bash -c "python manage.py migrate && gunicorn Platform.wsgi:application --bind 0.0.0.0:8000"
+    ports:
+      - "8002:8000"
+    environment:
+      - DB_HOST=db_mysql
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PORT=3306
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=False # Wajib False saat di VPS
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+    depends_on:
+      - db_mysql
+
+volumes:
+  mysql_data:

@@ -1,17 +1,23 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+
+from courses.models import Subject
+from schedules.models import Period
+from users.models import Teacher
 from .models import Schedule, Course, Class
-from .models import WEEKDAYS, SCHEDULE_TIME
+from utils.constants import SCHEDULE_WEEKDAYS
 from datetime import datetime
 
 class ScheduleModelTest(TestCase):
     def setUp(self):
         # Create a teacher for the Course model
-        self.teacher = User.objects.create_user(username="teacher1", password="password123")
+        self.user = User.objects.create_user(username="teacher1", password="password123")
+        self.teacher = Teacher.objects.create(user=self.user, teacher_name="Azhar", gender="L")
+        self.subject = Subject.objects.create(name="Mathematics")
         
         # Create instances of Course and Class
         self.course = Course.objects.create(
-            course_name="Mathematics",
+            course=self.subject ,
             course_code="MATH101",
             teacher=self.teacher
         )
@@ -21,9 +27,15 @@ class ScheduleModelTest(TestCase):
         )
         
         # Create a Schedule instance
+        self.period = Period.objects.create(number=1, 
+                                            time_start='07:00:00', 
+                                            short_time_start='07:00:00', 
+                                            time_end='07:30:00',
+                                            short_time_end='07:30:00'
+                                            )
         self.schedule = Schedule.objects.create(
             schedule_day=0,  # Monday (Senin)
-            schedule_time=1,  # Jam ke-1
+            schedule_time=self.period,  # Jam ke-1
             schedule_course=self.course,
             schedule_class=self.class_instance
         )
@@ -32,19 +44,14 @@ class ScheduleModelTest(TestCase):
         """Test that a Schedule instance is created successfully."""
         self.assertIsInstance(self.schedule, Schedule)
         self.assertEqual(self.schedule.schedule_day, 0)
-        self.assertEqual(self.schedule.schedule_time, 1)
+        self.assertEqual(self.schedule.schedule_time.number, 1)
         self.assertEqual(self.schedule.schedule_course, self.course)
         self.assertEqual(self.schedule.schedule_class, self.class_instance)
 
     def test_schedule_day_choices(self):
-        """Test that schedule_day respects the defined WEEKDAYS choices."""
+        """Test that schedule_day respects the defined SCHEDULE_WEEKDAYS choices."""
         field = Schedule._meta.get_field("schedule_day")
-        self.assertEqual(field.choices, [*WEEKDAYS])
-
-    def test_schedule_time_choices(self):
-        """Test that schedule_time respects the defined SCHEDULE_TIME choices."""
-        field = Schedule._meta.get_field("schedule_time")
-        self.assertEqual(field.choices, [*SCHEDULE_TIME])
+        self.assertEqual(field.choices, [*SCHEDULE_WEEKDAYS])
 
     def test_schedule_day_max_length(self):
         """Test that schedule_day respects the max_length."""
@@ -52,13 +59,13 @@ class ScheduleModelTest(TestCase):
         self.assertEqual(max_length, 10)
 
     def test_schedule_time_max_length(self):
-        """Test that schedule_time respects the max_length."""
-        max_length = Schedule._meta.get_field("schedule_time").max_length
+        """Test that Period type respects the max_length."""
+        max_length = Period._meta.get_field("type").max_length
         self.assertEqual(max_length, 20)
 
     def test_schedule_course_relationship(self):
         """Test that schedule_course correctly relates to Course."""
-        self.assertEqual(self.schedule.schedule_course.course_name, "Mathematics")
+        self.assertEqual(self.schedule.schedule_course.course.name, "Mathematics")
 
     def test_schedule_class_relationship(self):
         """Test that schedule_class correctly relates to Class."""

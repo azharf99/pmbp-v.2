@@ -18,6 +18,7 @@
 PMBP_DATA/
 PIKET_DATA/
 HUMAS_DATA/
+legacy/
 
 # production
 /build
@@ -35,7 +36,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+.env.*
 .env
 
 # vercel

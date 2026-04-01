@@ -28,12 +28,13 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False    # Set to True to enable debug mode
+DEBUG = os.getenv('DEBUG') == 'True'
+MAINTENANCE_MODE = False    # Set to Tru'e to enable debug mode
 MAINTENANCE_MODE = False  # Set to True to enable maintenance mode
 PIKET_MODE_ON = True  # Set to True to enable maintenance mode
 
 if not DEBUG:
-    ALLOWED_HOSTS = ['pmbp.pythonanywhere.com', 'smaitalbinaa.pythonanywhere.com', 'smait.albinaa.sch.id']
+    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 else:
     ALLOWED_HOSTS = ['*']
 
@@ -177,11 +178,11 @@ if not DEBUG:
     DATABASES = {
             'default':{
                 'ENGINE': 'django.db.backends.mysql',
-                'NAME' : os.getenv('MYSQL_DB_NAME'),
-                'USER' : os.getenv('MYSQL_DB_USER'),
-                'PASSWORD' : os.getenv('MYSQL_DB_PASSWORD'),
-                'HOST' : os.getenv('MYSQL_DB_HOST'),
-                'PORT' : os.getenv('MYSQL_DB_PORT'),
+                'NAME' : os.getenv('DB_NAME'),
+                'USER' : os.getenv('DB_USER'),
+                'PASSWORD' : os.getenv('DB_PASSWORD'),
+                'HOST' : os.getenv('DB_HOST'),
+                'PORT' : os.getenv('DB_PORT'),
                 "OPTIONS": {
                     'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
                     'charset': 'utf8mb4',

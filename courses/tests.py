@@ -1,16 +1,19 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from datetime import datetime
-from .models import Course
+
+from users.models import Teacher
+from .models import Course, Subject
 
 class CourseModelTest(TestCase):
     def setUp(self):
         # Create a sample User instance for testing
-        self.teacher = User.objects.create_user(username="teacher1", password="password123")
-        
+        self.user = User.objects.create_user(username="teacher1", password="password123")
+        self.teacher = Teacher.objects.create(user=self.user, teacher_name="Azhar", gender="L")
+        self.subject = Subject.objects.create(name="Mathematics")
         # Create a Course instance for testing
         self.course_instance = Course.objects.create(
-            course_name="Mathematics",
+            course=self.subject,
             course_code="MATH101",
             teacher=self.teacher
         )
@@ -18,13 +21,13 @@ class CourseModelTest(TestCase):
     def test_course_creation(self):
         """Test that a Course instance is created successfully."""
         self.assertIsInstance(self.course_instance, Course)
-        self.assertEqual(self.course_instance.course_name, "Mathematics")
+        self.assertEqual(self.course_instance.course.name, "Mathematics")
         self.assertEqual(self.course_instance.course_code, "MATH101")
         self.assertEqual(self.course_instance.teacher, self.teacher)
 
     def test_course_name_max_length(self):
         """Test that the course_name field respects the max_length."""
-        max_length = Course._meta.get_field("course_name").max_length
+        max_length = Subject._meta.get_field("name").max_length
         self.assertEqual(max_length, 50)
 
     def test_course_code_max_length(self):
@@ -34,7 +37,7 @@ class CourseModelTest(TestCase):
 
     def test_teacher_relationship(self):
         """Test the teacher field is correctly related to the User model."""
-        self.assertEqual(self.course_instance.teacher.username, "teacher1")
+        self.assertEqual(self.course_instance.teacher.user.username, "teacher1")
         self.assertEqual(self.course_instance.teacher, self.teacher)
 
     def test_on_delete_set_null(self):
@@ -56,7 +59,7 @@ class CourseModelTest(TestCase):
         from time import sleep
         sleep(1)
 
-        self.course_instance.course_name = "Physics"
+        self.course_instance.course.name = "Physics"
         self.course_instance.save()
 
         self.course_instance.refresh_from_db()

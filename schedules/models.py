@@ -24,7 +24,11 @@ class Period(models.Model):
         ordering = ['number']
 
     def __str__(self):
-        return f"{self.number} ({self.time_start.strftime('%H:%M')} - {self.time_end.strftime('%H:%M')})"
+        if isinstance(self.time_start, time) and isinstance(self.time_end, time):
+            return f"{self.number} ({self.time_start.strftime('%H:%M')} - {self.time_end.strftime('%H:%M')})"
+        else:
+            return f"{self.number} ({self.time_start} - {self.time_end})"
+
     
     class Meta:
         ordering = ["number", "type"]

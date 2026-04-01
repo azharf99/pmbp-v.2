@@ -1,11 +1,16 @@
 from datetime import date
+import datetime
+import time
 from django.test import TestCase
 from django.utils.timezone import now
 from django.contrib.auth.models import User
+
+from schedules.models import Period
+from users.models import Teacher
 from .models import Report, Schedule
 from classes.models import Class
-from courses.models import Course
-from .constants import STATUS_CHOICES
+from courses.models import Course, Subject
+from utils.constants import STATUS_CHOICES
 
 
 # class ReportModelTest(TestCase):
@@ -18,7 +23,7 @@ from .constants import STATUS_CHOICES
         
 #         # Create instances of Course and Class
 #         self.course = Course.objects.create(
-#             course_name="Mathematics",
+#             course="Mathematics",
 #             course_code="MATH101",
 #             teacher=self.teacher
 #         )
@@ -124,12 +129,15 @@ from .constants import STATUS_CHOICES
 class ReportModelTest(TestCase):
     def setUp(self):
         # Create a teacher and substitute teacher
-        self.teacher = User.objects.create_user(username="teacher1", password="password123")
-        self.substitute_teacher = User.objects.create_user(username="sub_teacher", password="password123")
+        self.user = User.objects.create_user(username="teacher1", password="password123")
+        self.teacher = Teacher.objects.create(user=self.user, teacher_name="Azhar", gender="L")
+        self.substitute_user = User.objects.create_user(username="sub_teacher", password="password123")
+        self.substitute_teacher = Teacher.objects.create(user=self.substitute_user, teacher_name="Faturohman", gender="L")
         
         # Create Course and Class instances
+        self.subject = Subject.objects.create(name="Mathematics")
         self.course = Course.objects.create(
-            course_name="Mathematics",
+            course=self.subject,
             course_code="MATH101",
             teacher=self.teacher
         )
@@ -139,9 +147,15 @@ class ReportModelTest(TestCase):
         )
         
         # Create a Schedule instance
+        self.period = Period.objects.create(number=1, 
+                                            time_start='07:00:00', 
+                                            short_time_start='07:00:00', 
+                                            time_end='07:30:00',
+                                            short_time_end='07:30:00'
+                                            )
         self.schedule = Schedule.objects.create(
             schedule_day=0,  # Monday (Senin)
-            schedule_time=1,  # Jam ke-1
+            schedule_time=self.period,  # Jam ke-1
             schedule_course=self.course,
             schedule_class=self.class_instance
         )
@@ -177,7 +191,7 @@ class ReportModelTest(TestCase):
 
     def test_substitute_teacher_relationship(self):
         """Test that subtitute_teacher correctly relates to User."""
-        self.assertEqual(self.report.subtitute_teacher.username, "sub_teacher")
+        self.assertEqual(self.report.subtitute_teacher.user.username, "sub_teacher")
 
     def test_on_delete_set_null_schedule(self):
         """Test that schedule is set to null when the related Schedule is deleted."""
