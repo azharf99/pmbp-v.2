@@ -61,12 +61,11 @@ db.sqlite3
 # staticfiles
 /staticfiles
 /staticfiles/
-/static
-/static/
+/static/admin/
+/static/ckeditor/
 /media
 /media/
 
-*.json
 
 /x_folder/
 

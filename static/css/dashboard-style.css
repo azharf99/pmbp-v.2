@@ -1,0 +1,99 @@
+/* Custom scrollbar for sidebar - cannot be fully converted to Tailwind */
+.sidebar-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+    background: #e2e8f0; /* Light blue-gray track */
+    border-radius: 10px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+    background: #94a3b8; /* Darker blue-gray thumb */
+    border-radius: 10px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+    background: #64748b; /* Even darker on hover */
+}
+
+/* General sidebar transition */
+.sidebar-transition {
+    transition: width 0.6s ease-in-out, transform 0.6s ease-in-out;
+}
+
+/* Desktop specific sidebar styles */
+@media (min-width: 768px) {
+    .sidebar-desktop {
+        width: 16rem; /* Default expanded width */
+        position: relative; /* Not fixed on desktop */
+        transform: translateX(0); /* Always visible on desktop */
+        flex-shrink: 0; /* Prevents shrinking */
+    }
+    .sidebar-desktop.collapsed {
+        width: 5rem; /* Collapsed width */
+    }
+    .sidebar-desktop.collapsed .sidebar-text {
+        opacity: 0;
+        width: 0;
+    }
+    .sidebar-desktop.collapsed .sidebar-icon {
+        margin-right: 0 !important;
+    }
+    .sidebar-desktop.collapsed .sidebar-item-link {
+        justify-content: center;
+    }
+
+    /* Main content margin for desktop */
+    .main-content-desktop {
+        transition: margin-left 0.3s ease-in-out;
+    }
+}
+
+/* Mobile specific styles */
+@media (max-width: 767px) {
+    .sidebar-mobile {
+        position: fixed;
+        height: 100vh;
+        z-index: 50;
+        left: 0;
+        top: 0;
+        width: 16rem; /* Full width when open */
+        transform: translateX(-100%); /* Hidden by default */
+        box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    }
+    .sidebar-mobile.active {
+        transform: translateX(0); /* Show when active */
+    }
+    /* Ensure text is always visible on mobile */
+    .sidebar-mobile .sidebar-text {
+        opacity: 1;
+        width: auto;
+    }
+    .sidebar-mobile .sidebar-icon {
+        margin-right: 0.75rem; /* mr-3 */
+    }
+    /* Main content should not have left margin on mobile */
+    .main-content-mobile {
+        margin-left: 0 !important;
+    }
+}
+
+/* Overlay activation */
+.overlay.active {
+    display: block;
+}
+
+/* Dropdown menu activation */
+.dropdown-menu.active {
+    display: block;
+}
+
+/* Keyframes for dropdown animation */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

@@ -1,5 +1,5 @@
 # Gunakan Python versi ringan
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 # Mencegah Python membuat file .pyc dan memaksanya langsung print log ke terminal
 ENV PYTHONDONTWRITEBYTECODE 1

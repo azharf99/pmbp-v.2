@@ -38,7 +38,7 @@ if not DEBUG:
 else:
     ALLOWED_HOSTS = ['*']
 
-
+SILENCED_SYSTEM_CHECKS = ['ckeditor.W001']
 ID_DEVICE = os.getenv('ID_DEVICE')
 API_KEY = os.getenv('API_KEY')
 TOKEN = os.getenv('TOKEN')
