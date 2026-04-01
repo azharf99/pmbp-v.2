@@ -63,8 +63,12 @@ db.sqlite3
 /staticfiles/
 /static/admin/
 /static/ckeditor/
-/media
-/media/
+/media/ekskul/
+/media/files/
+/media/olimpiade/
+/media/prestasi/
+/media/privat/
+/media/user/
 
 
 /x_folder/

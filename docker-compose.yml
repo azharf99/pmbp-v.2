@@ -17,8 +17,14 @@ services:
   web:
     # image: azharfa/albinaa-web:latest
     image: azharfa/albinaa-web:latest
+    # build: .
     container_name: albinaa_web
     restart: always
+    volumes:
+      # Formatnya: [path-di-vps-host]:[path-di-dalam-kontainer]
+      - ./static:/app/static   # Menyambungkan folder 'static' di VPS ke '/app/static' di kontainer
+      - ./staticfiles:/app/staticfiles   # Menyambungkan folder 'staticfiles' di VPS ke '/app/staticfiles' di kontainer
+      - ./media:/app/media     # Menyambungkan folder 'media' di VPS ke '/app/media' di kontainer
     # Menjalankan migrasi database otomatis, lalu menyalakan server Gunicorn
     # CATATAN: Ganti "nama_folder_utama.wsgi" dengan nama folder tempat file wsgi.py berada (biasanya sama dengan nama project Django-mu)
     command: bash -c "python manage.py migrate && gunicorn Platform.wsgi:application --bind 0.0.0.0:8000 --timeout 120 --workers 2 --threads 4"
