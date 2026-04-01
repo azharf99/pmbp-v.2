@@ -31,6 +31,8 @@ RUN pip install gunicorn
 # Salin seluruh kode aplikasi
 COPY . .
 
+RUN python manage.py collectstatic --noinput --clear
+
 # Ekspos port 8000 untuk Gunicorn
 EXPOSE 8000
 

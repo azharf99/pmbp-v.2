@@ -21,7 +21,7 @@ services:
     restart: always
     # Menjalankan migrasi database otomatis, lalu menyalakan server Gunicorn
     # CATATAN: Ganti "nama_folder_utama.wsgi" dengan nama folder tempat file wsgi.py berada (biasanya sama dengan nama project Django-mu)
-    command: bash -c "python manage.py migrate && python manage.py collectstatic && gunicorn Platform.wsgi:application --bind 0.0.0.0:8000 --timeout 120 --workers 2 --threads 4"
+    command: bash -c "python manage.py migrate && gunicorn Platform.wsgi:application --bind 0.0.0.0:8000 --timeout 120 --workers 2 --threads 4"
     ports:
       - "8002:8000"
     environment:
