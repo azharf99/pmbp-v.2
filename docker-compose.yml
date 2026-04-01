@@ -16,7 +16,7 @@ services:
   # CONTAINER DJANGO
   web:
     # image: azharfa/albinaa-web:latest
-    image: azharf99/albinaa-web:latest
+    image: azharfa/albinaa-web:latest
     container_name: albinaa_web
     restart: always
     # Menjalankan migrasi database otomatis, lalu menyalakan server Gunicorn
