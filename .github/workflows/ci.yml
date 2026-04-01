@@ -100,4 +100,5 @@ jobs:
           docker compose pull
           
           docker compose up -d
+          docker cp albinaa_web:/app/staticfiles /opt/abn
           docker image prune -f
