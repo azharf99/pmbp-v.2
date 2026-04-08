@@ -68,10 +68,10 @@ class Schedule(models.Model):
     
 
     class Meta:
-        unique_together = (
-            ('schedule_day', 'schedule_time', 'teacher'),
-            ('schedule_day', 'schedule_time', 'schedule_class', 'type', 'semester', 'academic_year'),
-        )
+        # unique_together = (
+        #     ('schedule_day', 'schedule_time', 'teacher'),
+        #     ('schedule_day', 'schedule_time', 'schedule_class', 'type', 'semester', 'academic_year'),
+        # )
         ordering = ["-schedule_day", "schedule_class", "schedule_time"]
         verbose_name = _("Schedule")
         verbose_name_plural = _("Schedules")

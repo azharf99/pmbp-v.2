@@ -7,7 +7,7 @@ from schedules.reporter_views import ReporterPutriScheduleView, ReporterSchedule
 urlpatterns = [
     path('', ScheduleListView.as_view(),  {"site_title": "SCHEDULE LIST - PIKET SMA IT AL BINAA"}, "schedule-list"),
     path('search/', ScheduleSearchView.as_view(),  {"site_title": "SCHEDULE SEARCH - PIKET SMA IT AL BINAA"}, "schedule-search"),
-    path("create/", ScheduleCreateView.as_view(),  {"site_title": "CREATE SCHEDULE - PIKET SMA IT AL BINAA"}, "schedule-create"),
+    # path("create/", ScheduleCreateView.as_view(),  {"site_title": "CREATE SCHEDULE - PIKET SMA IT AL BINAA"}, "schedule-create"),
     path('view/', ScheduleView.as_view(),  {"site_title": "SCHEDULE VIEW - PIKET SMA IT AL BINAA"}, "schedule-view"),
     path('putri/view/', SchedulePutriView.as_view(),  {"site_title": "SCHEDULE VIEW - PIKET SMA IT AL BINAA"}, "schedule-putri-view"),
     path("upload/", ScheduleUploadView.as_view(),  {"site_title": "UPLOAD SCHEDULE - PIKET SMA IT AL BINAA"}, "schedule-upload"),
